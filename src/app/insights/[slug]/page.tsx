@@ -5,6 +5,8 @@ import { articles } from "@/data/insights";
 import { ArrowLeft, Clock, Calendar, Share2, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 
+export const instant = false;
+
 export async function generateStaticParams() {
   return articles.map((a) => ({
     slug: a.slug,

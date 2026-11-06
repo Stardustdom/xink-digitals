@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 
+export const instant = false;
+
 export async function generateStaticParams() {
   return projects.map((p) => ({
     slug: p.slug,
