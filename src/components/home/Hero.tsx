@@ -4,9 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Sparkles, Zap, Flame, Award, Eye, Play } from "lucide-react";
 import confetti from "canvas-confetti";
+import HeroCanvas from "./HeroCanvas";
+import { useSound } from "@/components/SoundManager";
 
 export default function Hero() {
   const [activeMood, setActiveMood] = useState<"electric" | "cyber" | "sunset">("electric");
+  const { playPop, playSuccess } = useSound();
 
   const moods = {
     electric: {
@@ -30,6 +33,7 @@ export default function Hero() {
   };
 
   const triggerConfetti = (e: React.MouseEvent) => {
+    playSuccess();
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (rect.left + rect.width / 2) / window.innerWidth;
     const y = (rect.top + rect.height / 2) / window.innerHeight;
@@ -43,6 +47,9 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-[92vh] pt-32 pb-20 flex items-center justify-center overflow-hidden">
+      {/* Interactive Generative Canvas Playground */}
+      <HeroCanvas mood={activeMood} />
+
       {/* Background radial gradients */}
       <div
         className={`absolute inset-0 bg-gradient-to-b ${moods[activeMood].glow} opacity-60 blur-3xl transition-all duration-700 pointer-events-none`}
