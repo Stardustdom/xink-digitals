@@ -1,0 +1,154 @@
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import RippleRings from "./RippleRings";
+import { Apple, Play } from "lucide-react";
+
+export default function HeroSection() {
+  return (
+    <section className="relative w-full min-h-[92vh] sm:min-h-[640px] lg:h-[90vh] max-h-[860px] bg-[#FBFBFE] text-[#15103A] rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden border border-[#EAEAFA] shadow-[0_4px_30px_rgba(27,20,63,0.03)] flex flex-col justify-between p-6 sm:p-10 select-none">
+      {/* ── 1. The Expanding Ripple Rings ── */}
+      <RippleRings />
+
+      {/* ── 2. Top Navigation Bar ── */}
+      <div className="relative z-30 w-full flex items-center justify-between">
+        {/* Left: Spark Logo */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <span className="font-black text-2xl text-[#15103A] font-mono leading-none tracking-tighter">
+            ✕
+          </span>
+          <span className="font-extrabold text-2xl text-[#15103A] tracking-tight">
+            spark
+          </span>
+        </Link>
+
+        {/* Center: Pill Navigation Menu */}
+        <nav className="hidden md:flex items-center gap-1 sm:gap-2 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-md border border-[#EDEDF5] shadow-[0_2px_12px_rgba(27,20,63,0.04)]">
+          {["Features", "Article", "Testimonials", "About", "Contacts"].map((item) => (
+            <Link
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              className="px-4 py-1.5 rounded-full text-xs font-semibold text-[#544F6D] hover:text-[#15103A] hover:bg-[#F4F4FA] transition-colors"
+            >
+              {item}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right: Reserve Id pill button */}
+        <Link
+          href="#contacts"
+          className="px-6 py-2.5 rounded-full border border-[#15103A] text-[#15103A] hover:bg-[#15103A] hover:text-white text-xs font-bold transition-all"
+        >
+          Reserve id
+        </Link>
+      </div>
+
+      {/* ── 3. Central Stage: Headline + Hand holding Phone + Floating Squircles ── */}
+      <div className="relative z-10 w-full flex-1 flex items-center justify-center my-auto">
+        {/* Main Big Headline: 'Welcome' on left, 'To Spark' behind phone on right */}
+        <div className="absolute inset-x-0 top-[18%] sm:top-[20%] pointer-events-none flex items-center justify-between px-4 sm:px-12 lg:px-20 z-10">
+          {/* 'Welcome' */}
+          <div className="w-1/2 flex justify-start pl-2 sm:pl-8">
+            <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.25rem)] text-[#15103A] tracking-tight leading-none">
+              Welcome
+            </h1>
+          </div>
+
+          {/* 'To Spark' (sits to the right of the center, partially tucked behind phone) */}
+          <div className="w-1/2 flex justify-end pr-2 sm:pr-8">
+            <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.25rem)] text-[#15103A] tracking-tight leading-none whitespace-nowrap">
+              To Spark
+            </h1>
+          </div>
+        </div>
+
+        {/* Floating Left Squircle Badge */}
+        <div className="absolute left-[8%] sm:left-[16%] lg:left-[21%] top-[45%] -translate-y-1/2 z-20 animate-float">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white border border-[#EDEDF5] p-2 shadow-[0_12px_28px_rgba(27,20,63,0.06)] flex items-center justify-center overflow-hidden">
+            <Image
+              src="/spark/floating_spark_badge.png"
+              alt="Spark feature icon"
+              width={80}
+              height={80}
+              className="w-full h-full object-contain"
+              unoptimized
+            />
+          </div>
+        </div>
+
+        {/* Center: Hand holding iPhone */}
+        <div className="relative z-20 flex flex-col items-center justify-end h-full pt-16 sm:pt-20">
+          <div className="relative w-[210px] sm:w-[250px] lg:w-[270px] drop-shadow-[0_20px_35px_rgba(21,16,58,0.18)]">
+            <Image
+              src="/spark/hand_phone_clean.png"
+              alt="Hand holding iPhone running Spark App"
+              width={270}
+              height={380}
+              className="w-full h-auto object-contain pointer-events-none"
+              priority
+              unoptimized
+            />
+          </div>
+        </div>
+
+        {/* Floating Right Woman Avatar Squircle */}
+        <div className="absolute right-[8%] sm:right-[16%] lg:right-[21%] top-[48%] -translate-y-1/2 z-20 animate-float-delayed">
+          <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-3xl bg-white border border-[#EDEDF5] p-2 shadow-[0_12px_28px_rgba(27,20,63,0.06)] flex items-center justify-center overflow-hidden">
+            <Image
+              src="/spark/floating_woman_avatar.png"
+              alt="Spark happy customer"
+              width={75}
+              height={75}
+              className="w-full h-full object-cover rounded-2xl"
+              unoptimized
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ── 4. Bottom Elements: Left Tagline + Right Copy & App Store Buttons ── */}
+      <div className="relative z-30 w-full flex flex-col md:flex-row items-center md:items-end justify-between gap-6 pt-4">
+        {/* Bottom-Left Tagline */}
+        <div className="max-w-xs text-center md:text-left">
+          <p className="font-display font-semibold text-xl sm:text-2xl text-[#15103A] leading-snug">
+            The ultimate shopping <br />
+            hack is here.
+          </p>
+        </div>
+
+        {/* Bottom-Right Description & Buttons */}
+        <div className="flex flex-col items-center md:items-end text-center md:text-right max-w-sm">
+          <p className="text-xs sm:text-[13px] text-[#7E7896] leading-relaxed mb-3.5">
+            Bye bye spam. See you later unrewarding <br className="hidden sm:block" />
+            rewards. Adios tracking nightmares.
+          </p>
+
+          <div className="flex items-center gap-3">
+            {/* App Store button with pulsing concentric purple ripple pill */}
+            <div className="relative group">
+              <span className="absolute -inset-1 rounded-full border border-[#7E4FF5]/40 animate-ping opacity-40 pointer-events-none" />
+              <span className="absolute -inset-2.5 rounded-full border border-[#7E4FF5]/20 animate-ping opacity-25 pointer-events-none" />
+              <a
+                href="#download"
+                className="relative z-10 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#15103A] hover:bg-[#6A38EB] text-white text-xs font-bold transition-all shadow-md"
+              >
+                <Apple className="w-4 h-4 fill-current" />
+                <span>App Store</span>
+              </a>
+            </div>
+
+            {/* Google Play button */}
+            <a
+              href="#download"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#15103A] hover:bg-[#6A38EB] text-white text-xs font-bold transition-all shadow-md"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              <span>Google Play</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

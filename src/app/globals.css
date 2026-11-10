@@ -2,128 +2,117 @@
 
 @layer base {
   :root {
-    --bg-dark:    #0F0A1C;
-    --bg-mid:     #181329;
-    --bg-card:    #1E1836;
-    --bg-glass:   rgba(255,255,255,0.05);
-    --text-primary: #FFF9F1;
-    --text-muted:   #9B8FB5;
-    --violet:  #754BFF;
-    --coral:   #FF6575;
-    --sunburst:#FFC247;
-    --pink:    #FF8CD5;
-    --lime:    #C9F36D;
-    --cyan:    #62D9F5;
+    --spark-bg: #FFFFFF;
+    --spark-card: #FBFBFE;
+    --spark-navy: #15103A;
+    --spark-purple: #6A38EB;
+    --spark-purple-light: #7E4FF5;
+    --spark-orange: #FF6A3D;
+    --spark-green: #00C48C;
+    --spark-yellow: #FFB800;
   }
 
   body {
-    background-color: #0F0A1C;
-    color: #FFF9F1;
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background-color: #FFFFFF;
+    color: #15103A;
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
-    scroll-behavior: smooth;
-  }
-
-  h1, h2, h3, h4, .font-heading {
-    font-family: 'Montserrat', 'Inter', system-ui, sans-serif;
-    letter-spacing: -0.02em;
-  }
-
-  .font-display {
-    font-family: 'Montserrat', 'Inter', system-ui, sans-serif;
   }
 }
 
-/* Custom scrollbar — dark theme */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0F0A1C; }
-::-webkit-scrollbar-thumb { background: #3D3060; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #754BFF; }
-
-/* ── Keyframes ─────────────────────────────── */
-@keyframes pulse-slow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50%       { opacity: 0.9; transform: scale(1.08); }
-}
-
-@keyframes float-slow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50%       { transform: translateY(-10px) rotate(1.5deg); }
-}
-
-@keyframes marquee {
-  0%   { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
-}
-
-@keyframes marquee-reverse {
-  0%   { transform: translateX(-50%); }
-  100% { transform: translateX(0%); }
-}
-
-.animate-pulse-slow  { animation: pulse-slow  8s  ease-in-out infinite; }
-.animate-float       { animation: float-slow  5s  ease-in-out infinite; }
-
-.animate-marquee {
-  display: flex;
-  width: max-content;
-  animation: marquee 30s linear infinite;
-}
-.animate-marquee:hover { animation-play-state: paused; }
-
-.animate-marquee-reverse {
-  display: flex;
-  width: max-content;
-  animation: marquee-reverse 32s linear infinite;
-}
-.animate-marquee-reverse:hover { animation-play-state: paused; }
-
-/* ── Dark glass panel ───────────────────────── */
-.glass-panel {
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255,255,255,0.10);
-}
-
-.glass-panel-subtle {
-  background: rgba(255,255,255,0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.07);
-}
-
-/* ── Gradient text helpers ──────────────────── */
-.gradient-text-violet {
-  background: linear-gradient(135deg, #754BFF 0%, #A259FF 50%, #FF6575 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-text-sunset {
-  background: linear-gradient(135deg, #FF6575 0%, #FF9E2C 50%, #754BFF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.gradient-text-brand {
-  background: linear-gradient(135deg, #754BFF 0%, #FF6575 60%, #FFC247 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* ── Card hover lift ────────────────────────── */
-.card-shadow-hover { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-.card-shadow-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px -15px rgba(117, 75, 255, 0.25);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+/* ── Ripple Transition: Rings start from middle and expand outward ── */
+@keyframes spark-ring-ripple {
+  0% {
+    width: 60px;
+    height: 60px;
+    opacity: 0.65;
+    border-width: 1.5px;
   }
+  30% {
+    opacity: 0.45;
+  }
+  70% {
+    opacity: 0.22;
+  }
+  100% {
+    width: 1400px;
+    height: 1400px;
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+.animate-ring-expand-1 {
+  animation: spark-ring-ripple 8s cubic-bezier(0.12, 0.45, 0.25, 1) infinite;
+  animation-delay: 0s;
+}
+
+.animate-ring-expand-2 {
+  animation: spark-ring-ripple 8s cubic-bezier(0.12, 0.45, 0.25, 1) infinite;
+  animation-delay: 2s;
+}
+
+.animate-ring-expand-3 {
+  animation: spark-ring-ripple 8s cubic-bezier(0.12, 0.45, 0.25, 1) infinite;
+  animation-delay: 4s;
+}
+
+.animate-ring-expand-4 {
+  animation: spark-ring-ripple 8s cubic-bezier(0.12, 0.45, 0.25, 1) infinite;
+  animation-delay: 6s;
+}
+
+/* Pulsing concentric button ripple waves */
+@keyframes button-ripple-wave {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.85);
+    opacity: 0;
+  }
+}
+
+.animate-ripple-1 {
+  animation: button-ripple-wave 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.animate-ripple-2 {
+  animation: button-ripple-wave 3s cubic-bezier(0, 0.2, 0.8, 1) infinite 1s;
+}
+
+.animate-ripple-3 {
+  animation: button-ripple-wave 3s cubic-bezier(0, 0.2, 0.8, 1) infinite 2s;
+}
+
+/* Subtle float */
+@keyframes float-subtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float-subtle 4s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-subtle 4.5s ease-in-out infinite 1.5s;
+}
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
