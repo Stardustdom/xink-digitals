@@ -46,21 +46,45 @@ export default function HeroSection() {
 
       {/* ── 3. Central Stage: Headline + Hand starting from the bottom + Floating Badges ── */}
       <div className="relative z-10 w-full flex-1 flex items-center justify-center">
-        {/* Main Big Headline: 'Welcome' on left, 'To Xink' layered behind phone on right */}
-        <div className="absolute inset-x-0 top-[14%] sm:top-[16%] pointer-events-none flex items-center justify-between px-4 sm:px-12 lg:px-20 z-10">
-          {/* 'Welcome' on left */}
-          <div className="w-1/2 flex justify-start pl-2 sm:pl-8">
-            <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.5rem)] text-[#15103A] tracking-tight leading-none">
+        {/* ── Main Big Headline: Line 1 = 'Welcome', Line 2 = 'To Xink Digitals' ── */}
+        {/* Desktop & Tablet View (sm:flex) with partial phone overlap */}
+        <div className="absolute inset-x-0 top-[10%] sm:top-[12%] lg:top-[13%] pointer-events-none z-10 px-4 sm:px-8 lg:px-14 hidden sm:flex flex-col">
+          {/* Line 1: 'Welcome' */}
+          <div className="w-full flex justify-start pl-2 sm:pl-8 lg:pl-14">
+            <h1 className="font-display font-semibold text-[clamp(2.5rem,5.5vw,5.5rem)] text-[#15103A] tracking-tight leading-none">
               Welcome
             </h1>
           </div>
 
-          {/* 'To Xink' on right (starts behind the phone) */}
-          <div className="w-1/2 flex justify-end pr-2 sm:pr-8">
-            <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.5rem)] text-[#15103A] tracking-tight leading-none whitespace-nowrap">
-              To Xink
-            </h1>
+          {/* Line 2: 'To Xink Digitals' with phone partially overlapping in the center */}
+          <div className="w-full flex items-baseline justify-between mt-1 sm:mt-2 lg:mt-3">
+            {/* Left part of line 2: 'To' slightly tucked behind the phone's left edge */}
+            <div className="flex-1 flex justify-end">
+              <span className="font-display font-semibold text-[clamp(1.9rem,3.9vw,4.5rem)] text-[#15103A] tracking-tight leading-none -mr-2 sm:-mr-4 lg:-mr-6">
+                To
+              </span>
+            </div>
+
+            {/* Middle Spacer: slightly narrower than the phone so the phone partially covers both edges */}
+            <div className="w-[170px] sm:w-[210px] lg:w-[240px] shrink-0 pointer-events-none" />
+
+            {/* Right part of line 2: 'Xink Digitals' starting just behind the phone's right edge */}
+            <div className="flex-1 flex justify-start">
+              <span className="font-display font-semibold text-[clamp(1.9rem,3.9vw,4.5rem)] text-[#15103A] tracking-tight leading-none whitespace-nowrap -ml-2 sm:-ml-4 lg:-ml-6">
+                Xink Digitals
+              </span>
+            </div>
           </div>
+        </div>
+
+        {/* Mobile View (< sm) */}
+        <div className="absolute inset-x-0 top-[10%] pointer-events-none z-10 px-4 sm:hidden flex flex-col items-center text-center">
+          <h1 className="font-display font-semibold text-4xl text-[#15103A] tracking-tight leading-none mb-1">
+            Welcome
+          </h1>
+          <span className="font-display font-semibold text-2xl text-[#15103A] tracking-tight leading-none">
+            To Xink Digitals
+          </span>
         </div>
 
         {/* Floating Left Squircle Badge */}

@@ -19,7 +19,7 @@ export default function SparkNavbar() {
         <Link href="/" className="flex items-center gap-2 group">
           <span className="font-extrabold text-lg text-[#1B143F] flex items-center gap-1.5 font-heading">
             <span className="font-black text-xl text-[#1B143F] font-mono leading-none">✕</span>
-            <span className="text-xl tracking-tight">spark</span>
+            <span className="text-xl tracking-tight">xink</span>
           </span>
         </Link>
 

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Spark — The Ultimate Shopping Hack",
-  description: "One email address. One AI magic dashboard for all your shopping. Live tracking, across multiple platforms. Rewards and benefits built around you.",
+  title: "Xink Digitals — The Ultimate Marketing Hack",
+  description: "Performance marketing, high-converting design, and ROI-obsessed digital growth for modern brands.",
 };
 
 export default function RootLayout({

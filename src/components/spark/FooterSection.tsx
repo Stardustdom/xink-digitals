@@ -12,10 +12,10 @@ export default function FooterSection() {
             Contact Us
           </h2>
           <a
-            href="mailto:hello@spark.co"
+            href="mailto:hello@xink.co"
             className="font-display font-extrabold text-2xl sm:text-4xl text-[#1B143F] hover:text-[#6A38EB] transition-colors tracking-tight"
           >
-            hello@spark.co
+            hello@xink.co
           </a>
         </div>
 
@@ -36,14 +36,14 @@ export default function FooterSection() {
           <div className="md:col-span-3 space-y-6">
             <div>
               <p className="text-xs font-bold text-[#1B143F] mb-1.5">For Press</p>
-              <a href="mailto:media@flash.co" className="text-xs text-[#5B5573] hover:text-[#1B143F]">
-                media@flash.co
+              <a href="mailto:media@xink.co" className="text-xs text-[#5B5573] hover:text-[#1B143F]">
+                media@xink.co
               </a>
             </div>
             <div>
               <p className="text-xs font-bold text-[#1B143F] mb-1.5">For Help</p>
-              <a href="mailto:help@flash.co" className="text-xs text-[#5B5573] hover:text-[#1B143F]">
-                help@flash.co
+              <a href="mailto:help@xink.co" className="text-xs text-[#5B5573] hover:text-[#1B143F]">
+                help@xink.co
               </a>
             </div>
           </div>
@@ -115,10 +115,10 @@ export default function FooterSection() {
 
         {/* Big Signature Wordmark & Legal */}
         <div className="pt-8 border-t border-[#EBEBF4] flex flex-col md:flex-row items-center justify-between gap-6">
-          {/* Giant Spark.co wordmark */}
+          {/* Giant Xink.co wordmark */}
           <div className="flex items-center gap-2">
             <span className="font-display font-black text-4xl sm:text-6xl text-[#1B143F] tracking-tighter">
-              Spark<span className="text-[#6A38EB]">.co</span>
+              Xink<span className="text-[#6A38EB]">.co</span>
             </span>
           </div>
 
@@ -126,7 +126,7 @@ export default function FooterSection() {
           <div className="flex flex-wrap items-center gap-6 text-[11px] text-[#8C87A5]">
             <Link href="/privacy" className="hover:text-[#1B143F]">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-[#1B143F]">Terms</Link>
-            <span>Copyright@spark.co 2026</span>
+            <span>Copyright@xink.co 2026</span>
           </div>
         </div>
       </div>
