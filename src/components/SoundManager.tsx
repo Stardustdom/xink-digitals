@@ -96,27 +96,27 @@ export default function SoundManager() {
     <div className="fixed bottom-6 right-6 z-50">
       <button
         onClick={toggleSound}
-        className="flex items-center gap-2 px-3.5 py-2 rounded-full glass-panel text-xs font-medium text-white/80 hover:text-white hover:border-[#754BFF]/60 transition-all duration-300 shadow-xl backdrop-blur-md group"
+        className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/95 border border-[#181329]/10 text-xs font-bold text-[#181329] hover:border-[#754BFF] transition-all duration-300 shadow-xl backdrop-blur-md group"
         title={soundEnabled ? "Mute interactive audio" : "Enable futuristic sound effects"}
       >
         <span className="relative flex h-2 w-2">
           {soundEnabled && (
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C9F36D] opacity-75"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2D9E64] opacity-75"></span>
           )}
           <span
             className={`relative inline-flex rounded-full h-2 w-2 ${
-              soundEnabled ? "bg-[#C9F36D]" : "bg-white/30"
+              soundEnabled ? "bg-[#2D9E64]" : "bg-[#181329]/30"
             }`}
           ></span>
         </span>
         {soundEnabled ? (
           <>
-            <Volume2 className="w-3.5 h-3.5 text-[#C9F36D]" />
+            <Volume2 className="w-3.5 h-3.5 text-[#2D9E64]" />
             <span className="hidden sm:inline">Audio On</span>
           </>
         ) : (
           <>
-            <VolumeX className="w-3.5 h-3.5 text-white/50 group-hover:text-white" />
+            <VolumeX className="w-3.5 h-3.5 text-[#181329]/50 group-hover:text-[#754BFF]" />
             <span className="hidden sm:inline">Sound FX</span>
           </>
         )}

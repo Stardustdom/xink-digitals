@@ -44,7 +44,7 @@ export default function HeroCanvas({ mood }: HeroCanvasProps) {
 
     window.addEventListener("mousemove", handleMouseMove);
 
-    // Color definitions based on active vibe
+    // Pastel light palette definitions
     const moodPalettes = {
       electric: [
         { r: 117, g: 75, b: 255 }, // Violet
@@ -67,28 +67,27 @@ export default function HeroCanvas({ mood }: HeroCanvasProps) {
     };
 
     // Blobs
-    const blobs = Array.from({ length: 5 }, (_, i) => ({
+    const blobs = Array.from({ length: 4 }, (_, i) => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.8,
-      vy: (Math.random() - 0.5) * 0.8,
-      radius: 120 + Math.random() * 140,
+      vx: (Math.random() - 0.5) * 0.7,
+      vy: (Math.random() - 0.5) * 0.7,
+      radius: 140 + Math.random() * 120,
       colorIndex: i % 4,
       pulse: Math.random() * Math.PI,
     }));
 
     // Ambient floating particles
-    const particles = Array.from({ length: 28 }, () => ({
+    const particles = Array.from({ length: 22 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
       size: Math.random() * 2 + 1,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5,
-      alpha: Math.random() * 0.6 + 0.2,
+      speedX: (Math.random() - 0.5) * 0.4,
+      speedY: (Math.random() - 0.5) * 0.4,
+      alpha: Math.random() * 0.4 + 0.1,
     }));
 
     const render = () => {
-      // Smooth mouse easing
       mouse.x += (mouse.targetX - mouse.x) * 0.04;
       mouse.y += (mouse.targetY - mouse.y) * 0.04;
 
@@ -96,27 +95,25 @@ export default function HeroCanvas({ mood }: HeroCanvasProps) {
 
       const palette = moodPalettes[mood];
 
-      // Render glowing soft blurred gradient orbs
-      ctx.globalCompositeOperation = "screen";
+      // Draw soft gradient blooms for light theme
+      ctx.globalCompositeOperation = "source-over";
 
       blobs.forEach((blob, idx) => {
         blob.x += blob.vx;
         blob.y += blob.vy;
-        blob.pulse += 0.02;
+        blob.pulse += 0.015;
 
-        // Attract lightly toward mouse for organic reaction
         if (idx === 0) {
-          blob.x += (mouse.x - blob.x) * 0.015;
-          blob.y += (mouse.y - blob.y) * 0.015;
+          blob.x += (mouse.x - blob.x) * 0.012;
+          blob.y += (mouse.y - blob.y) * 0.012;
         }
 
-        // Bounce at boundaries
         if (blob.x < -blob.radius) blob.x = width + blob.radius;
         if (blob.x > width + blob.radius) blob.x = -blob.radius;
         if (blob.y < -blob.radius) blob.y = height + blob.radius;
         if (blob.y > height + blob.radius) blob.y = -blob.radius;
 
-        const currentRadius = blob.radius + Math.sin(blob.pulse) * 20;
+        const currentRadius = blob.radius + Math.sin(blob.pulse) * 25;
         const color = palette[blob.colorIndex % palette.length];
 
         const gradient = ctx.createRadialGradient(
@@ -128,8 +125,8 @@ export default function HeroCanvas({ mood }: HeroCanvasProps) {
           currentRadius
         );
 
-        gradient.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, 0.25)`);
-        gradient.addColorStop(0.6, `rgba(${color.r}, ${color.g}, ${color.b}, 0.08)`);
+        gradient.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, 0.16)`);
+        gradient.addColorStop(0.6, `rgba(${color.r}, ${color.g}, ${color.b}, 0.05)`);
         gradient.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
 
         ctx.fillStyle = gradient;
@@ -138,8 +135,7 @@ export default function HeroCanvas({ mood }: HeroCanvasProps) {
         ctx.fill();
       });
 
-      // Render delicate floating particles with connection lines
-      ctx.globalCompositeOperation = "source-over";
+      // Subtle light theme particles
       particles.forEach((p, index) => {
         p.x += p.speedX;
         p.y += p.speedY;
@@ -149,19 +145,16 @@ export default function HeroCanvas({ mood }: HeroCanvasProps) {
         if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
 
-        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha * 0.6})`;
+        ctx.fillStyle = `rgba(117, 75, 255, ${p.alpha * 0.5})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
 
-        // Connect nearby particles
         for (let j = index + 1; j < particles.length; j++) {
           const p2 = particles[j];
           const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-          if (dist < 100) {
-            ctx.strokeStyle = `rgba(255, 255, 255, ${
-              (1 - dist / 100) * 0.08
-            })`;
+          if (dist < 90) {
+            ctx.strokeStyle = `rgba(117, 75, 255, ${(1 - dist / 90) * 0.06})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);

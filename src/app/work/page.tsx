@@ -14,6 +14,7 @@ import {
   List,
   Search,
 } from "lucide-react";
+import { useSound } from "@/components/SoundManager";
 
 const categories = ["All", "Branding", "Social Media", "Web Design", "Motion", "Advertising"] as const;
 
@@ -21,6 +22,7 @@ export default function WorkPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const { playPop } = useSound();
 
   const filteredProjects = projects.filter((p) => {
     const matchesCategory =
@@ -53,36 +55,39 @@ export default function WorkPage() {
   };
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-[#181329]">
+    <div className="pt-32 pb-24 min-h-screen bg-[#FFF9F1] text-[#181329]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="max-w-3xl mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#754BFF]/20 border border-[#754BFF]/40 text-[#C9BFFF] text-xs font-bold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#754BFF]/10 border border-[#754BFF]/25 text-[#754BFF] text-xs font-bold uppercase tracking-wider mb-4">
             <span>Portfolio Archive</span>
           </div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white font-heading">
+          <h1 className="text-4xl sm:text-6xl font-black tracking-tight font-heading">
             Our Work —{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#754BFF] via-[#FF8CD5] to-[#FFC247]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#754BFF] via-[#FF6575] to-[#D97706]">
               Interactive Art Gallery
             </span>
           </h1>
-          <p className="text-base sm:text-lg text-white/70 mt-4 leading-relaxed">
+          <p className="text-base sm:text-lg text-[#5A4E6B] mt-4 leading-relaxed">
             Every case study represents an ambitious challenge solved through bold visual design, cultural relevance, and high-performance technology.
           </p>
         </div>
 
-        {/* Filter, Search & Layout Controls */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-4 rounded-2xl bg-[#221A38] border border-white/10 mb-12">
+        {/* Filter, Search & Layout Controls (Light Theme) */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-[#181329]/10 shadow-sm mb-12">
           {/* Category Tabs */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-2 md:pb-0">
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => {
+                  playPop();
+                  setSelectedCategory(cat);
+                }}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
                   selectedCategory === cat
                     ? "bg-[#754BFF] text-white shadow-md shadow-[#754BFF]/30"
-                    : "text-white/60 hover:text-white hover:bg-white/5"
+                    : "text-[#181329]/70 hover:text-[#181329] hover:bg-[#181329]/5"
                 }`}
               >
                 {cat !== "All" && getCategoryIcon(cat)}
@@ -94,30 +99,36 @@ export default function WorkPage() {
           {/* Search bar & View toggle */}
           <div className="flex items-center gap-3">
             <div className="relative flex-1 md:w-56">
-              <Search className="w-4 h-4 text-white/40 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[#181329]/40 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search projects..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#181329] border border-white/10 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#754BFF]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#FFF9F1] border border-[#181329]/15 text-xs text-[#181329] placeholder-[#181329]/40 focus:outline-none focus:border-[#754BFF]"
               />
             </div>
 
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-[#181329] border border-white/10">
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-[#FFF9F1] border border-[#181329]/10">
               <button
-                onClick={() => setViewMode("grid")}
+                onClick={() => {
+                  playPop();
+                  setViewMode("grid");
+                }}
                 className={`p-1.5 rounded-lg transition-colors ${
-                  viewMode === "grid" ? "bg-[#754BFF] text-white" : "text-white/40 hover:text-white"
+                  viewMode === "grid" ? "bg-[#754BFF] text-white shadow-2xs" : "text-[#181329]/50 hover:text-[#181329]"
                 }`}
                 title="Grid View"
               >
                 <LayoutGrid className="w-4 h-4" />
               </button>
               <button
-                onClick={() => setViewMode("list")}
+                onClick={() => {
+                  playPop();
+                  setViewMode("list");
+                }}
                 className={`p-1.5 rounded-lg transition-colors ${
-                  viewMode === "list" ? "bg-[#754BFF] text-white" : "text-white/40 hover:text-white"
+                  viewMode === "list" ? "bg-[#754BFF] text-white shadow-2xs" : "text-[#181329]/50 hover:text-[#181329]"
                 }`}
                 title="List View"
               >
@@ -129,15 +140,16 @@ export default function WorkPage() {
 
         {/* Project View Rendering */}
         {filteredProjects.length === 0 ? (
-          <div className="text-center py-24 rounded-3xl bg-[#221A38]/50 border border-white/5">
-            <p className="text-lg font-bold text-white mb-2">No projects found</p>
-            <p className="text-sm text-white/50">Try selecting a different filter or search term.</p>
+          <div className="text-center py-24 rounded-3xl bg-white border border-[#181329]/10 shadow-xs">
+            <p className="text-lg font-bold text-[#181329] mb-2">No projects found</p>
+            <p className="text-sm text-[#5A4E6B]">Try selecting a different filter or search term.</p>
             <button
               onClick={() => {
+                playPop();
                 setSelectedCategory("All");
                 setSearchQuery("");
               }}
-              className="mt-4 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-xs font-semibold text-white"
+              className="mt-4 px-4 py-2 rounded-full bg-[#181329] text-white text-xs font-bold"
             >
               Reset Filters
             </button>
@@ -148,43 +160,44 @@ export default function WorkPage() {
               <Link
                 key={project.slug}
                 href={`/work/${project.slug}`}
-                className="group relative rounded-3xl overflow-hidden border border-white/10 bg-[#221A38] hover:border-white/30 transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between"
+                onClick={() => playPop()}
+                className="group relative rounded-3xl overflow-hidden border border-[#181329]/10 bg-white hover:border-[#754BFF]/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between"
               >
                 <div
                   className="p-8 min-h-[320px] flex flex-col justify-between"
                   style={{
-                    background: `linear-gradient(135deg, ${project.colors.primary}25 0%, #181329 100%)`,
+                    background: `linear-gradient(135deg, ${project.colors.primary}15 0%, #FFFFFF 100%)`,
                   }}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 text-white backdrop-blur-md">
+                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white text-[#181329] shadow-xs border border-[#181329]/10">
                       {getCategoryIcon(project.category)}
                       {project.category}
                     </span>
-                    <span className="text-xs font-mono text-white/50">{project.year}</span>
+                    <span className="text-xs font-mono font-semibold text-[#6C5F7D]">{project.year}</span>
                   </div>
 
                   <div>
-                    <p className="text-xs font-mono text-white/50 mb-1">{project.client}</p>
-                    <h3 className="text-2xl font-extrabold text-white font-heading group-hover:text-[#C9F36D] transition-colors">
+                    <p className="text-xs font-mono font-bold text-[#754BFF] mb-1">{project.client}</p>
+                    <h3 className="text-2xl font-black text-[#181329] font-heading group-hover:text-[#754BFF] transition-colors">
                       {project.title}
                     </h3>
-                    <p className="text-xs text-white/70 mt-2 line-clamp-2">{project.tagline}</p>
+                    <p className="text-xs text-[#5A4E6B] mt-2 line-clamp-2 leading-relaxed">{project.tagline}</p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 pt-4 border-t border-white/10">
+                  <div className="grid grid-cols-2 gap-2 pt-4 border-t border-[#181329]/10 empty:hidden">
                     {project.metrics.slice(0, 2).map((m, i) => (
-                      <div key={i} className="bg-black/30 p-2.5 rounded-lg">
-                        <p className="text-[10px] text-white/50">{m.label}</p>
-                        <p className="text-sm font-bold font-mono text-white">{m.value}</p>
+                      <div key={i} className="bg-[#FFF9F1] p-2.5 rounded-lg border border-[#181329]/8">
+                        <p className="text-[10px] text-[#6C5F7D] font-medium">{m.label}</p>
+                        <p className="text-sm font-black font-mono text-[#181329]">{m.value}</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="px-6 py-3.5 bg-[#1B142F] border-t border-white/5 flex items-center justify-between text-xs font-bold text-white/70 group-hover:text-white">
+                <div className="px-6 py-3.5 bg-[#FAF5ED] border-t border-[#181329]/5 flex items-center justify-between text-xs font-bold text-[#181329]/75 group-hover:text-[#754BFF]">
                   <span>View Case Study</span>
-                  <ArrowUpRight className="w-4 h-4 text-[#C9F36D] transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                  <ArrowUpRight className="w-4 h-4 text-[#754BFF] transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                 </div>
               </Link>
             ))}
@@ -195,36 +208,39 @@ export default function WorkPage() {
               <Link
                 key={project.slug}
                 href={`/work/${project.slug}`}
-                className="group flex flex-col md:flex-row md:items-center justify-between p-6 rounded-2xl bg-[#221A38] border border-white/5 hover:border-white/20 transition-all hover:bg-[#281F42] gap-4"
+                onClick={() => playPop()}
+                className="group flex flex-col md:flex-row md:items-center justify-between p-6 rounded-2xl bg-white border border-[#181329]/10 hover:border-[#754BFF]/40 shadow-xs hover:shadow-md transition-all gap-4"
               >
                 <div className="flex items-center gap-4">
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: `${project.colors.primary}30`, color: project.colors.primary }}
+                    className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 shadow-2xs"
+                    style={{ backgroundColor: `${project.colors.primary}15`, color: project.colors.primary }}
                   >
                     {getCategoryIcon(project.category)}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-[#C9BFFF] uppercase tracking-wider">
+                      <span className="text-xs font-bold text-[#754BFF] uppercase tracking-wider">
                         {project.category}
                       </span>
-                      <span className="text-xs text-white/40 font-mono">• {project.client}</span>
+                      <span className="text-xs text-[#6C5F7D] font-mono">• {project.client}</span>
                     </div>
-                    <h3 className="text-xl font-bold text-white font-heading group-hover:text-[#C9F36D] transition-colors">
+                    <h3 className="text-xl font-bold text-[#181329] font-heading group-hover:text-[#754BFF] transition-colors">
                       {project.title}
                     </h3>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-white/5">
+                <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-[#181329]/5">
                   <div className="text-left md:text-right">
-                    <p className="text-xs text-white/50">Primary Metric</p>
-                    <p className="text-sm font-bold font-mono text-white">
-                      {project.metrics[0].value} ({project.metrics[0].label})
+                    <p className="text-xs text-[#6C5F7D]">{project.category}</p>
+                    <p className="text-sm font-black font-mono text-[#181329]">
+                      {project.metrics[0]
+                        ? `${project.metrics[0].value} (${project.metrics[0].label})`
+                        : `${project.year} • Sample project`}
                     </p>
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-white/5 group-hover:bg-[#754BFF] group-hover:text-white flex items-center justify-center transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-[#FFF9F1] group-hover:bg-[#754BFF] group-hover:text-white flex items-center justify-center transition-colors border border-[#181329]/10">
                     <ArrowUpRight className="w-4 h-4" />
                   </div>
                 </div>

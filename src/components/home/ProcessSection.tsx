@@ -2,9 +2,11 @@
 
 import React, { useState } from "react";
 import { Lightbulb, PenTool, Code2, Rocket, ArrowRight, Check } from "lucide-react";
+import { useSound } from "@/components/SoundManager";
 
 export default function ProcessSection() {
   const [activeStep, setActiveStep] = useState(0);
+  const { playPop } = useSound();
 
   const steps = [
     {
@@ -42,7 +44,7 @@ export default function ProcessSection() {
       name: "Build & Animate",
       tagline: "Flawless engineering at 120 FPS",
       icon: Code2,
-      color: "#C9F36D",
+      color: "#2D9E64",
       desc: "We engineer Next.js websites that feel like video games while loading in under 1.2s. Accessible, search-optimized, and instrumented with real-time conversion tracking.",
       details: [
         "Custom Next.js & TypeScript full-stack build",
@@ -57,7 +59,7 @@ export default function ProcessSection() {
       name: "Launch & Scale",
       tagline: "Igniting cultural frenzy",
       icon: Rocket,
-      color: "#62D9F5",
+      color: "#0099C6",
       desc: "We don't quietly push a button—we orchestrate an event. Pairing organic viral seeding with high-ROAS paid media and rapid continuous A/B testing.",
       details: [
         "Coordinated social media & drop countdowns",
@@ -73,20 +75,23 @@ export default function ProcessSection() {
   const StepIcon = current.icon;
 
   return (
-    <section className="relative py-28 bg-[#0F0A1C] border-y border-white/10 overflow-hidden">
+    <section className="relative py-28 bg-[#0F0A1C] border-y border-white/5 overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute top-1/2 right-0 w-96 h-96 bg-[#0099C6]/8 rounded-full blur-[160px] pointer-events-none" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div className="max-w-3xl mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#C9F36D]/15 border border-[#C9F36D]/30 text-[#C9F36D] text-xs font-bold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#2D9E64]/15 border border-[#2D9E64]/30 text-[#2D9E64] text-xs font-bold uppercase tracking-wider mb-4">
             <span>05 / Behind the Creativity</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white font-heading">
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white font-heading">
             Our 4-Step Creative Engine —{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#C9F36D] via-[#62D9F5] to-[#754BFF]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2D9E64] via-[#0099C6] to-[#754BFF]">
               From Chaos to Icon
             </span>
           </h2>
-          <p className="text-base sm:text-lg text-white/60 mt-3">
+          <p className="text-base sm:text-lg text-white/55 mt-3">
             How we take raw ambition and forge it into unforgettable digital experiences that scale.
           </p>
         </div>
@@ -99,11 +104,11 @@ export default function ProcessSection() {
             return (
               <button
                 key={s.id}
-                onClick={() => setActiveStep(idx)}
+                onClick={() => { playPop(); setActiveStep(idx); }}
                 className={`p-5 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between ${
                   isCurrent
-                    ? "bg-[#221A38] border-white/40 shadow-xl scale-102"
-                    : "bg-[#181329] border-white/5 hover:border-white/20 text-white/60 hover:text-white"
+                    ? "bg-white/10 border-white/25 shadow-lg"
+                    : "bg-white/4 border-white/8 hover:border-white/20 text-white/60 hover:text-white"
                 }`}
               >
                 <div className="flex items-center justify-between mb-4">
@@ -116,10 +121,7 @@ export default function ProcessSection() {
                   >
                     STEP {s.id}
                   </span>
-                  <Icon
-                    className="w-5 h-5"
-                    style={{ color: isCurrent ? s.color : "currentColor" }}
-                  />
+                  <Icon className="w-5 h-5" style={{ color: isCurrent ? s.color : "rgba(255,255,255,0.4)" }} />
                 </div>
                 <p className="font-bold text-sm text-white">{s.name}</p>
               </button>
@@ -128,9 +130,9 @@ export default function ProcessSection() {
         </div>
 
         {/* Active Step Showcase Card */}
-        <div className="relative rounded-3xl p-8 sm:p-12 bg-[#221A38] border border-white/15 overflow-hidden shadow-2xl">
+        <div className="relative rounded-3xl p-8 sm:p-12 bg-white/5 border border-white/10 overflow-hidden">
           <div
-            className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full blur-3xl opacity-20 pointer-events-none"
+            className="absolute -right-20 -bottom-20 w-80 h-80 rounded-full blur-3xl opacity-15 pointer-events-none"
             style={{ backgroundColor: current.color }}
           />
 
@@ -139,40 +141,37 @@ export default function ProcessSection() {
             <div className="lg:col-span-7">
               <div className="flex items-center gap-3 mb-4">
                 <span
-                  className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center"
                   style={{
-                    backgroundColor: `${current.color}25`,
+                    backgroundColor: `${current.color}20`,
                     color: current.color,
-                    border: `1px solid ${current.color}40`,
+                    border: `1px solid ${current.color}30`,
                   }}
                 >
                   <StepIcon className="w-5 h-5" />
                 </span>
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/50">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-white/40">
                   Phase {current.id} / 04
                 </span>
               </div>
 
-              <h3 className="text-2xl sm:text-4xl font-extrabold text-white font-heading mb-2">
+              <h3 className="text-2xl sm:text-4xl font-black text-white font-heading mb-2">
                 {current.name}
               </h3>
-              <p
-                className="text-base font-semibold mb-6"
-                style={{ color: current.color }}
-              >
+              <p className="text-base font-bold mb-6" style={{ color: current.color }}>
                 {current.tagline}
               </p>
 
-              <p className="text-base text-white/70 leading-relaxed mb-8">
+              <p className="text-base text-white/60 leading-relaxed mb-8">
                 {current.desc}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
                 {current.details.map((item, i) => (
-                  <div key={i} className="flex items-start gap-2.5 text-xs text-white/80">
+                  <div key={i} className="flex items-start gap-2.5 text-xs text-white/70 font-medium">
                     <div
                       className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                      style={{ backgroundColor: `${current.color}25`, color: current.color }}
+                      style={{ backgroundColor: `${current.color}20`, color: current.color }}
                     >
                       <Check className="w-2.5 h-2.5" />
                     </div>
@@ -183,43 +182,42 @@ export default function ProcessSection() {
 
               <div className="p-4 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-white/40 font-semibold">
+                  <p className="text-[10px] uppercase tracking-widest text-white/40 font-bold">
                     Core Phase Deliverable
                   </p>
                   <p className="text-xs sm:text-sm font-bold text-white mt-0.5">
                     {current.output}
                   </p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-white/40" />
+                <ArrowRight className="w-4 h-4 text-white/30" />
               </div>
             </div>
 
-            {/* Right Visual Representation */}
+            {/* Right Visual */}
             <div className="lg:col-span-5 flex flex-col justify-center">
-              <div className="p-6 rounded-2xl bg-[#181329] border border-white/10 shadow-inner">
-                <p className="text-xs font-mono text-white/40 uppercase tracking-wider mb-4">
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/8">
+                <p className="text-xs font-mono text-white/40 uppercase tracking-wider font-bold mb-4">
                   Studio Workflow Sandbox
                 </p>
 
-                {/* Studio Moodboard Simulation */}
                 <div className="space-y-3">
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white/80">Sprint Velocity</span>
-                    <span className="text-xs font-mono text-[#C9F36D] font-bold">120 FPS Fluidity</span>
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/8 flex items-center justify-between">
+                    <span className="text-xs font-bold text-white">Sprint Velocity</span>
+                    <span className="text-xs font-mono text-[#2D9E64] font-bold">120 FPS Fluidity</span>
                   </div>
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white/80">Client Involvement</span>
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/8 flex items-center justify-between">
+                    <span className="text-xs font-bold text-white">Client Involvement</span>
                     <span className="text-xs font-mono text-[#FFC247] font-bold">Zero Fluff Sprints</span>
                   </div>
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white/80">Performance Guarantee</span>
-                    <span className="text-xs font-mono text-[#62D9F5] font-bold">Core Web Vitals &le;1.2s</span>
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/8 flex items-center justify-between">
+                    <span className="text-xs font-bold text-white">Performance Guarantee</span>
+                    <span className="text-xs font-mono text-[#0099C6] font-bold">Core Web Vitals ≤1.2s</span>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-white/50">
+                <div className="mt-6 pt-4 border-t border-white/8 flex items-center justify-between text-xs text-white/40">
                   <span>Collaborative Platform</span>
-                  <span className="font-mono text-white/80">Figma • Next.js • Linear</span>
+                  <span className="font-mono text-white/70 font-bold">Figma • Next.js • Linear</span>
                 </div>
               </div>
             </div>

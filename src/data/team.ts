@@ -58,54 +58,8 @@ export const teamMembers: TeamMember[] = [
   },
 ];
 
-export const clientLogos = [
-  { name: "Sony Music", logo: "SONY MUSIC" },
-  { name: "RedBull Labs", logo: "RED BULL" },
-  { name: "Hypebeast", logo: "HYPEBEAST" },
-  { name: "Volt Kicks", logo: "VOLT" },
-  { name: "Zenith Global", logo: "ZENITH" },
-  { name: "Pulse Beverages", logo: "PULSE" },
-  { name: "Lumina Labs", logo: "LUMINA" },
-  { name: "Arc Studios", logo: "ARC FILM" },
-  { name: "Neon District", logo: "NEON DIST" },
-  { name: "Astra Bio", logo: "ASTRA" },
-];
+export const clientLogos: { name: string; logo: string }[] = [];
 
-export const awards = [
-  { year: "2026", award: "Site of the Year Nominee", org: "Awwwards", project: "Lumina Spatial" },
-  { year: "2026", award: "Studio of the Year", org: "CSS Design Awards", project: "Xink Digitals" },
-  { year: "2025", award: "Best Mobile Web Experience", org: "FWA of the Day", project: "Neon District" },
-  { year: "2025", award: "Brand Identity of the Year", org: "Design Week Awards", project: "Zenith Fintech" },
-  { year: "2025", award: "Social Campaign Gold", org: "Clio Awards", project: "Volt Sneaker Drop" },
-  { year: "2024", award: "Webby Honoree", org: "The Webby Awards", project: "Arc Kinetic Showcase" },
-];
+export const awards: { year: string; award: string; org: string; project: string }[] = [];
 
-export const testimonials = [
-  {
-    quote:
-      "Working with Xink Digitals was like plugging our brand straight into 10,000 volts of creative lightning. They helped us break Kickstarter records and made us an overnight category leader.",
-    author: "Julian Vance",
-    role: "Co-Founder & Chief Product Officer",
-    company: "Lumina Labs",
-    rating: 5,
-    highlight: "+182% Conversion Rate",
-  },
-  {
-    quote:
-      "We liquidated 15,000 pairs of sneakers in 14 minutes with zero paid media. Xink doesn't just make ads; they engineer cultural frenzy that people can't stop sharing.",
-    author: "Maya Lin",
-    role: "VP of Brand Marketing",
-    company: "Volt Athletics",
-    rating: 5,
-    highlight: "45M Organic Views",
-  },
-  {
-    quote:
-      "Our old corporate website was putting customers to sleep. Xink turned our platform into a vibrant digital playground. App signups are up 340% and our Series B closed in record time.",
-    author: "Marcus Sterling",
-    role: "Chief Executive Officer",
-    company: "Zenith Global Pay",
-    rating: 5,
-    highlight: "+340% App Signups",
-  },
-];
+export const testimonials: { quote: string; author: string; role: string; company: string; rating: number; highlight: string }[] = [];

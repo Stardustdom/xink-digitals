@@ -8,22 +8,22 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="pt-32 pb-28 min-h-screen bg-[#181329] text-white">
+    <div className="pt-32 pb-28 min-h-screen bg-[#0F0A1C] text-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/60 hover:text-white transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/50 hover:text-white transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Return Home</span>
         </Link>
 
-        <h1 className="text-3xl sm:text-5xl font-extrabold font-heading mb-6">
+        <h1 className="text-3xl sm:text-5xl font-black font-heading mb-6 text-white">
           Privacy Policy
         </h1>
-        <p className="text-xs text-white/50 mb-10">Last updated: October 2026</p>
+        <p className="text-xs text-white/40 mb-10">Last updated: October 2026</p>
 
-        <div className="space-y-6 text-sm text-white/70 leading-relaxed">
+        <div className="space-y-6 text-sm text-white/65 leading-relaxed">
           <p>
             At Xink Digitals, we value your privacy as much as our creative freedom. This policy details how we treat information received through our website and client communications.
           </p>
