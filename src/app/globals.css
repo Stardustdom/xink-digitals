@@ -20,17 +20,17 @@
   }
 }
 
-/* ── Ripple Transition: Rings strictly centered, expand outward increasing radius ── */
+/* ── Dynamic Ripple Rings: Start from middle behind phone and expand outward ── */
 @keyframes spark-ring-ripple {
   0% {
-    transform: translate(-50%, -50%) scale(0.04);
-    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(0.03);
+    opacity: 0.65;
     border-width: 1.5px;
   }
-  35% {
-    opacity: 0.45;
+  25% {
+    opacity: 0.5;
   }
-  75% {
+  70% {
     opacity: 0.22;
   }
   100% {
@@ -40,24 +40,34 @@
   }
 }
 
-.animate-ring-expand-1 {
-  animation: spark-ring-ripple 8s cubic-bezier(0.1, 0.45, 0.25, 1) infinite;
+.animate-ring-ripple-1 {
+  animation: spark-ring-ripple 9s cubic-bezier(0.12, 0.4, 0.25, 1) infinite;
   animation-delay: 0s;
 }
 
-.animate-ring-expand-2 {
-  animation: spark-ring-ripple 8s cubic-bezier(0.1, 0.45, 0.25, 1) infinite;
-  animation-delay: 2s;
+.animate-ring-ripple-2 {
+  animation: spark-ring-ripple 9s cubic-bezier(0.12, 0.4, 0.25, 1) infinite;
+  animation-delay: 1.5s;
 }
 
-.animate-ring-expand-3 {
-  animation: spark-ring-ripple 8s cubic-bezier(0.1, 0.45, 0.25, 1) infinite;
-  animation-delay: 4s;
+.animate-ring-ripple-3 {
+  animation: spark-ring-ripple 9s cubic-bezier(0.12, 0.4, 0.25, 1) infinite;
+  animation-delay: 3s;
 }
 
-.animate-ring-expand-4 {
-  animation: spark-ring-ripple 8s cubic-bezier(0.1, 0.45, 0.25, 1) infinite;
+.animate-ring-ripple-4 {
+  animation: spark-ring-ripple 9s cubic-bezier(0.12, 0.4, 0.25, 1) infinite;
+  animation-delay: 4.5s;
+}
+
+.animate-ring-ripple-5 {
+  animation: spark-ring-ripple 9s cubic-bezier(0.12, 0.4, 0.25, 1) infinite;
   animation-delay: 6s;
+}
+
+.animate-ring-ripple-6 {
+  animation: spark-ring-ripple 9s cubic-bezier(0.12, 0.4, 0.25, 1) infinite;
+  animation-delay: 7.5s;
 }
 
 /* Button pulsing ripple waves */

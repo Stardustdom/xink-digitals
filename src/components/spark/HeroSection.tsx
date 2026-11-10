@@ -2,29 +2,29 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import RippleRings from "./RippleRings";
-import { Apple, Play } from "lucide-react";
+import { Apple, Play, ArrowUpRight } from "lucide-react";
 
 export default function HeroSection() {
   return (
     <section className="relative w-full min-h-[92vh] sm:min-h-[660px] lg:h-[92vh] max-h-[880px] bg-[#FBFBFE] text-[#15103A] rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden border border-[#EAEAFA] shadow-[0_4px_30px_rgba(27,20,63,0.03)] flex flex-col justify-between p-6 sm:p-10 select-none">
-      {/* ── 1. The Dynamic Concentric Ripple Rings (strictly centered behind phone) ── */}
+      {/* ── 1. The Dynamic Concentric Ripple Rings (Zero static rings, all in ripple transition from middle) ── */}
       <RippleRings />
 
       {/* ── 2. Top Navigation Bar (Single, inside the card top) ── */}
       <header className="relative z-30 w-full flex items-center justify-between">
-        {/* Left: Spark Logo */}
+        {/* Left: Xink Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           <span className="font-black text-2xl text-[#15103A] font-mono leading-none tracking-tighter">
             ✕
           </span>
           <span className="font-extrabold text-2xl text-[#15103A] tracking-tight font-display">
-            spark
+            xink
           </span>
         </Link>
 
         {/* Center: Floating Pill Navigation */}
         <nav className="hidden md:flex items-center gap-1 sm:gap-2 px-5 py-2 rounded-full bg-white/95 backdrop-blur-md border border-[#EBEBF4] shadow-[0_2px_10px_rgba(27,20,63,0.04)]">
-          {["Features", "Article", "Testimonials", "About", "Contacts"].map((item) => (
+          {["Features", "Work", "Services", "About", "Contacts"].map((item) => (
             <Link
               key={item}
               href={`#${item.toLowerCase()}`}
@@ -44,10 +44,10 @@ export default function HeroSection() {
         </Link>
       </header>
 
-      {/* ── 3. Central Stage: Headline + User Hand holding Phone + Floating Squircles ── */}
-      <div className="relative z-10 w-full flex-1 flex items-center justify-center my-auto">
-        {/* Main Big Headline: 'Welcome' on left, 'To Spark' layered behind phone on right */}
-        <div className="absolute inset-x-0 top-[15%] sm:top-[17%] pointer-events-none flex items-center justify-between px-4 sm:px-12 lg:px-20 z-10">
+      {/* ── 3. Central Stage: Headline + Hand starting from the bottom + Floating Badges ── */}
+      <div className="relative z-10 w-full flex-1 flex items-center justify-center">
+        {/* Main Big Headline: 'Welcome' on left, 'To Xink' layered behind phone on right */}
+        <div className="absolute inset-x-0 top-[14%] sm:top-[16%] pointer-events-none flex items-center justify-between px-4 sm:px-12 lg:px-20 z-10">
           {/* 'Welcome' on left */}
           <div className="w-1/2 flex justify-start pl-2 sm:pl-8">
             <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.5rem)] text-[#15103A] tracking-tight leading-none">
@@ -55,20 +55,20 @@ export default function HeroSection() {
             </h1>
           </div>
 
-          {/* 'To Spark' on right (starts behind the phone) */}
+          {/* 'To Xink' on right (starts behind the phone) */}
           <div className="w-1/2 flex justify-end pr-2 sm:pr-8">
             <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.5rem)] text-[#15103A] tracking-tight leading-none whitespace-nowrap">
-              To Spark
+              To Xink
             </h1>
           </div>
         </div>
 
         {/* Floating Left Squircle Badge */}
-        <div className="absolute left-[6%] sm:left-[14%] lg:left-[19%] top-[45%] -translate-y-1/2 z-20 animate-float">
+        <div className="absolute left-[6%] sm:left-[14%] lg:left-[19%] top-[42%] -translate-y-1/2 z-20 animate-float">
           <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-3xl bg-white border border-[#EDEDF5] p-2 shadow-[0_12px_28px_rgba(27,20,63,0.06)] flex items-center justify-center overflow-hidden">
             <Image
               src="/spark/floating_spark_badge.png"
-              alt="Spark feature badge"
+              alt="Digital marketing feature badge"
               width={80}
               height={80}
               className="w-full h-full object-contain"
@@ -77,15 +77,15 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Center: Exact User Hand holding Phone */}
-        <div className="relative z-20 flex flex-col items-center justify-end h-full pt-14 sm:pt-16">
-          <div className="relative w-[220px] sm:w-[265px] lg:w-[290px] drop-shadow-[0_20px_35px_rgba(21,16,58,0.18)]">
+        {/* Center: Hand starting from the VERY BOTTOM of the card with real digital marketing screen */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center">
+          <div className="relative w-[240px] sm:w-[280px] lg:w-[310px] drop-shadow-[0_20px_40px_rgba(21,16,58,0.2)]">
             <Image
-              src="/spark/user_hand_spark_phone.png"
-              alt="Hand holding iPhone with Spark Dashboard"
-              width={290}
-              height={460}
-              className="w-full h-auto object-contain pointer-events-none"
+              src="/spark/user_hand_digital_marketing.png"
+              alt="Hand holding smartphone with real digital marketing performance analytics"
+              width={310}
+              height={500}
+              className="w-full h-auto object-contain block align-bottom"
               priority
               unoptimized
             />
@@ -93,11 +93,11 @@ export default function HeroSection() {
         </div>
 
         {/* Floating Right Woman Avatar Squircle */}
-        <div className="absolute right-[6%] sm:right-[14%] lg:right-[19%] top-[48%] -translate-y-1/2 z-20 animate-float-delayed">
+        <div className="absolute right-[6%] sm:right-[14%] lg:right-[19%] top-[45%] -translate-y-1/2 z-20 animate-float-delayed">
           <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-3xl bg-white border border-[#EDEDF5] p-2 shadow-[0_12px_28px_rgba(27,20,63,0.06)] flex items-center justify-center overflow-hidden">
             <Image
               src="/spark/floating_woman_avatar.png"
-              alt="Spark user avatar"
+              alt="Xink marketing client"
               width={75}
               height={75}
               className="w-full h-full object-cover rounded-2xl"
@@ -107,12 +107,12 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* ── 4. Bottom Elements: Left Tagline + Right Copy & App Store Buttons ── */}
+      {/* ── 4. Bottom Elements: Left Tagline + Right Copy & Actions ── */}
       <footer className="relative z-30 w-full flex flex-col md:flex-row items-center md:items-end justify-between gap-6 pt-4">
         {/* Bottom-Left Tagline */}
         <div className="max-w-xs text-center md:text-left">
           <p className="font-display font-semibold text-xl sm:text-2xl text-[#15103A] leading-snug">
-            The ultimate shopping <br />
+            The ultimate marketing <br />
             hack is here.
           </p>
         </div>
@@ -120,8 +120,8 @@ export default function HeroSection() {
         {/* Bottom-Right Description & Buttons */}
         <div className="flex flex-col items-center md:items-end text-center md:text-right max-w-sm">
           <p className="text-xs sm:text-[13px] text-[#7E7896] leading-relaxed mb-3.5">
-            Bye bye spam. See you later unrewarding <br className="hidden sm:block" />
-            rewards. Adios tracking nightmares.
+            Bye bye low ROAS. See you later unrewarding ads. <br className="hidden sm:block" />
+            Adios tracking nightmares.
           </p>
 
           <div className="flex items-center gap-3">
