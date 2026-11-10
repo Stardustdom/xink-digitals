@@ -6,24 +6,24 @@ import { Apple, Play } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full min-h-[92vh] sm:min-h-[640px] lg:h-[90vh] max-h-[860px] bg-[#FBFBFE] text-[#15103A] rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden border border-[#EAEAFA] shadow-[0_4px_30px_rgba(27,20,63,0.03)] flex flex-col justify-between p-6 sm:p-10 select-none">
-      {/* ── 1. The Expanding Ripple Rings ── */}
+    <section className="relative w-full min-h-[92vh] sm:min-h-[660px] lg:h-[92vh] max-h-[880px] bg-[#FBFBFE] text-[#15103A] rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden border border-[#EAEAFA] shadow-[0_4px_30px_rgba(27,20,63,0.03)] flex flex-col justify-between p-6 sm:p-10 select-none">
+      {/* ── 1. The Dynamic Concentric Ripple Rings (strictly centered behind phone) ── */}
       <RippleRings />
 
-      {/* ── 2. Top Navigation Bar ── */}
-      <div className="relative z-30 w-full flex items-center justify-between">
+      {/* ── 2. Top Navigation Bar (Single, inside the card top) ── */}
+      <header className="relative z-30 w-full flex items-center justify-between">
         {/* Left: Spark Logo */}
         <Link href="/" className="flex items-center gap-2 group">
           <span className="font-black text-2xl text-[#15103A] font-mono leading-none tracking-tighter">
             ✕
           </span>
-          <span className="font-extrabold text-2xl text-[#15103A] tracking-tight">
+          <span className="font-extrabold text-2xl text-[#15103A] tracking-tight font-display">
             spark
           </span>
         </Link>
 
-        {/* Center: Pill Navigation Menu */}
-        <nav className="hidden md:flex items-center gap-1 sm:gap-2 px-5 py-2.5 rounded-full bg-white/90 backdrop-blur-md border border-[#EDEDF5] shadow-[0_2px_12px_rgba(27,20,63,0.04)]">
+        {/* Center: Floating Pill Navigation */}
+        <nav className="hidden md:flex items-center gap-1 sm:gap-2 px-5 py-2 rounded-full bg-white/95 backdrop-blur-md border border-[#EBEBF4] shadow-[0_2px_10px_rgba(27,20,63,0.04)]">
           {["Features", "Article", "Testimonials", "About", "Contacts"].map((item) => (
             <Link
               key={item}
@@ -35,40 +35,40 @@ export default function HeroSection() {
           ))}
         </nav>
 
-        {/* Right: Reserve Id pill button */}
+        {/* Right: Reserve id pill button */}
         <Link
           href="#contacts"
-          className="px-6 py-2.5 rounded-full border border-[#15103A] text-[#15103A] hover:bg-[#15103A] hover:text-white text-xs font-bold transition-all"
+          className="px-6 py-2 rounded-full border border-[#15103A] text-[#15103A] hover:bg-[#15103A] hover:text-white text-xs font-bold transition-all shadow-xs"
         >
           Reserve id
         </Link>
-      </div>
+      </header>
 
-      {/* ── 3. Central Stage: Headline + Hand holding Phone + Floating Squircles ── */}
+      {/* ── 3. Central Stage: Headline + User Hand holding Phone + Floating Squircles ── */}
       <div className="relative z-10 w-full flex-1 flex items-center justify-center my-auto">
-        {/* Main Big Headline: 'Welcome' on left, 'To Spark' behind phone on right */}
-        <div className="absolute inset-x-0 top-[18%] sm:top-[20%] pointer-events-none flex items-center justify-between px-4 sm:px-12 lg:px-20 z-10">
-          {/* 'Welcome' */}
+        {/* Main Big Headline: 'Welcome' on left, 'To Spark' layered behind phone on right */}
+        <div className="absolute inset-x-0 top-[15%] sm:top-[17%] pointer-events-none flex items-center justify-between px-4 sm:px-12 lg:px-20 z-10">
+          {/* 'Welcome' on left */}
           <div className="w-1/2 flex justify-start pl-2 sm:pl-8">
-            <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.25rem)] text-[#15103A] tracking-tight leading-none">
+            <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.5rem)] text-[#15103A] tracking-tight leading-none">
               Welcome
             </h1>
           </div>
 
-          {/* 'To Spark' (sits to the right of the center, partially tucked behind phone) */}
+          {/* 'To Spark' on right (starts behind the phone) */}
           <div className="w-1/2 flex justify-end pr-2 sm:pr-8">
-            <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.25rem)] text-[#15103A] tracking-tight leading-none whitespace-nowrap">
+            <h1 className="font-display font-semibold text-[clamp(2.75rem,7vw,6.5rem)] text-[#15103A] tracking-tight leading-none whitespace-nowrap">
               To Spark
             </h1>
           </div>
         </div>
 
         {/* Floating Left Squircle Badge */}
-        <div className="absolute left-[8%] sm:left-[16%] lg:left-[21%] top-[45%] -translate-y-1/2 z-20 animate-float">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white border border-[#EDEDF5] p-2 shadow-[0_12px_28px_rgba(27,20,63,0.06)] flex items-center justify-center overflow-hidden">
+        <div className="absolute left-[6%] sm:left-[14%] lg:left-[19%] top-[45%] -translate-y-1/2 z-20 animate-float">
+          <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-3xl bg-white border border-[#EDEDF5] p-2 shadow-[0_12px_28px_rgba(27,20,63,0.06)] flex items-center justify-center overflow-hidden">
             <Image
               src="/spark/floating_spark_badge.png"
-              alt="Spark feature icon"
+              alt="Spark feature badge"
               width={80}
               height={80}
               className="w-full h-full object-contain"
@@ -77,14 +77,14 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Center: Hand holding iPhone */}
-        <div className="relative z-20 flex flex-col items-center justify-end h-full pt-16 sm:pt-20">
-          <div className="relative w-[210px] sm:w-[250px] lg:w-[270px] drop-shadow-[0_20px_35px_rgba(21,16,58,0.18)]">
+        {/* Center: Exact User Hand holding Phone */}
+        <div className="relative z-20 flex flex-col items-center justify-end h-full pt-14 sm:pt-16">
+          <div className="relative w-[220px] sm:w-[265px] lg:w-[290px] drop-shadow-[0_20px_35px_rgba(21,16,58,0.18)]">
             <Image
-              src="/spark/hand_phone_clean.png"
-              alt="Hand holding iPhone running Spark App"
-              width={270}
-              height={380}
+              src="/spark/user_hand_spark_phone.png"
+              alt="Hand holding iPhone with Spark Dashboard"
+              width={290}
+              height={460}
               className="w-full h-auto object-contain pointer-events-none"
               priority
               unoptimized
@@ -93,11 +93,11 @@ export default function HeroSection() {
         </div>
 
         {/* Floating Right Woman Avatar Squircle */}
-        <div className="absolute right-[8%] sm:right-[16%] lg:right-[21%] top-[48%] -translate-y-1/2 z-20 animate-float-delayed">
+        <div className="absolute right-[6%] sm:right-[14%] lg:right-[19%] top-[48%] -translate-y-1/2 z-20 animate-float-delayed">
           <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-3xl bg-white border border-[#EDEDF5] p-2 shadow-[0_12px_28px_rgba(27,20,63,0.06)] flex items-center justify-center overflow-hidden">
             <Image
               src="/spark/floating_woman_avatar.png"
-              alt="Spark happy customer"
+              alt="Spark user avatar"
               width={75}
               height={75}
               className="w-full h-full object-cover rounded-2xl"
@@ -108,7 +108,7 @@ export default function HeroSection() {
       </div>
 
       {/* ── 4. Bottom Elements: Left Tagline + Right Copy & App Store Buttons ── */}
-      <div className="relative z-30 w-full flex flex-col md:flex-row items-center md:items-end justify-between gap-6 pt-4">
+      <footer className="relative z-30 w-full flex flex-col md:flex-row items-center md:items-end justify-between gap-6 pt-4">
         {/* Bottom-Left Tagline */}
         <div className="max-w-xs text-center md:text-left">
           <p className="font-display font-semibold text-xl sm:text-2xl text-[#15103A] leading-snug">
@@ -148,7 +148,7 @@ export default function HeroSection() {
             </a>
           </div>
         </div>
-      </div>
+      </footer>
     </section>
   );
 }
