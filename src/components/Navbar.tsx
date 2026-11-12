@@ -9,7 +9,6 @@ const navItems = [
   { name: "Our Work",  href: "/work"     },
   { name: "Services",  href: "/services" },
   { name: "About",     href: "/about"    },
-  { name: "Insights",  href: "/insights" },
   { name: "Contact",   href: "/contact"  },
 ];
 
@@ -48,6 +47,7 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
+                  prefetch={true}
                   className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                     active
                       ? "bg-white/15 text-white"

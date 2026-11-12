@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import InteriorNavigation from "@/components/InteriorNavigation";
+import PageMotion from "@/components/PageMotion";
 
 export const metadata: Metadata = {
-  title: "Xink Digitals — The Ultimate Marketing Hack",
-  description: "Performance marketing, high-converting design, and ROI-obsessed digital growth for modern brands.",
+  title: "Xink Digitals — Digital Marketing Agency",
+  description: "SEO, paid advertising, social media, brand strategy and web design. Xink Digitals helps businesses turn attention into qualified enquiries with clear plans and reporting.",
 };
 
 export default function RootLayout({
@@ -22,7 +24,8 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-white text-[#1B143F] antialiased selection:bg-[#6A38EB] selection:text-white">
-        {children}
+        <InteriorNavigation />
+        <PageMotion>{children}</PageMotion>
       </body>
     </html>
   );

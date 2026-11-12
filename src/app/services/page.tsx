@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import ServiceRoadmap from "@/components/ServiceRoadmap";
 import Link from "next/link";
+import WaterButton from "@/components/WaterButton";
 import { services, pricingPlans } from "@/data/services";
 import {
   Palette,
@@ -12,42 +14,137 @@ import {
   Compass,
   CheckCircle2,
   ArrowUpRight,
-  ChevronDown,
-  HelpCircle,
 } from "lucide-react";
 import { useSound } from "@/components/SoundManager";
 
-const faqs = [
-  {
-    q: "How fast do sprints move?",
-    a: "Our typical project sprints run between 2 and 4 weeks from kickoff to delivery. Because we eliminate middle-management bureaucracy and work in direct collaborative pods, we ship at 3x traditional agency speed.",
-  },
-  {
-    q: "Who owns the code, assets, and design files?",
-    a: "You do. 100%. Once final invoices are cleared, all Figma files, 3D render files, Next.js code repositories, and brand design tokens are transferred directly into your company accounts.",
-  },
-  {
-    q: "How does the monthly Growth Partner model work?",
-    a: "The Growth Partner retainer gives you an embedded senior creative and development team. You get a dedicated Slack channel, weekly strategy sprints, and a rolling queue of requests (brand updates, new landing pages, ad creatives, performance audits) executed without friction.",
-  },
-  {
-    q: "Can you work with our existing in-house developers or marketers?",
-    a: "Absolutely. We often act as the creative catalyst alongside internal engineering or growth teams—providing the high-impact visual design, WebGL shaders, and narrative strategy while aligning with your existing codebase and design system.",
-  },
-  {
-    q: "What tech stack do you recommend for our website?",
-    a: "We are strong advocates for Next.js with TypeScript and Tailwind CSS. It delivers unmatched Core Web Vitals performance, programmatic SEO capabilities, fluid interactive animations, and effortless headless CMS connections.",
-  },
-];
+
+
+function PricingPlanCard({
+  plan,
+  planIndex,
+  onInquire,
+}: {
+  plan: (typeof pricingPlans)[0];
+  planIndex: number;
+  onInquire: () => void;
+}) {
+  const cardRef = React.useRef<HTMLDivElement>(null);
+  const rectRef = React.useRef<DOMRect | null>(null);
+  const frameRef = React.useRef<number>(0);
+
+  const handlePointerEnter = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse") return;
+    if (cardRef.current) {
+      rectRef.current = cardRef.current.getBoundingClientRect();
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse") return;
+    if (!rectRef.current && cardRef.current) {
+      rectRef.current = cardRef.current.getBoundingClientRect();
+    }
+    const r = rectRef.current;
+    if (!r) return;
+
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+
+    if (!frameRef.current) {
+      frameRef.current = requestAnimationFrame(() => {
+        frameRef.current = 0;
+        const el = cardRef.current;
+        if (!el) return;
+        const x = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
+        const y = Math.max(0, Math.min(1, (clientY - r.top) / r.height));
+        el.style.setProperty("--mx", `${(x * 100).toFixed(1)}%`);
+        el.style.setProperty("--my", `${(y * 100).toFixed(1)}%`);
+        el.style.setProperty("--tilt-x", `${((0.5 - y) * 6).toFixed(1)}deg`);
+        el.style.setProperty("--tilt-y", `${((x - 0.5) * 8).toFixed(1)}deg`);
+      });
+    }
+  };
+
+  const handlePointerLeave = () => {
+    if (frameRef.current) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = 0;
+    }
+    rectRef.current = null;
+    const el = cardRef.current;
+    if (el) {
+      el.style.setProperty("--tilt-x", "0deg");
+      el.style.setProperty("--tilt-y", "0deg");
+    }
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      data-reveal
+      style={{ "--plan-color": plan.color, "--reveal-delay": `${planIndex * 80}ms` } as React.CSSProperties}
+      onPointerEnter={handlePointerEnter}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+      className={`plan-card ${plan.popular ? "plan-card-popular" : ""} relative p-8 rounded-3xl border flex flex-col justify-between ${
+        plan.popular
+          ? "bg-white border-[#754BFF] shadow-xl shadow-[#754BFF]/10 scale-102 ring-2 ring-[#754BFF]/20"
+          : "bg-white border-[#181329]/10 shadow-sm hover:shadow-md"
+      }`}
+    >
+      {plan.popular && (
+        <div className="plan-ribbon absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-[#754BFF] text-white text-[10px] font-extrabold uppercase tracking-wider shadow-md">
+          Recommended Model
+        </div>
+      )}
+
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <span
+            className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"
+            style={{ backgroundColor: `${plan.color}15`, color: plan.color }}
+          >
+            {plan.badge}
+          </span>
+        </div>
+
+        <h3 className="text-2xl font-bold text-[#181329] font-heading mb-2">
+          {plan.name}
+        </h3>
+        <p className="text-xs text-[#5A4E6B] leading-relaxed mb-6">
+          {plan.desc}
+        </p>
+
+        <div className="mb-8">
+          <span className="text-4xl font-black text-[#181329] font-mono">
+            {plan.price}
+          </span>
+          <span className="text-xs text-[#6C5F7D] ml-2">/ {plan.period}</span>
+        </div>
+
+        <div className="space-y-3 mb-8">
+          {plan.features.map((feat, i) => (
+            <div key={i} style={{ "--i": i } as React.CSSProperties} className="plan-feature flex items-start gap-2 text-xs text-[#2D2140] font-medium">
+              <CheckCircle2
+                className="w-4 h-4 flex-shrink-0 mt-0.5"
+                style={{ color: plan.color }}
+              />
+              <span>{feat}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <WaterButton href="/contact" block tone={plan.popular ? "purple" : "dark"} onClick={onInquire}>
+        <span>Inquire Now</span>
+        <ArrowUpRight className="plan-arrow w-4 h-4" />
+      </WaterButton>
+    </div>
+  );
+}
 
 export default function ServicesPage() {
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
   const { playPop } = useSound();
-
-  const toggleFaq = (idx: number) => {
-    playPop();
-    setOpenFaq(openFaq === idx ? null : idx);
-  };
 
   const getServiceIcon = (iconName: string) => {
     switch (iconName) {
@@ -67,10 +164,10 @@ export default function ServicesPage() {
   };
 
   return (
-    <div className="pt-32 pb-28 min-h-screen bg-[#FFF9F1] text-[#181329]">
+    <div className="page-glow pt-32 pb-28 min-h-screen bg-[#FFF9F1] text-[#181329]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="max-w-3xl mb-20">
+        <div className="page-intro max-w-3xl mb-20">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#754BFF]/10 border border-[#754BFF]/25 text-[#754BFF] text-xs font-bold uppercase tracking-wider mb-4">
             <span>Capabilities &amp; Retainers</span>
           </div>
@@ -86,17 +183,23 @@ export default function ServicesPage() {
         </div>
 
         {/* Detailed Service Cards (Light Theme) */}
-        <div className="space-y-12 mb-28">
+        <ServiceRoadmap>
           {services.map((service) => (
             <div
               key={service.id}
               id={service.id}
-              className="p-8 sm:p-12 rounded-3xl bg-white border border-[#181329]/10 shadow-sm hover:shadow-xl transition-all scroll-mt-32"
+              style={{ "--stop-color": service.color } as React.CSSProperties}
+              className="roadmap-step scroll-mt-32"
             >
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              <span className="roadmap-point" aria-hidden="true"><span>{service.number}</span></span>
+              <span className="roadmap-connector" aria-hidden="true" />
+              <span className="roadmap-ghost-number" aria-hidden="true">{service.number}</span>
+              <div className="roadmap-card p-5 sm:p-6 rounded-3xl bg-white border border-[#181329]/10 shadow-sm hover:shadow-xl transition-all scroll-mt-32"
+            >
+              <div className="service-card-content grid grid-cols-1 gap-5 items-start">
                 {/* Left Description (7 cols) */}
-                <div className="lg:col-span-7">
-                  <div className="flex items-center gap-3 mb-4">
+                <div className="">
+                  <div className="flex items-center gap-3 mb-3">
                     <span
                       className="w-10 h-10 rounded-xl flex items-center justify-center shadow-xs"
                       style={{
@@ -112,16 +215,16 @@ export default function ServicesPage() {
                     </span>
                   </div>
 
-                  <h2 className="text-2xl sm:text-3xl font-black text-[#181329] font-heading mb-4">
+                  <h2 className="text-2xl sm:text-3xl font-black text-[#181329] font-heading mb-3">
                     {service.title}
                   </h2>
 
-                  <p className="text-base text-[#4A3E56] leading-relaxed mb-6">
+                  <p className="text-sm text-[#4A3E56] leading-relaxed mb-4">
                     {service.fullDesc}
                   </p>
 
                   <div
-                    className="inline-block px-3.5 py-1.5 rounded-full text-xs font-mono font-bold mb-6"
+                    className="inline-block px-3.5 py-1.5 rounded-full text-xs font-mono font-bold mb-3"
                     style={{ backgroundColor: `${service.color}15`, color: service.color }}
                   >
                     {service.tools.length} core tools &amp; disciplines
@@ -141,11 +244,11 @@ export default function ServicesPage() {
                 </div>
 
                 {/* Right Deliverables List (5 cols) */}
-                <div className="lg:col-span-5 p-6 rounded-2xl bg-[#FFF9F1] border border-[#181329]/8">
+                <div className="p-4 rounded-2xl bg-[#FFF9F1] border border-[#181329]/8">
                   <p className="text-xs uppercase font-mono tracking-widest text-[#754BFF] font-bold mb-4">
                     Core Deliverables Included
                   </p>
-                  <ul className="space-y-3">
+                  <ul className="space-y-2">
                     {service.deliverables.map((item, i) => (
                       <li key={i} className="flex items-start gap-2.5 text-xs text-[#2D2140] font-medium">
                         <CheckCircle2
@@ -156,7 +259,7 @@ export default function ServicesPage() {
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-6 pt-4 border-t border-[#181329]/8">
+                  <div className="mt-4 pt-3 border-t border-[#181329]/8">
                     <Link
                       href="/contact"
                       onClick={() => playPop()}
@@ -168,9 +271,10 @@ export default function ServicesPage() {
                   </div>
                 </div>
               </div>
+              </div>
             </div>
           ))}
-        </div>
+        </ServiceRoadmap>
 
         {/* Pricing & Engagement Models (Light Theme) */}
         <div className="mb-28">
@@ -184,116 +288,18 @@ export default function ServicesPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {pricingPlans.map((plan) => (
-              <div
+            {pricingPlans.map((plan, planIndex) => (
+              <PricingPlanCard
                 key={plan.name}
-                className={`relative p-8 rounded-3xl border flex flex-col justify-between transition-all duration-300 ${
-                  plan.popular
-                    ? "bg-white border-[#754BFF] shadow-xl shadow-[#754BFF]/10 scale-102 ring-2 ring-[#754BFF]/20"
-                    : "bg-white border-[#181329]/10 shadow-sm hover:shadow-md"
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-1 rounded-full bg-[#754BFF] text-white text-[10px] font-extrabold uppercase tracking-wider shadow-md">
-                    Recommended Model
-                  </div>
-                )}
-
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span
-                      className="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md"
-                      style={{ backgroundColor: `${plan.color}15`, color: plan.color }}
-                    >
-                      {plan.badge}
-                    </span>
-                  </div>
-
-                  <h3 className="text-2xl font-bold text-[#181329] font-heading mb-2">
-                    {plan.name}
-                  </h3>
-                  <p className="text-xs text-[#5A4E6B] leading-relaxed mb-6">
-                    {plan.desc}
-                  </p>
-
-                  <div className="mb-8">
-                    <span className="text-4xl font-black text-[#181329] font-mono">
-                      {plan.price}
-                    </span>
-                    <span className="text-xs text-[#6C5F7D] ml-2">/ {plan.period}</span>
-                  </div>
-
-                  <div className="space-y-3 mb-8">
-                    {plan.features.map((feat, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-[#2D2140] font-medium">
-                        <CheckCircle2
-                          className="w-4 h-4 flex-shrink-0 mt-0.5"
-                          style={{ color: plan.color }}
-                        />
-                        <span>{feat}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <Link
-                  href="/contact"
-                  onClick={() => playPop()}
-                  className={`w-full py-3.5 rounded-full font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${
-                    plan.popular
-                      ? "bg-[#754BFF] hover:bg-[#663fe0] text-white shadow-md shadow-[#754BFF]/25"
-                      : "bg-[#181329] hover:bg-[#754BFF] text-white"
-                  }`}
-                >
-                  <span>Inquire Now</span>
-                  <ArrowUpRight className="w-4 h-4" />
-                </Link>
-              </div>
+                plan={plan}
+                planIndex={planIndex}
+                onInquire={() => playPop()}
+              />
             ))}
           </div>
         </div>
 
-        {/* FAQ Accordion (Light Theme) */}
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-[#D97706] font-bold mb-2">
-              <HelpCircle className="w-4 h-4" />
-              <span>Got Questions?</span>
-            </div>
-            <h2 className="text-3xl font-black text-[#181329] font-heading">
-              Frequently Asked Questions
-            </h2>
-          </div>
 
-          <div className="space-y-3">
-            {faqs.map((faq, idx) => {
-              const isOpen = openFaq === idx;
-              return (
-                <div
-                  key={idx}
-                  className="rounded-2xl bg-white border border-[#181329]/10 shadow-xs overflow-hidden"
-                >
-                  <button
-                    onClick={() => toggleFaq(idx)}
-                    className="w-full p-5 text-left flex items-center justify-between text-base font-bold text-[#181329] hover:text-[#754BFF] transition-colors"
-                  >
-                    <span>{faq.q}</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-[#6C5F7D] transition-transform duration-200 ${
-                        isOpen ? "rotate-180 text-[#754BFF]" : ""
-                      }`}
-                    />
-                  </button>
-                  {isOpen && (
-                    <div className="px-5 pb-5 text-sm text-[#4A3E56] leading-relaxed border-t border-[#181329]/5 pt-3">
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
-import { articles } from "@/data/insights";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://xinkdigitals.com";
@@ -11,8 +10,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/work",
     "/services",
     "/about",
-    "/insights",
     "/contact",
+    "/faq",
     "/privacy",
     "/terms",
   ].map((route) => ({
@@ -29,12 +28,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  const articleRoutes = articles.map((article) => ({
-    url: `${baseUrl}/insights/${article.slug}`,
-    lastModified: staticDate,
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
-
-  return [...staticRoutes, ...projectRoutes, ...articleRoutes];
+  return [...staticRoutes, ...projectRoutes];
 }

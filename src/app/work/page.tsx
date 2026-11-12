@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import CaseStudyModal from "@/components/CaseStudyModal";
+import type { Project } from "@/data/projects";
 import { projects } from "@/data/projects";
 import {
   ArrowUpRight,
@@ -23,6 +24,7 @@ export default function WorkPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { playPop } = useSound();
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
 
   const filteredProjects = projects.filter((p) => {
     const matchesCategory =
@@ -38,6 +40,22 @@ export default function WorkPage() {
 
     return matchesCategory && matchesSearch;
   });
+
+  const tiltMove = (e: React.PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== "mouse") return;
+    const el = e.currentTarget;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--mx", `${x * 100}%`);
+    el.style.setProperty("--my", `${y * 100}%`);
+    el.style.setProperty("--tilt-x", `${((0.5 - y) * 6).toFixed(2)}deg`);
+    el.style.setProperty("--tilt-y", `${((x - 0.5) * 8).toFixed(2)}deg`);
+  };
+  const tiltLeave = (e: React.PointerEvent<HTMLElement>) => {
+    e.currentTarget.style.setProperty("--tilt-x", "0deg");
+    e.currentTarget.style.setProperty("--tilt-y", "0deg");
+  };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -58,19 +76,26 @@ export default function WorkPage() {
     <div className="pt-32 pb-24 min-h-screen bg-[#FFF9F1] text-[#181329]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="max-w-3xl mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#754BFF]/10 border border-[#754BFF]/25 text-[#754BFF] text-xs font-bold uppercase tracking-wider mb-4">
-            <span>Portfolio Archive</span>
+        <div className="work-hero page-intro mb-14">
+          <span className="work-orb work-orb-a" aria-hidden="true" />
+          <span className="work-orb work-orb-b" aria-hidden="true" />
+          <div className="relative max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#754BFF]/10 border border-[#754BFF]/25 text-[#754BFF] text-xs font-bold uppercase tracking-wider mb-4">
+              <span className="work-live-dot" aria-hidden="true" /><span>Portfolio Archive</span>
+            </div>
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight font-heading leading-[1.02]">
+              Our Work —{" "}
+              <span className="work-shimmer-text">Interactive Art Gallery</span>
+            </h1>
+            <p className="text-base sm:text-lg text-[#5A4E6B] mt-5 leading-relaxed">
+              Every case study represents an ambitious challenge solved through bold visual design, cultural relevance, and high-performance technology.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-7">
+              {[[String(projects.length).padStart(2, "0"), "Case studies"], [String(categories.length - 1).padStart(2, "0"), "Disciplines"], ["100%", "Bespoke"]].map(([n, l]) => (
+                <div key={l} className="work-stat"><strong>{n}</strong><span>{l}</span></div>
+              ))}
+            </div>
           </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight font-heading">
-            Our Work —{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#754BFF] via-[#FF6575] to-[#D97706]">
-              Interactive Art Gallery
-            </span>
-          </h1>
-          <p className="text-base sm:text-lg text-[#5A4E6B] mt-4 leading-relaxed">
-            Every case study represents an ambitious challenge solved through bold visual design, cultural relevance, and high-performance technology.
-          </p>
         </div>
 
         {/* Filter, Search & Layout Controls (Light Theme) */}
@@ -156,17 +181,24 @@ export default function WorkPage() {
           </div>
         ) : viewMode === "grid" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project) => (
-              <Link
+            {filteredProjects.map((project, index) => (
+              <button
+                type="button"
                 key={project.slug}
-                href={`/work/${project.slug}`}
-                onClick={() => playPop()}
-                className="group relative rounded-3xl overflow-hidden border border-[#181329]/10 bg-white hover:border-[#754BFF]/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between"
+                data-reveal
+                aria-haspopup="dialog"
+                style={{ "--plan-color": project.colors.primary } as React.CSSProperties}
+                onPointerMove={tiltMove}
+                onPointerLeave={tiltLeave}
+                onClick={() => { playPop(); setActiveProject(project); }}
+                className="work-card plan-card group text-left relative rounded-3xl overflow-hidden border border-[#181329]/10 bg-white shadow-sm flex flex-col justify-between"
               >
+                <span className="work-card-bar" aria-hidden="true" />
+                <span className="work-ghost" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                 <div
-                  className="p-8 min-h-[320px] flex flex-col justify-between"
+                  className="relative p-8 min-h-[320px] flex flex-col justify-between"
                   style={{
-                    background: `linear-gradient(135deg, ${project.colors.primary}15 0%, #FFFFFF 100%)`,
+                    background: `linear-gradient(135deg, ${project.colors.primary}15 0%, #FFFFFF00 100%)`,
                   }}
                 >
                   <div className="flex items-center justify-between">
@@ -199,17 +231,19 @@ export default function WorkPage() {
                   <span>View Case Study</span>
                   <ArrowUpRight className="w-4 h-4 text-[#754BFF] transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                 </div>
-              </Link>
+              </button>
             ))}
           </div>
         ) : (
           <div className="space-y-4">
             {filteredProjects.map((project) => (
-              <Link
+              <button
+                type="button"
                 key={project.slug}
-                href={`/work/${project.slug}`}
-                onClick={() => playPop()}
-                className="group flex flex-col md:flex-row md:items-center justify-between p-6 rounded-2xl bg-white border border-[#181329]/10 hover:border-[#754BFF]/40 shadow-xs hover:shadow-md transition-all gap-4"
+                data-reveal
+                aria-haspopup="dialog"
+                onClick={() => { playPop(); setActiveProject(project); }}
+                className="group w-full text-left flex flex-col md:flex-row md:items-center justify-between p-6 rounded-2xl bg-white border border-[#181329]/10 hover:border-[#754BFF]/40 shadow-xs hover:shadow-md transition-all gap-4"
               >
                 <div className="flex items-center gap-4">
                   <div
@@ -244,11 +278,12 @@ export default function WorkPage() {
                     <ArrowUpRight className="w-4 h-4" />
                   </div>
                 </div>
-              </Link>
+              </button>
             ))}
           </div>
         )}
       </div>
+      {activeProject && <CaseStudyModal project={activeProject} onClose={() => setActiveProject(null)} onNext={setActiveProject} />}
     </div>
   );
 }

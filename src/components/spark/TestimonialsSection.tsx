@@ -1,124 +1,69 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
-
-const testimonialsData = [
-  {
-    id: 1,
-    quote:
-      "Flash transformed how I shop online. One clean inbox for all receipts, zero spam, and instant tracking without having to log in to 20 different websites.",
-    author: "Alice Caroline",
-    role: "Ceo Websoft",
-    avatar: "👩🏻",
-  },
-  {
-    id: 2,
-    quote:
-      "The order tracking dashboard feels like magic. Everything I order across Amazon, Nike, and independent stores just shows up in real-time.",
-    author: "Marcus Vance",
-    role: "Product Lead at Aura",
-    avatar: "👨🏽",
-  },
-  {
-    id: 3,
-    quote:
-      "I used to get hundreds of promotional emails a week. Now my personal Gmail is completely spam-free, and I actually get rewards I care about.",
-    author: "Elena Rostova",
-    role: "Design Director",
-    avatar: "👩🏼",
-  },
-  {
-    id: 4,
-    quote:
-      "The best shopping utility since password managers. It pays for itself in time saved and peace of mind.",
-    author: "David Chen",
-    role: "Founder, Peak Labs",
-    avatar: "👨🏻",
-  },
-];
+import { testimonials } from "@/data/testimonials";
 
 export default function TestimonialsSection() {
-  const [index, setIndex] = useState(0);
+  const [rotation, setRotation] = useState(0);
+  const [moving, setMoving] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setMoving(false), 1000);
+    return () => clearTimeout(timer);
+  }, [rotation]);
+  const pointerStart = useRef<number | null>(null);
+  if (!testimonials.length) return null;
+  const reelSlots = Math.ceil(12 / testimonials.length) * testimonials.length;
+  const slotAngle = 360 / reelSlots;
+  const radiusRatio = 1 / (2 * Math.tan(Math.PI / reelSlots)) + 0.3;
+  const index = ((rotation % testimonials.length) + testimonials.length) % testimonials.length;
+  const frontSlot = ((rotation % reelSlots) + reelSlots) % reelSlots;
+  const move = (direction: number) => { setMoving(true); setRotation(value => value + direction); };
 
-  const prev = () => setIndex((i) => (i === 0 ? testimonialsData.length - 1 : i - 1));
-  const next = () => setIndex((i) => (i === testimonialsData.length - 1 ? 0 : i + 1));
-
-  return (
-    <section id="testimonials" className="relative bg-[#FBFBFE] text-[#1B143F] rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden p-8 sm:p-16 border border-[#EAEAFA] shadow-[0_4px_30px_rgba(27,20,63,0.03)] my-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Header with Carousel Arrow Controls */}
-        <div className="flex items-center justify-between mb-12">
-          <h2 className="font-display font-extrabold text-[clamp(2.5rem,6vw,4.5rem)] text-[#1B143F] tracking-tight">
-            Testimonials
-          </h2>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={prev}
-              className="w-11 h-11 rounded-full bg-white border border-[#E5E5EF] hover:border-[#1B143F] flex items-center justify-center text-[#1B143F] transition-colors shadow-sm"
-              aria-label="Previous testimonial"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={next}
-              className="w-11 h-11 rounded-full bg-white border border-[#E5E5EF] hover:border-[#1B143F] flex items-center justify-center text-[#1B143F] transition-colors shadow-sm"
-              aria-label="Next testimonial"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* 3 Quote Cards in a row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {[0, 1, 2].map((offset) => {
-            const item = testimonialsData[(index + offset) % testimonialsData.length];
-            return (
-              <div
-                key={offset}
-                className="p-8 rounded-[2rem] bg-white border border-[#EDEDF5] shadow-sm flex flex-col justify-between min-h-[340px] hover:shadow-md transition-shadow"
-              >
-                <div>
-                  {/* Subtle quote icon */}
-                  <div className="text-3xl text-[#E0DCF5] font-serif font-black mb-4">
-                    ““
-                  </div>
-                  <p className="text-xs sm:text-sm text-[#5B5573] leading-relaxed">
-                    {item.quote}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-3 pt-6 border-t border-[#F2F2F8]">
-                  <div className="w-10 h-10 rounded-full bg-[#F0EEFB] flex items-center justify-center text-lg">
-                    {item.avatar}
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-[#1B143F]">{item.author}</p>
-                    <p className="text-[10px] text-[#8C87A5]">{item.role}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Bottom Progress Counter Bar */}
-        <div className="flex items-center gap-6">
-          <span className="font-mono text-xs font-bold text-[#1B143F]">
-            0{index + 1}/0{testimonialsData.length}
-          </span>
-          <div className="flex-1 h-1 bg-[#E8E8F2] rounded-full overflow-hidden">
-            <div
-              className="h-full bg-[#1B143F] transition-all duration-300 rounded-full"
-              style={{
-                width: `${((index + 1) / testimonialsData.length) * 100}%`,
-              }}
-            />
-          </div>
+  return <section id="testimonials" aria-labelledby="testimonials-heading" className="bg-[#FBFBFE] text-[#1B143F] px-6 py-20 sm:px-12 lg:px-20 xl:px-28 xl:py-28 overflow-hidden">
+    <div className="max-w-[1200px] mx-auto">
+      <div className="flex flex-wrap items-end justify-between gap-6 mb-6">
+        <div><p className="text-xs uppercase tracking-[0.2em] font-bold text-[#6A38EB] mb-4">Client voices</p><h2 id="testimonials-heading" className="font-display font-extrabold text-3xl sm:text-5xl tracking-tight">Testimonials</h2></div>
+        <div className="flex gap-3">
+          <button type="button" aria-label="Previous testimonial" onClick={() => move(-1)} className="w-12 h-12 rounded-full border border-[#E5E5EF] bg-white flex items-center justify-center hover:border-[#6A38EB] hover:text-[#6A38EB] transition-colors"><ChevronLeft className="w-5 h-5" /></button>
+          <button type="button" aria-label="Next testimonial" onClick={() => move(1)} className="w-12 h-12 rounded-full border border-[#E5E5EF] bg-white flex items-center justify-center hover:border-[#6A38EB] hover:text-[#6A38EB] transition-colors"><ChevronRight className="w-5 h-5" /></button>
         </div>
       </div>
-    </section>
-  );
+      <div className="testimonial-reel testimonial-cards" data-rotating={moving} style={{ "--reel-radius": `calc(var(--reel-width) * ${radiusRatio})` } as CSSProperties} role="region" aria-roledescription="carousel" aria-label="Client testimonials. Use the arrow keys or swipe to rotate the reel." tabIndex={0}
+        onKeyDown={event => {
+          if (event.key === "ArrowRight") { event.preventDefault(); move(1); }
+          if (event.key === "ArrowLeft") { event.preventDefault(); move(-1); }
+        }}
+        onPointerDown={event => {
+          if (event.pointerType === "mouse") return;
+          pointerStart.current = event.clientX;
+          event.currentTarget.setPointerCapture(event.pointerId);
+        }}
+        onPointerUp={event => {
+          if (pointerStart.current === null) return;
+          const distance = event.clientX - pointerStart.current;
+          pointerStart.current = null;
+          if (Math.abs(distance) > 40) move(distance < 0 ? 1 : -1);
+        }}
+        onPointerCancel={() => { pointerStart.current = null; }}
+      >
+        <div className="testimonial-reel-shadow" aria-hidden="true" />
+        <div className="testimonial-reel-drum" onTransitionEnd={event => { if (event.target === event.currentTarget && event.propertyName === "transform") setMoving(false); }} style={{ "--reel-turn": `${-rotation * slotAngle}deg` } as CSSProperties}>
+          {Array.from({ length: reelSlots }, (_, slot) => {
+            const item = testimonials[slot % testimonials.length];
+            const front = slot === frontSlot;
+            const distance = Math.abs(slot - frontSlot);
+            const hoverable = Math.min(distance, reelSlots - distance) <= 1;
+            return <div key={slot} className="testimonial-reel-panel" data-front={front} data-hoverable={hoverable} aria-hidden={!hoverable} style={{ "--panel-angle": `${slot * slotAngle}deg` } as CSSProperties}>
+              <figure className="testimonial-card rounded-[2rem] bg-white border border-[#EDEDF5] p-7 shadow-[0_6px_28px_rgba(27,20,63,0.04)] flex flex-col justify-between h-full">
+                <div><Quote aria-hidden="true" className="w-9 h-9 text-[#CBBDF3] mb-6" /><blockquote className="text-base leading-relaxed text-[#5B5573]">{item.quote}</blockquote></div>
+                <figcaption className="flex items-center gap-3 border-t border-[#F2F2F8] mt-7 pt-5"><span className="w-12 h-12 rounded-full bg-[#F0EEFB] text-[#6A38EB] text-sm font-bold flex items-center justify-center shrink-0">{item.initials}</span><div><p className="font-bold text-sm">{item.author}</p><p className="text-sm text-[#655F7D] mt-1">{item.role}</p></div></figcaption>
+              </figure>
+            </div>;
+          })}
+        </div>
+      </div>
+      <div className="flex items-center gap-6 mt-4"><span className="text-sm font-mono tabular-nums" aria-live="polite" aria-atomic="true" aria-label={`Testimonial ${index + 1} of ${testimonials.length}`}>{String(index + 1).padStart(2, "0")}/{String(testimonials.length).padStart(2, "0")}</span><div className="h-1 flex-1 rounded-full bg-[#E8E8F2] overflow-hidden" aria-hidden="true"><div className="h-full bg-[#6A38EB] transition-[width] duration-500 motion-reduce:transition-none" style={{ width: `${((index + 1) / testimonials.length) * 100}%` }} /></div></div>
+    </div>
+  </section>;
 }

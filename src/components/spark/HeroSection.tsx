@@ -2,177 +2,171 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import RippleRings from "./RippleRings";
-import { Apple, Play, ArrowUpRight } from "lucide-react";
+import DiagonalMarquee from "./DiagonalMarquee";
+import { ArrowUpRight, Layers } from "lucide-react";
+
+/*
+  The whole hero is a fixed-aspect composition (782 x 520). Everything inside is positioned in %
+  and sized in cqw (1cqw = 1% of the card width), so the headline, phone and badges keep exactly
+  the same relative placement on every screen size.
+*/
+const HEADLINE_FONT_SIZE = "7.65cqw";
+
+// 44 solid bubbles radiating outward from the button's edge in every direction (values in em of the button)
+const BUBBLE_COUNT = 44;
+const BUBBLES = Array.from({ length: BUBBLE_COUNT }).map((_, i) => {
+  const t = (i / BUBBLE_COUNT) * Math.PI * 2 + ((i * 37) % 11) * 0.012;
+  const c = Math.cos(t);
+  const sn = Math.sin(t);
+  const far = 0.7 + ((i * 53) % 10) * 0.035; // 0.7 .. 1.0 spread of travel distance
+  return {
+    s: `${[0.45, 0.6, 0.35, 0.5, 0.4][i % 5]}em`,
+    x0: `${(c * 3.6).toFixed(2)}em`,
+    y0: `${(sn * 1.2).toFixed(2)}em`,
+    dx: `${(c * 8.6 * far).toFixed(2)}em`,
+    dy: `${(sn * 4.8 * far).toFixed(2)}em`,
+  };
+});
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full min-h-[92vh] sm:min-h-[660px] lg:h-[92vh] max-h-[880px] bg-[#FBFBFE] text-[#15103A] rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden border border-[#EAEAFA] shadow-[0_4px_30px_rgba(27,20,63,0.03)] flex flex-col justify-between p-6 sm:p-10 select-none">
-      {/* ── 1. The Dynamic Concentric Ripple Rings (Zero static rings, all in ripple transition from middle) ── */}
+    <section className="relative w-full h-svh bg-[#FBFBFE] overflow-hidden flex items-center justify-center">
+    <div
+      style={{ containerType: "inline-size" }}
+      className="relative w-[min(100%,calc(100svh*1.50385))] aspect-[782/520] text-[#15103A] select-none"
+    >
+      {/* Ripple rings */}
       <RippleRings />
 
-      {/* ── 2. Top Navigation Bar (Single, inside the card top) ── */}
-      <header className="relative z-30 w-full flex items-center justify-between">
-        {/* Left: Xink Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <span className="font-black text-2xl text-[#15103A] font-mono leading-none tracking-tighter">
-            ✕
-          </span>
-          <span className="font-extrabold text-2xl text-[#15103A] tracking-tight font-display">
-            xink
-          </span>
+      {/* Top navigation (sizes in em, base = 1cqw) */}
+      <header
+        style={{ fontSize: "1cqw" }}
+        className="absolute z-30 inset-x-[3.2%] top-[5%] flex items-center justify-between"
+      >
+        <Link href="/" className="flex items-center gap-[0.8em]">
+          <span className="font-black text-[1.75em] text-[#15103A] font-mono leading-none tracking-tighter">✕</span>
+          <span className="font-extrabold text-[1.75em] text-[#15103A] tracking-tight font-display">Xink Digitals</span>
         </Link>
 
-        {/* Center: Floating Pill Navigation */}
-        <nav className="hidden md:flex items-center gap-1 sm:gap-2 px-5 py-2 rounded-full bg-white/95 backdrop-blur-md border border-[#EBEBF4] shadow-[0_2px_10px_rgba(27,20,63,0.04)]">
-          {["Features", "Work", "Services", "About", "Contacts"].map((item) => (
+        <nav className="flex items-center gap-[0.5em] px-[1.8em] py-[0.9em] rounded-full bg-white/95 backdrop-blur-md border border-[#EBEBF4] shadow-[0_2px_10px_rgba(27,20,63,0.04)]">
+          {[{ label: "Services", href: "/services" }, { label: "Work", href: "/work" }, { label: "About", href: "/about" }, { label: "FAQs", href: "/faq" }, { label: "Contact", href: "/contact" }].map((item) => (
             <Link
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="px-4 py-1.5 rounded-full text-xs font-semibold text-[#544F6D] hover:text-[#15103A] hover:bg-[#F4F4FA] transition-colors"
+              key={item.label}
+              href={item.href}
+              prefetch={true}
+              className="nav-hover-link px-[1.25em] py-[0.6em] rounded-full text-[1.18em] font-semibold text-[#544F6D]"
             >
-              {item}
+              {item.label}
             </Link>
           ))}
         </nav>
 
-        {/* Right: Reserve id pill button */}
         <Link
-          href="#contacts"
-          className="px-6 py-2 rounded-full border border-[#15103A] text-[#15103A] hover:bg-[#15103A] hover:text-white text-xs font-bold transition-all shadow-xs"
+          href="/contact"
+          prefetch={true}
+          className="px-[1.8em] py-[0.65em] rounded-full border border-[#15103A] text-[#15103A] hover:bg-[#15103A] hover:text-white text-[0.88em] font-bold transition-all"
         >
-          Reserve id
+          Let&apos;s talk
         </Link>
       </header>
 
-      {/* ── 3. Central Stage: Headline + Hand starting from the bottom + Floating Badges ── */}
-      <div className="relative z-10 w-full flex-1 flex items-center justify-center">
-        {/* ── Main Big Headline: Line 1 = 'Welcome', Line 2 = 'To Xink Digitals' ── */}
-        {/* Desktop & Tablet View (sm:flex) with partial phone overlap */}
-        <div className="absolute inset-x-0 top-[10%] sm:top-[12%] lg:top-[13%] pointer-events-none z-10 px-4 sm:px-8 lg:px-14 hidden sm:flex flex-col">
-          {/* Line 1: 'Welcome' */}
-          <div className="w-full flex justify-start pl-2 sm:pl-8 lg:pl-14">
-            <h1 className="font-display font-semibold text-[clamp(2.5rem,5.5vw,5.5rem)] text-[#15103A] tracking-tight leading-none">
-              Welcome
-            </h1>
-          </div>
+      {/* Hero headline */}
+      <h1 aria-label="Grow with Xink Digitals"
+        className="absolute z-10 pointer-events-none font-display font-semibold tracking-tight leading-none whitespace-nowrap text-[#15103A] left-[2.8%] top-[18.1%]"
+        style={{ fontSize: HEADLINE_FONT_SIZE }}
+      >
+        Grow with
+      </h1>
+      <p
+        className="absolute z-10 pointer-events-none font-display font-semibold tracking-tight leading-none whitespace-nowrap text-[#15103A] left-[35.2%] top-[30.6%]"
+        style={{ fontSize: HEADLINE_FONT_SIZE }}
+      >
+        Xink Digitals.
+      </p>
 
-          {/* Line 2: 'To Xink Digitals' with phone partially overlapping in the center */}
-          <div className="w-full flex items-baseline justify-between mt-1 sm:mt-2 lg:mt-3">
-            {/* Left part of line 2: 'To' slightly tucked behind the phone's left edge */}
-            <div className="flex-1 flex justify-end">
-              <span className="font-display font-semibold text-[clamp(1.9rem,3.9vw,4.5rem)] text-[#15103A] tracking-tight leading-none -mr-2 sm:-mr-4 lg:-mr-6">
-                To
-              </span>
-            </div>
-
-            {/* Middle Spacer: slightly narrower than the phone so the phone partially covers both edges */}
-            <div className="w-[170px] sm:w-[210px] lg:w-[240px] shrink-0 pointer-events-none" />
-
-            {/* Right part of line 2: 'Xink Digitals' starting just behind the phone's right edge */}
-            <div className="flex-1 flex justify-start">
-              <span className="font-display font-semibold text-[clamp(1.9rem,3.9vw,4.5rem)] text-[#15103A] tracking-tight leading-none whitespace-nowrap -ml-2 sm:-ml-4 lg:-ml-6">
-                Xink Digitals
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile View (< sm) */}
-        <div className="absolute inset-x-0 top-[10%] pointer-events-none z-10 px-4 sm:hidden flex flex-col items-center text-center">
-          <h1 className="font-display font-semibold text-4xl text-[#15103A] tracking-tight leading-none mb-1">
-            Welcome
-          </h1>
-          <span className="font-display font-semibold text-2xl text-[#15103A] tracking-tight leading-none">
-            To Xink Digitals
-          </span>
-        </div>
-
-        {/* Floating Left Squircle Badge */}
-        <div className="absolute left-[6%] sm:left-[14%] lg:left-[19%] top-[42%] -translate-y-1/2 z-20 animate-float">
-          <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-3xl bg-white border border-[#EDEDF5] p-2 shadow-[0_12px_28px_rgba(27,20,63,0.06)] flex items-center justify-center overflow-hidden">
-            <Image
-              src="/spark/floating_spark_badge.png"
-              alt="Digital marketing feature badge"
-              width={80}
-              height={80}
-              className="w-full h-full object-contain"
-              unoptimized
-            />
-          </div>
-        </div>
-
-        {/* Center: Hand starting from the VERY BOTTOM of the card with real digital marketing screen */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center">
-          <div className="relative w-[240px] sm:w-[280px] lg:w-[310px] drop-shadow-[0_20px_40px_rgba(21,16,58,0.2)]">
-            <Image
-              src="/spark/user_hand_digital_marketing.png"
-              alt="Hand holding smartphone with real digital marketing performance analytics"
-              width={310}
-              height={500}
-              className="w-full h-auto object-contain block align-bottom"
-              priority
-              unoptimized
-            />
-          </div>
-        </div>
-
-        {/* Floating Right Woman Avatar Squircle */}
-        <div className="absolute right-[6%] sm:right-[14%] lg:right-[19%] top-[45%] -translate-y-1/2 z-20 animate-float-delayed">
-          <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-3xl bg-white border border-[#EDEDF5] p-2 shadow-[0_12px_28px_rgba(27,20,63,0.06)] flex items-center justify-center overflow-hidden">
-            <Image
-              src="/spark/floating_woman_avatar.png"
-              alt="Xink marketing client"
-              width={75}
-              height={75}
-              className="w-full h-full object-cover rounded-2xl"
-              unoptimized
-            />
-          </div>
+      {/* Floating left badge (diagonal bubble marquee) */}
+      <div className="absolute left-[15%] top-[45%] z-20 animate-float" style={{ width: "8.7cqw", height: "8.7cqw" }}>
+        <div className="relative w-full h-full rounded-[2.2cqw] bg-white border border-[#EDEDF5] shadow-[0_12px_28px_rgba(27,20,63,0.06)] overflow-hidden">
+          <DiagonalMarquee />
         </div>
       </div>
 
-      {/* ── 4. Bottom Elements: Left Tagline + Right Copy & Actions ── */}
-      <footer className="relative z-30 w-full flex flex-col md:flex-row items-center md:items-end justify-between gap-6 pt-4">
-        {/* Bottom-Left Tagline */}
-        <div className="max-w-xs text-center md:text-left">
-          <p className="font-display font-semibold text-xl sm:text-2xl text-[#15103A] leading-snug">
-            The ultimate marketing <br />
-            hack is here.
-          </p>
+      {/* Hand + phone: phone body centred at 56% of the card, top just under the headline */}
+      <div className="absolute z-20 pointer-events-none left-[41.6%] top-[35.8%]" style={{ width: "27cqw" }}>
+        <div className="drop-shadow-[0_20px_40px_rgba(21,16,58,0.2)]">
+          <Image
+            src="/spark/user_hand_marketing_v5.png"
+            alt="Hand holding smartphone showing a digital marketing dashboard"
+            width={635}
+            height={1184}
+            className="w-full h-auto block"
+            priority
+            unoptimized
+          />
         </div>
+      </div>
 
-        {/* Bottom-Right Description & Buttons */}
-        <div className="flex flex-col items-center md:items-end text-center md:text-right max-w-sm">
-          <p className="text-xs sm:text-[13px] text-[#7E7896] leading-relaxed mb-3.5">
-            Bye bye low ROAS. See you later unrewarding ads. <br className="hidden sm:block" />
-            Adios tracking nightmares.
-          </p>
+      {/* Floating right badge */}
+      <div className="absolute left-[81.8%] top-[54.2%] z-20 animate-float-delayed" style={{ width: "8.7cqw", height: "8.7cqw" }}>
+        <div className="w-full h-full rounded-[2.2cqw] bg-white border border-[#EDEDF5] shadow-[0_12px_28px_rgba(27,20,63,0.06)] overflow-hidden flex items-end justify-center pt-[0.8cqw] px-[0.6cqw]">
+          <Image
+            src="/spark/woman_cutout_hd.png"
+            alt="Portrait illustration"
+            width={333}
+            height={399}
+            className="w-full h-auto block"
+            unoptimized
+          />
+        </div>
+      </div>
 
-          <div className="flex items-center gap-3">
-            {/* App Store button with pulsing concentric purple ripple pill */}
-            <div className="relative group">
-              <span className="absolute -inset-1 rounded-full border border-[#7E4FF5]/40 animate-ping opacity-40 pointer-events-none" />
-              <span className="absolute -inset-2.5 rounded-full border border-[#7E4FF5]/20 animate-ping opacity-25 pointer-events-none" />
-              <a
-                href="#download"
-                className="relative z-10 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#15103A] hover:bg-[#6A38EB] text-white text-xs font-bold transition-all shadow-md"
-              >
-                <Apple className="w-4 h-4 fill-current" />
-                <span>App Store</span>
+      {/* Bottom-left tagline */}
+      <p
+        className="absolute z-30 left-[3.2%] bottom-[6%] font-display font-semibold leading-snug text-[#15103A]"
+        style={{ fontSize: "1.75cqw" }}
+      >
+        Digital marketing. <br />
+        Built around your business.
+      </p>
+
+      {/* Bottom-right copy + store buttons */}
+      <div
+        style={{ fontSize: "1cqw" }}
+        className="absolute z-30 right-[3.2%] bottom-[6%] flex flex-col items-end text-right"
+      >
+        <p className="text-[0.95em] text-[#7E7896] leading-relaxed mb-[1em]">
+          SEO, paid ads, social media and websites. <br />
+          A clear plan. A team to make it happen.
+        </p>
+
+        <div className="flex items-center gap-[1em]">
+          {[
+            { label: "Start a project", href: "/contact", icon: <ArrowUpRight className="w-[1.3em] h-[1.3em] fill-current" /> },
+            { label: "Our services", href: "/services", icon: <Layers className="w-[1.15em] h-[1.15em] fill-current" /> },
+          ].map((b) => (
+            <div key={b.label} className="store-btn">
+              <span className="store-btn-ring" />
+              <span className="store-btn-ring store-btn-ring-2" />
+              <span className="store-btn-ring store-btn-ring-3" />
+              {BUBBLES.map((b, i) => (
+                <span
+                  key={i}
+                  className="store-btn-bubble"
+                  style={{ "--s": b.s, "--x0": b.x0, "--y0": b.y0, "--dx": b.dx, "--dy": b.dy } as React.CSSProperties}
+                />
+              ))}
+              <a href={b.href} className="store-btn-link">
+                <span className="store-btn-water" />
+                <span className="store-btn-content">
+                  {b.icon}
+                  <span>{b.label}</span>
+                </span>
               </a>
             </div>
-
-            {/* Google Play button */}
-            <a
-              href="#download"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#15103A] hover:bg-[#6A38EB] text-white text-xs font-bold transition-all shadow-md"
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Google Play</span>
-            </a>
-          </div>
+          ))}
         </div>
-      </footer>
+      </div>
+    </div>
     </section>
   );
 }

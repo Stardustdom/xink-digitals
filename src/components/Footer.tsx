@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import LegalLink from "@/components/LegalLink";
 import { ArrowUpRight, Heart, Mail, MapPin, Sparkles } from "lucide-react";
 
 export default function Footer() {
@@ -99,11 +100,6 @@ export default function Footer() {
               <li>
                 <Link href="/about" className="hover:text-white transition-colors">
                   About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/insights" className="hover:text-white transition-colors">
-                  Insights & Blog
                 </Link>
               </li>
               <li>
@@ -213,12 +209,8 @@ export default function Footer() {
             <Heart className="w-3.5 h-3.5 text-[#FF6575] fill-[#FF6575] ml-0.5" />
           </p>
           <div className="flex items-center gap-4">
-            <Link href="/privacy" className="hover:text-white transition-colors">
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-white transition-colors">
-              Terms
-            </Link>
+            <LegalLink kind="privacy" className="hover:text-white transition-colors">Privacy</LegalLink>
+            <LegalLink kind="terms" className="hover:text-white transition-colors">Terms</LegalLink>
             <Link href="/sitemap.xml" className="hover:text-white transition-colors">
               Sitemap
             </Link>
