@@ -152,11 +152,11 @@ export default function Footer() {
             <ul className="space-y-2.5 text-sm text-white/70 mb-6">
               <li>
                 <a
-                  href="mailto:hello@xinkdigitals.com"
+                  href="mailto:contact@xinkdigitals.com"
                   className="hover:text-white flex items-center gap-1.5 transition-colors"
                 >
                   <Mail className="w-3.5 h-3.5 text-[#FF8CD5]" />
-                  hello@xinkdigitals.com
+                  contact@xinkdigitals.com
                 </a>
               </li>
               <li>

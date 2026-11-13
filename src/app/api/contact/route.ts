@@ -19,20 +19,21 @@ export async function POST(request: Request) {
       errors.email = "Please enter a valid email address.";
     }
 
-    // 3. Validation: Company / Website
-    if (!company || typeof company !== "string" || company.trim().length < 2) {
-      errors.company = "Please enter your company name or website URL.";
+    // 3. Validation: Company / Website (Optional)
+    // Optional field; trimmed if provided
+
+    // 4. Validation: Current Challenges / Service
+    if (
+      !service ||
+      typeof service !== "string" ||
+      service === "Choose a service..." ||
+      service === "Select your current challenge..."
+    ) {
+      errors.service = "Please select your current challenge.";
     }
 
-    // 4. Validation: Service
-    if (!service || typeof service !== "string" || service === "Choose a service...") {
-      errors.service = "Please select the service you are looking for.";
-    }
-
-    // 5. Validation: Message
-    if (!message || typeof message !== "string" || message.trim().length < 10) {
-      errors.message = "Please describe your goals or challenges (at least 10 characters).";
-    }
+    // 5. Validation: Message / Additional Notes (Optional)
+    // Optional field; trimmed if provided
 
     // 6. Verification: Cloudflare Turnstile Human Verification
     if (!turnstileToken || typeof turnstileToken !== "string" || turnstileToken.trim().length === 0) {
@@ -66,10 +67,10 @@ export async function POST(request: Request) {
     console.log("Validated contact form submission:", {
       name: name.trim(),
       email: email.trim(),
-      company: company.trim(),
+      company: company?.trim() || "Not specified",
       service,
       budget: budget?.trim() || "Not specified",
-      message: message.trim(),
+      message: message?.trim() || "None",
       timestamp: new Date().toISOString(),
     });
 

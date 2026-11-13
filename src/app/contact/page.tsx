@@ -21,7 +21,7 @@ import TurnstileWidget from "@/components/TurnstileWidget";
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const SERVICES_OPTIONS = [
-  "Choose a service...",
+  "Select your current challenge...",
   "Full-Stack Growth Retainer (All Channels)",
   "Paid Advertising (Meta, Google, TikTok)",
   "SEO & Content Strategy",
@@ -47,29 +47,36 @@ export default function ContactPage() {
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submissionFeedback, setSubmissionFeedback] = useState<string | null>(null);
+  const [submissionFeedback, setSubmissionFeedback] = useState<string | null>(
+    null,
+  );
 
   // Validation Logic
   const validateField = (field: string, value: string): string => {
     switch (field) {
       case "name":
         if (!value.trim()) return "Please enter your name.";
-        if (value.trim().length < 2) return "Name must be at least 2 characters.";
+        if (value.trim().length < 2)
+          return "Name must be at least 2 characters.";
         return "";
       case "email":
         if (!value.trim()) return "Please enter your email address.";
-        if (!EMAIL_REGEX.test(value.trim())) return "Please enter a valid email (e.g. name@company.com).";
+        if (!EMAIL_REGEX.test(value.trim()))
+          return "Please enter a valid email (e.g. name@company.com).";
         return "";
       case "company":
-        if (!value.trim()) return "Please enter your company or website name.";
-        if (value.trim().length < 2) return "Company or website must be at least 2 characters.";
+        // Optional field
         return "";
       case "service":
-        if (!value || value === "Choose a service...") return "Please select the service you are looking for.";
+        if (
+          !value ||
+          value === "Choose a service..." ||
+          value === "Select your current challenge..."
+        )
+          return "Please select your current challenge.";
         return "";
       case "message":
-        if (!value.trim()) return "Please describe your project or goals.";
-        if (value.trim().length < 10) return "Please provide a bit more detail (at least 10 characters).";
+        // Optional note
         return "";
       default:
         return "";
@@ -78,7 +85,10 @@ export default function ContactPage() {
 
   const handleBlur = (field: string) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
-    const error = validateField(field, formData[field as keyof typeof formData]);
+    const error = validateField(
+      field,
+      formData[field as keyof typeof formData],
+    );
     setErrors((prev) => ({ ...prev, [field]: error }));
   };
 
@@ -92,24 +102,26 @@ export default function ContactPage() {
 
   const validateAll = (): boolean => {
     const newErrors: Record<string, string> = {};
-    const fields = ["name", "email", "company", "service", "message"];
+    const fields = ["name", "email", "service"];
 
     fields.forEach((field) => {
-      const error = validateField(field, formData[field as keyof typeof formData]);
+      const error = validateField(
+        field,
+        formData[field as keyof typeof formData],
+      );
       if (error) newErrors[field] = error;
     });
 
     if (!turnstileToken) {
-      newErrors.turnstile = "Please complete the Cloudflare verification check.";
+      newErrors.turnstile =
+        "Please complete the Cloudflare verification check.";
     }
 
     setErrors(newErrors);
     setTouched({
       name: true,
       email: true,
-      company: true,
       service: true,
-      message: true,
     });
 
     return Object.keys(newErrors).length === 0;
@@ -140,7 +152,9 @@ export default function ContactPage() {
         if (data.errors) {
           setErrors(data.errors);
         } else {
-          setSubmissionFeedback(data.error || "Submission failed. Please try again.");
+          setSubmissionFeedback(
+            data.error || "Submission failed. Please try again.",
+          );
         }
       }
     } catch {
@@ -155,8 +169,8 @@ export default function ContactPage() {
         formData.message,
       ].join("\n");
 
-      window.location.href = `mailto:hello@xinkdigitals.com?subject=${encodeURIComponent(
-        "Project enquiry: " + formData.company
+      window.location.href = `mailto:contact@xinkdigitals.com?subject=${encodeURIComponent(
+        "Project enquiry: " + formData.company,
       )}&body=${encodeURIComponent(body)}`;
       setIsSubmitted(true);
       setSubmissionFeedback("Draft created in your mail client.");
@@ -176,8 +190,8 @@ export default function ContactPage() {
       formData.message,
     ].join("\n");
 
-    window.location.href = `mailto:hello@xinkdigitals.com?subject=${encodeURIComponent(
-      "Project enquiry: " + (formData.company || "New Client")
+    window.location.href = `mailto:contact@xinkdigitals.com?subject=${encodeURIComponent(
+      "Project enquiry: " + (formData.company || "New Client"),
     )}&body=${encodeURIComponent(body)}`;
   };
 
@@ -186,9 +200,11 @@ export default function ContactPage() {
     ${
       touched[field] && errors[field]
         ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-2 focus:ring-red-400/20 text-[#15103A]"
-        : touched[field] && !errors[field] && formData[field as keyof typeof formData]
-        ? "border-[#00C48C]/50 bg-emerald-50/10 focus:border-[#00C48C] focus:ring-2 focus:ring-[#00C48C]/20"
-        : "border-[#E5E5EF] bg-[#FBFBFE] focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/20"
+        : touched[field] &&
+            !errors[field] &&
+            formData[field as keyof typeof formData]
+          ? "border-[#00C48C]/50 bg-emerald-50/10 focus:border-[#00C48C] focus:ring-2 focus:ring-[#00C48C]/20"
+          : "border-[#E5E5EF] bg-[#FBFBFE] focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/20"
     }
   `;
 
@@ -206,7 +222,9 @@ export default function ContactPage() {
             Our next brief.
           </h1>
           <p className="text-[#5B5573] max-w-xl mt-4 leading-relaxed text-sm sm:text-base">
-            Tell Xink Digitals about your business, current performance, and growth targets. We will evaluate the right scope, channels, and milestones.
+            Tell Xink Digitals about your business, current performance, and
+            growth targets. We will evaluate the right scope, channels, and
+            milestones.
           </p>
         </div>
 
@@ -224,25 +242,38 @@ export default function ContactPage() {
                   Enquiry Received!
                 </h2>
                 <p className="text-sm text-[#5B5573] max-w-md mx-auto leading-relaxed mb-6">
-                  {submissionFeedback || "Thank you for reaching out. Our growth strategists are reviewing your brief and will respond within 2–4 business hours."}
+                  {submissionFeedback ||
+                    "Thank you for reaching out. Our growth strategists are reviewing your brief and will respond within 2–4 business hours."}
                 </p>
 
                 <div className="w-full max-w-md bg-[#FBFBFE] border border-[#EDEDF5] rounded-2xl p-5 text-left mb-8 text-xs text-[#5B5573] space-y-2">
                   <div className="flex justify-between border-b border-[#EDEDF5] pb-2">
-                    <span className="font-semibold text-[#15103A]">Contact:</span>
-                    <span>{formData.name} ({formData.email})</span>
+                    <span className="font-semibold text-[#15103A]">
+                      Contact:
+                    </span>
+                    <span>
+                      {formData.name} ({formData.email})
+                    </span>
                   </div>
                   <div className="flex justify-between border-b border-[#EDEDF5] pb-2">
-                    <span className="font-semibold text-[#15103A]">Company / Site:</span>
+                    <span className="font-semibold text-[#15103A]">
+                      Company / Site:
+                    </span>
                     <span>{formData.company}</span>
                   </div>
                   <div className="flex justify-between border-b border-[#EDEDF5] pb-2">
-                    <span className="font-semibold text-[#15103A]">Service:</span>
+                    <span className="font-semibold text-[#15103A]">
+                      Service:
+                    </span>
                     <span>{formData.service}</span>
                   </div>
                   <div className="flex justify-between pt-1">
-                    <span className="font-semibold text-[#15103A]">Status:</span>
-                    <span className="text-[#00A877] font-bold">✓ Verified &amp; Queued</span>
+                    <span className="font-semibold text-[#15103A]">
+                      Status:
+                    </span>
+                    <span className="text-[#00A877] font-bold">
+                      ✓ Verified &amp; Queued
+                    </span>
                   </div>
                 </div>
 
@@ -330,9 +361,14 @@ export default function ContactPage() {
 
                 {/* Row 2: Company or Website */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#15103A] mb-1">
-                    Company Name or Website URL <span className="text-red-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-[#15103A]">
+                      Company Name or Website URL
+                    </label>
+                    <span className="text-[10px] text-[#8C87A5] font-mono">
+                      Optional
+                    </span>
+                  </div>
                   <input
                     name="company"
                     type="text"
@@ -352,10 +388,10 @@ export default function ContactPage() {
                   )}
                 </div>
 
-                {/* Row 3: Service Selection */}
+                {/* Row 3: Current Challenges */}
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-[#15103A] mb-1">
-                    What capability are you looking for? <span className="text-red-500">*</span>
+                    current challenges <span className="text-red-500">*</span>
                   </label>
                   <select
                     name="service"
@@ -365,7 +401,11 @@ export default function ContactPage() {
                     className={inputClass("service")}
                   >
                     {SERVICES_OPTIONS.map((s, idx) => (
-                      <option key={s} value={idx === 0 ? "" : s} disabled={idx === 0}>
+                      <option
+                        key={s}
+                        value={idx === 0 ? "" : s}
+                        disabled={idx === 0}
+                      >
                         {s}
                       </option>
                     ))}
@@ -384,7 +424,9 @@ export default function ContactPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#15103A]">
                       Monthly Marketing Budget
                     </label>
-                    <span className="text-[10px] text-[#8C87A5] font-mono">Optional</span>
+                    <span className="text-[10px] text-[#8C87A5] font-mono">
+                      Optional
+                    </span>
                   </div>
                   <input
                     name="budget"
@@ -397,15 +439,17 @@ export default function ContactPage() {
                   />
                 </div>
 
-                {/* Row 5: Message & Goals */}
+                {/* Row 5: Message & Notes */}
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#15103A]">
-                      Tell Us About Your Goals <span className="text-red-500">*</span>
+                      Would you like to add something or something to say
                     </label>
                     <span
                       className={`text-[10px] font-mono ${
-                        formData.message.length > 2800 ? "text-red-500 font-bold" : "text-[#8C87A5]"
+                        formData.message.length > 2800
+                          ? "text-red-500 font-bold"
+                          : "text-[#8C87A5]"
                       }`}
                     >
                       {formData.message.length} / 3000
@@ -415,7 +459,7 @@ export default function ContactPage() {
                     name="message"
                     rows={5}
                     maxLength={3000}
-                    placeholder="Briefly describe your target audience, current CAC/ROAS challenges, and ideal timeline..."
+                    placeholder="Share any details, context, questions, or goals..."
                     value={formData.message}
                     onChange={(e) => handleChange("message", e.target.value)}
                     onBlur={() => handleBlur("message")}
@@ -436,7 +480,9 @@ export default function ContactPage() {
                       <ShieldCheck className="w-4 h-4 text-[#6A38EB]" />
                       <span>Human Verification Check</span>
                     </span>
-                    <span className="text-[10px] font-mono text-[#8C87A5]">Cloudflare Turnstile</span>
+                    <span className="text-[10px] font-mono text-[#8C87A5]">
+                      Cloudflare Turnstile
+                    </span>
                   </div>
 
                   <TurnstileWidget
@@ -451,7 +497,8 @@ export default function ContactPage() {
                     onError={(err) => {
                       setErrors((prev) => ({
                         ...prev,
-                        turnstile: err || "Verification check failed. Please refresh.",
+                        turnstile:
+                          err || "Verification check failed. Please refresh.",
                       }));
                     }}
                     onExpire={() => {
@@ -473,8 +520,12 @@ export default function ContactPage() {
 
                 {/* Privacy acknowledgment */}
                 <p className="text-xs text-[#8C87A5] leading-relaxed pt-2">
-                  We respect your data privacy. By submitting, you acknowledge our{" "}
-                  <Link href="/privacy" className="underline hover:text-[#6A38EB]">
+                  We respect your data privacy. By submitting, you acknowledge
+                  our{" "}
+                  <Link
+                    href="/privacy"
+                    className="underline hover:text-[#6A38EB]"
+                  >
                     privacy policy
                   </Link>
                   . We will never sell your information.
@@ -487,7 +538,11 @@ export default function ContactPage() {
                     tone="purple"
                     className="sm:self-start"
                   >
-                    <span>{isSubmitting ? "Submitting Enquiry..." : "Send Project Enquiry ↗"}</span>
+                    <span>
+                      {isSubmitting
+                        ? "Submitting Enquiry..."
+                        : "Send Project Enquiry ↗"}
+                    </span>
                   </WaterButton>
 
                   <button
@@ -512,7 +567,9 @@ export default function ContactPage() {
                 Let&apos;s find your focus.
               </h2>
               <p className="text-sm text-[#5B5573] leading-relaxed">
-                Not sure which channel will drive the highest ROAS? Share your website URL and current bottleneck. We analyze traffic, messaging, and conversion flow before recommending a scope.
+                Not sure which channel will drive the highest ROAS? Share your
+                website URL and current bottleneck. We analyze traffic,
+                messaging, and conversion flow before recommending a scope.
               </p>
             </div>
 
@@ -523,10 +580,10 @@ export default function ContactPage() {
               </span>
               <a
                 className="text-sm font-bold text-[#6A38EB] hover:underline flex items-center gap-2"
-                href="mailto:hello@xinkdigitals.com"
+                href="mailto:contact@xinkdigitals.com"
               >
                 <Mail className="w-4 h-4 shrink-0" />
-                <span>hello@xinkdigitals.com</span>
+                <span>contact@xinkdigitals.com</span>
               </a>
               <p className="text-xs text-[#7E7896]">
                 Response time: usually within 2–4 business hours.
@@ -535,7 +592,9 @@ export default function ContactPage() {
 
             {/* What happens next box */}
             <div className="p-4 rounded-2xl bg-white/80 border border-[#E5E0F5] text-xs text-[#5B5573] space-y-2">
-              <span className="font-bold text-[#15103A] block">What happens next?</span>
+              <span className="font-bold text-[#15103A] block">
+                What happens next?
+              </span>
               <ol className="list-decimal list-inside space-y-1.5 text-[11px] leading-relaxed">
                 <li>Initial website &amp; competitor review</li>
                 <li>Strategy sync to discuss target metrics</li>
@@ -544,7 +603,10 @@ export default function ContactPage() {
             </div>
 
             <div className="pt-2">
-              <Link href="/faq" className="text-xs font-bold text-[#6A38EB] hover:underline flex items-center gap-1">
+              <Link
+                href="/faq"
+                className="text-xs font-bold text-[#6A38EB] hover:underline flex items-center gap-1"
+              >
                 <span>Frequently Asked Questions</span>
                 <ArrowRight className="w-3 h-3" />
               </Link>
