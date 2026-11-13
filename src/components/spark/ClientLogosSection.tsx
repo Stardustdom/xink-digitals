@@ -27,6 +27,12 @@ export default function ClientLogosSection() {
     return () => observer.disconnect();
   }, []);
   const demo = clients.length === 0;
+  // Repeat items so the scrolling marquee flows seamlessly across all screen sizes
+  const displayClients =
+    clients.length > 0 && clients.length < 8
+      ? [...clients, ...clients]
+      : clients;
+
   function cards(duplicate: boolean) {
     return (
       <div
@@ -44,31 +50,35 @@ export default function ClientLogosSection() {
                 </span>
               </div>
             ))
-          : clients.map((client) => {
+          : displayClients.map((client, idx) => {
               const logo = (
                 <Image
                   src={client.logo}
-                  alt={duplicate ? "" : client.name}
+                  alt={duplicate ? "" : `${client.name} logo`}
                   width={160}
                   height={64}
-                  className="max-h-16 w-auto max-w-full object-contain"
+                  className="max-h-14 sm:max-h-16 w-auto max-w-[150px] object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105"
                   unoptimized
                 />
               );
               return client.website ? (
                 <a
-                  key={client.name}
+                  key={`${client.name}-${duplicate ? "dup" : "orig"}-${idx}`}
                   href={client.website}
                   target="_blank"
                   rel="noopener noreferrer"
                   tabIndex={duplicate ? -1 : undefined}
-                  aria-label={`${client.name} website`}
-                  className="client-logo-card hover:border-[#6A38EB] transition-colors"
+                  aria-label={`${client.name} website (opens in new tab)`}
+                  title={`Visit ${client.name}`}
+                  className="client-logo-card group hover:border-[#6A38EB] hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                 >
                   {logo}
                 </a>
               ) : (
-                <div key={client.name} className="client-logo-card">
+                <div
+                  key={`${client.name}-${duplicate ? "dup" : "orig"}-${idx}`}
+                  className="client-logo-card"
+                >
                   {logo}
                 </div>
               );

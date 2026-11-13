@@ -1,12 +1,36 @@
 export interface ClientLogo {
   name: string;
   logo: string;
-  website?: string;
+  website: string;
 }
 
-// Place approved logo files in public/clients, then add an entry here.
-// Example: { name: "Company name", logo: "/clients/company.svg", website: "https://example.com" }
-export const clients: ClientLogo[] = [];
+export const clients: ClientLogo[] = [
+  {
+    name: "Tat Tvam Asi",
+    logo: "/clients/tat-tvam-asi.jpg",
+    website: "http://tat-tvam-asi.in/",
+  },
+  {
+    name: "Poorba",
+    logo: "/clients/poorba.jpg",
+    website: "https://poorba.us/",
+  },
+  {
+    name: "Doctor A2Z",
+    logo: "/clients/doctor-a2z.jpg",
+    website: "https://doctora2z.com/",
+  },
+  {
+    name: "Delhi Rohini Puja Samiti",
+    logo: "/clients/drps.jpg",
+    website: "https://drps.org.in/",
+  },
+  {
+    name: "Scholavar",
+    logo: "/clients/scholavar.jpg",
+    website: "https://www.scholavar.com/",
+  },
+];
 
 // Fictional brands for layout preview only; these are not client endorsements.
 export const sampleClients = [
