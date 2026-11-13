@@ -5,6 +5,7 @@ import HowItWorksSection from "@/components/spark/HowItWorksSection";
 import BenefitsSection from "@/components/spark/BenefitsSection";
 import BentoFeaturesSection from "@/components/spark/BentoFeaturesSection";
 import AgencyProcessSection from "@/components/spark/AgencyProcessSection";
+import ComparisonSection from "@/components/spark/ComparisonSection";
 import TestimonialsSection from "@/components/spark/TestimonialsSection";
 import FooterSection from "@/components/spark/FooterSection";
 
@@ -18,6 +19,7 @@ export default function HomePage() {
         <BenefitsSection />
         <BentoFeaturesSection />
         <AgencyProcessSection />
+        <ComparisonSection />
         <TestimonialsSection />
         <FooterSection />
       </main>
