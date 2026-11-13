@@ -13,6 +13,7 @@ import {
   ExternalLink,
   Download,
   Sparkles,
+  Send,
 } from "lucide-react";
 
 interface ScheduleCallModalProps {
@@ -45,6 +46,7 @@ export default function ScheduleCallModal({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Set default date to tomorrow
@@ -63,6 +65,7 @@ export default function ScheduleCallModal({
     } else {
       document.body.style.overflow = "unset";
       setIsSuccess(false);
+      setEmailSent(false);
       setErrors({});
     }
 
@@ -84,15 +87,28 @@ export default function ScheduleCallModal({
 
   if (!isOpen) return null;
 
+  // Gmail Web Compose Link generator
+  const getGmailComposeUrl = () => {
+    const subject = encodeURIComponent(
+      `New Strategy Call Booking: ${formData.name || "Client"} (${formData.date || "Upcoming"})`
+    );
+    const body = encodeURIComponent(
+      `Hello Xink Digitals Team,\n\nI have scheduled a strategy consultation call:\n\n` +
+        `• Client Name: ${formData.name || "Client"}\n` +
+        `• Client Email: ${formData.email || "Not provided"}\n` +
+        `• Contact Phone: ${formData.phone || "Not provided"}\n` +
+        `• Preferred Date: ${formData.date || "Earliest available"}\n` +
+        `• Preferred Time: ${formData.time || "Anytime"}\n` +
+        `• Discussion Topic: ${formData.notes || "None"}\n\n` +
+        `Please confirm our calendar invitation.\n\n` +
+        `Best regards,\n${formData.name || "Client"}`
+    );
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=contact@xinkdigitals.com&su=${subject}&body=${body}`;
+  };
+
   const validate = () => {
-    const errs: Record<string, string> = {};
-    if (!formData.name.trim()) errs.name = "Please enter your name.";
-    if (!formData.email.trim() || !formData.email.includes("@"))
-      errs.email = "Please enter a valid email address.";
-    if (!formData.phone.trim() || formData.phone.trim().length < 6)
-      errs.phone = "Please enter a valid phone number.";
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
+    // No validation for email and phone number per requirement
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -112,12 +128,21 @@ export default function ScheduleCallModal({
       const data = await res.json();
       if (data.success) {
         setIsSuccess(true);
+        setEmailSent(Boolean(data.emailSent));
+
+        // Open Gmail compose directly to send to contact@xinkdigitals.com
+        try {
+          const gmailUrl = getGmailComposeUrl();
+          window.open(gmailUrl, "_blank");
+        } catch {
+          // If popup blocked, user has the button on screen
+        }
       } else {
         setErrors(data.errors || { general: "Something went wrong. Please try again." });
       }
     } catch {
       // Fallback: send via mailto directly to contact@xinkdigitals.com
-      const subject = encodeURIComponent(`Scheduled Call Request from ${formData.name}`);
+      const subject = encodeURIComponent(`Scheduled Call Request from ${formData.name || "Client"}`);
       const body = encodeURIComponent(
         `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nDate: ${formData.date}\nTime: ${formData.time}\nNotes: ${formData.notes || "None"}`
       );
@@ -132,9 +157,9 @@ export default function ScheduleCallModal({
   const getGoogleCalendarUrl = () => {
     const title = encodeURIComponent("Discovery Call — Xink Digitals");
     const details = encodeURIComponent(
-      `Strategy & Discovery discussion with ${formData.name}.\nPhone: ${formData.phone}\nEmail: ${formData.email}\nNotes: ${formData.notes || "None"}\nAgency: contact@xinkdigitals.com\nWebsite: https://xinkdigitals.com`
+      `Strategy & Discovery discussion with ${formData.name || "Client"}.\nPhone: ${formData.phone || "Not specified"}\nEmail: ${formData.email || "Not specified"}\nNotes: ${formData.notes || "None"}\nAgency: contact@xinkdigitals.com\nWebsite: https://xinkdigitals.com`
     );
-    const location = encodeURIComponent("Google Meet / Phone: " + formData.phone);
+    const location = encodeURIComponent("Google Meet / Phone: " + (formData.phone || ""));
     const d = formData.date ? formData.date.replace(/-/g, "") : "";
     const dates = d ? `&dates=${d}T093000Z/${d}T100000Z` : "";
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}${dates}&add=contact@xinkdigitals.com`;
@@ -155,10 +180,10 @@ export default function ScheduleCallModal({
       `DTSTART:${d}T100000Z`,
       `DTEND:${d}T103000Z`,
       "SUMMARY:Discovery Call — Xink Digitals",
-      `DESCRIPTION:Scheduled 1-on-1 strategy call with ${formData.name} (${formData.phone}, ${formData.email}). Agency: contact@xinkdigitals.com`,
-      `LOCATION:Phone / Google Meet (${formData.phone})`,
+      `DESCRIPTION:Scheduled 1-on-1 strategy call with ${formData.name || "Client"} (${formData.phone}, ${formData.email}). Agency: contact@xinkdigitals.com`,
+      `LOCATION:Phone / Google Meet (${formData.phone || ""})`,
       "ORGANIZER;CN=Xink Digitals:mailto:contact@xinkdigitals.com",
-      `ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=${formData.name}:mailto:${formData.email}`,
+      `ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=${formData.name || "Client"}:mailto:${formData.email || "contact@xinkdigitals.com"}`,
       "STATUS:CONFIRMED",
       "BEGIN:VALARM",
       "TRIGGER:-PT15M",
@@ -205,7 +230,7 @@ export default function ScheduleCallModal({
             </h3>
             <p className="text-xs sm:text-sm text-[#5B5573] mt-1">
               {isSuccess
-                ? "Your booking has been registered and routed to contact@xinkdigitals.com."
+                ? "Your booking has been registered for contact@xinkdigitals.com."
                 : "Lock in a 1-on-1 strategy sync with our growth specialists."}
             </p>
           </div>
@@ -231,10 +256,9 @@ export default function ScheduleCallModal({
                 <h4 className="font-display text-xl font-bold text-[#1B143F]">
                   You&apos;re on the schedule!
                 </h4>
-                <p className="text-sm text-[#5B5573] mt-1 max-w-sm mx-auto">
-                  A confirmation email with your booking details has been sent to{" "}
-                  <strong className="text-[#6A38EB] font-semibold">{formData.email}</strong> and{" "}
-                  <strong className="text-[#1B143F] font-semibold">contact@xinkdigitals.com</strong>.
+                <p className="text-sm text-[#5B5573] mt-1.5 max-w-sm mx-auto leading-relaxed">
+                  Your booking has been registered for{" "}
+                  <strong className="text-[#6A38EB] font-bold">contact@xinkdigitals.com</strong>.
                 </p>
               </div>
 
@@ -242,15 +266,23 @@ export default function ScheduleCallModal({
               <div className="p-4 rounded-2xl bg-[#F8F7FD] border border-[#EBE8F7] text-left text-xs space-y-2 text-[#5B5573]">
                 <div className="flex justify-between border-b border-[#E5E0F5] pb-2">
                   <span className="font-semibold text-[#1B143F]">Name:</span>
-                  <span>{formData.name}</span>
+                  <span>{formData.name || "Client"}</span>
                 </div>
                 <div className="flex justify-between border-b border-[#E5E0F5] pb-2">
                   <span className="font-semibold text-[#1B143F]">Contact Phone:</span>
-                  <span className="font-mono text-[#6A38EB] font-bold">{formData.phone}</span>
+                  <span className="font-mono text-[#6A38EB] font-bold">
+                    {formData.phone || "Not specified"}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b border-[#E5E0F5] pb-2">
+                  <span className="font-semibold text-[#1B143F]">Email:</span>
+                  <span>{formData.email || "Not specified"}</span>
                 </div>
                 <div className="flex justify-between border-b border-[#E5E0F5] pb-2">
                   <span className="font-semibold text-[#1B143F]">Date &amp; Time:</span>
-                  <span>{formData.date} · {formData.time}</span>
+                  <span>
+                    {formData.date} · {formData.time}
+                  </span>
                 </div>
                 <div className="flex justify-between pt-1">
                   <span className="font-semibold text-[#1B143F]">Calendar Status:</span>
@@ -258,8 +290,21 @@ export default function ScheduleCallModal({
                 </div>
               </div>
 
-              {/* Calendar Action Buttons */}
+              {/* Action Buttons: Gmail Send + Calendar Sync */}
               <div className="space-y-3 pt-2">
+                {/* 1. Direct Gmail Send */}
+                <a
+                  href={getGmailComposeUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3.5 px-4 rounded-2xl bg-[#EA4335] hover:bg-[#D93025] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-[#EA4335]/25 hover:shadow-lg"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>Send via Gmail to contact@xinkdigitals.com</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+
+                {/* 2. Google Calendar */}
                 <a
                   href={getGoogleCalendarUrl()}
                   target="_blank"
@@ -271,6 +316,7 @@ export default function ScheduleCallModal({
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
 
+                {/* 3. Download .ics */}
                 <button
                   type="button"
                   onClick={handleDownloadIcs}
@@ -297,70 +343,52 @@ export default function ScheduleCallModal({
               {/* Full Name */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                  Your Full Name <span className="text-red-500">*</span>
+                  Your Full Name
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 text-[#8C87A5] absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
-                    required
                     placeholder="e.g. Elena Rostova"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#DCDAE8] text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
                   />
                 </div>
-                {errors.name && (
-                  <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" /> {errors.name}
-                  </p>
-                )}
               </div>
 
-              {/* Email */}
+              {/* Email - No validation */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                  Business / Personal Email <span className="text-red-500">*</span>
+                  Business / Personal Email
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-[#8C87A5] absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
-                    type="email"
-                    required
+                    type="text"
                     placeholder="name@company.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#DCDAE8] text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
                   />
                 </div>
-                {errors.email && (
-                  <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" /> {errors.email}
-                  </p>
-                )}
               </div>
 
-              {/* Phone */}
+              {/* Phone - No validation */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                  Contact Phone Number <span className="text-red-500">*</span>
+                  Contact Phone Number
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-[#8C87A5] absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
-                    type="tel"
-                    required
+                    type="text"
                     placeholder="(+91) 92306 53970"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#DCDAE8] text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
                   />
                 </div>
-                {errors.phone && (
-                  <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5" /> {errors.phone}
-                  </p>
-                )}
               </div>
 
               {/* Date & Time Slot Row */}
@@ -438,7 +466,7 @@ export default function ScheduleCallModal({
                   )}
                 </button>
                 <p className="text-[11px] text-[#8C87A5] text-center mt-2.5">
-                  Sends invite directly to <span className="text-[#6A38EB] font-medium">contact@xinkdigitals.com</span> &amp; generates your calendar file.
+                  Routes booking to <span className="text-[#6A38EB] font-medium">contact@xinkdigitals.com</span> &amp; opens your calendar invite.
                 </p>
               </div>
             </form>

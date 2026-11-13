@@ -14,9 +14,12 @@ import {
   User,
   MessageSquare,
   HelpCircle,
+  Calendar,
+  Phone,
 } from "lucide-react";
 import WaterButton from "@/components/WaterButton";
 import TurnstileWidget from "@/components/TurnstileWidget";
+import ScheduleCallModal from "@/components/ScheduleCallModal";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -50,6 +53,7 @@ export default function ContactPage() {
   const [submissionFeedback, setSubmissionFeedback] = useState<string | null>(
     null,
   );
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
 
   // Validation Logic
   const validateField = (field: string, value: string): string => {
@@ -557,63 +561,108 @@ export default function ContactPage() {
             )}
           </div>
 
-          {/* Right Column: Information & Trust Sidebar */}
-          <aside className="rounded-[2.2rem] bg-[#F4F1FD] border border-[#EDEDF5] p-8 self-start space-y-6">
-            <div>
-              <div className="w-10 h-10 rounded-2xl bg-[#6A38EB]/15 text-[#6A38EB] flex items-center justify-center mb-4">
-                <Sparkles className="w-5 h-5" />
+          {/* Right Column: Information & Trust Sidebar + Schedule Call Card */}
+          <div className="self-start space-y-6">
+            <aside className="rounded-[2.2rem] bg-[#F4F1FD] border border-[#EDEDF5] p-8 space-y-6">
+              <div>
+                <div className="w-10 h-10 rounded-2xl bg-[#6A38EB]/15 text-[#6A38EB] flex items-center justify-center mb-4">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <h2 className="font-display text-2xl font-bold mb-3 text-[#15103A]">
+                  Let&apos;s find your focus.
+                </h2>
+                <p className="text-sm text-[#5B5573] leading-relaxed">
+                  Not sure which channel will drive the highest ROAS? Share your
+                  website URL and current bottleneck. We analyze traffic,
+                  messaging, and conversion flow before recommending a scope.
+                </p>
               </div>
-              <h2 className="font-display text-2xl font-bold mb-3 text-[#15103A]">
-                Let&apos;s find your focus.
-              </h2>
-              <p className="text-sm text-[#5B5573] leading-relaxed">
-                Not sure which channel will drive the highest ROAS? Share your
-                website URL and current bottleneck. We analyze traffic,
-                messaging, and conversion flow before recommending a scope.
-              </p>
-            </div>
 
-            {/* Direct contact pills */}
-            <div className="pt-4 border-t border-[#E5E0F5] space-y-3">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-[#8C87A5] font-bold block">
-                Direct Contact
-              </span>
-              <a
-                className="text-sm font-bold text-[#6A38EB] hover:underline flex items-center gap-2"
-                href="mailto:contact@xinkdigitals.com"
-              >
-                <Mail className="w-4 h-4 shrink-0" />
-                <span>contact@xinkdigitals.com</span>
-              </a>
-              <p className="text-xs text-[#7E7896]">
-                Response time: usually within 2–4 business hours.
-              </p>
-            </div>
+              {/* Direct contact pills */}
+              <div className="pt-4 border-t border-[#E5E0F5] space-y-3">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#8C87A5] font-bold block">
+                  Direct Contact
+                </span>
+                <a
+                  className="text-sm font-bold text-[#6A38EB] hover:underline flex items-center gap-2"
+                  href="mailto:contact@xinkdigitals.com"
+                >
+                  <Mail className="w-4 h-4 shrink-0" />
+                  <span>contact@xinkdigitals.com</span>
+                </a>
+                <p className="text-xs text-[#7E7896]">
+                  Response time: usually within 2–4 business hours.
+                </p>
+              </div>
 
-            {/* What happens next box */}
-            <div className="p-4 rounded-2xl bg-white/80 border border-[#E5E0F5] text-xs text-[#5B5573] space-y-2">
-              <span className="font-bold text-[#15103A] block">
-                What happens next?
-              </span>
-              <ol className="list-decimal list-inside space-y-1.5 text-[11px] leading-relaxed">
-                <li>Initial website &amp; competitor review</li>
-                <li>Strategy sync to discuss target metrics</li>
-                <li>Clear scope &amp; transparent roadmap proposal</li>
-              </ol>
-            </div>
+              {/* What happens next box */}
+              <div className="p-4 rounded-2xl bg-white/80 border border-[#E5E0F5] text-xs text-[#5B5573] space-y-2">
+                <span className="font-bold text-[#15103A] block">
+                  What happens next?
+                </span>
+                <ol className="list-decimal list-inside space-y-1.5 text-[11px] leading-relaxed">
+                  <li>Initial website &amp; competitor review</li>
+                  <li>Strategy sync to discuss target metrics</li>
+                  <li>Clear scope &amp; transparent roadmap proposal</li>
+                </ol>
+              </div>
 
-            <div className="pt-2">
-              <Link
-                href="/faq"
-                className="text-xs font-bold text-[#6A38EB] hover:underline flex items-center gap-1"
-              >
-                <span>Frequently Asked Questions</span>
-                <ArrowRight className="w-3 h-3" />
-              </Link>
+              <div className="pt-2">
+                <Link
+                  href="/faq"
+                  className="text-xs font-bold text-[#6A38EB] hover:underline flex items-center gap-1"
+                >
+                  <span>Frequently Asked Questions</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+            </aside>
+
+            {/* Schedule a Call Card: Below the right side box */}
+            <div className="rounded-[2.2rem] bg-gradient-to-br from-[#1B143F] to-[#2E1A47] text-white p-7 shadow-lg border border-white/10 space-y-4">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6A38EB]/40 border border-[#6A38EB]/50 text-[#C9F36D] text-[11px] font-bold uppercase tracking-wider">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Prefer a Call?</span>
+              </div>
+
+              <div>
+                <h3 className="font-display text-xl font-bold text-white mb-1.5">
+                  Schedule a 1-on-1 Call
+                </h3>
+                <p className="text-xs text-white/70 leading-relaxed">
+                  Pick a date and convenient time slot. We&apos;ll sync the invite
+                  directly to your calendar and route it to our team.
+                </p>
+              </div>
+
+              <div className="pt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsScheduleModalOpen(true)}
+                  className="w-full py-3.5 px-5 rounded-2xl bg-[#6A38EB] hover:bg-[#5829D6] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#6A38EB]/30 hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
+                >
+                  <Calendar className="w-4 h-4 text-[#C9F36D]" />
+                  <span>Schedule a Call</span>
+                  <span className="transition-transform group-hover:translate-x-1">
+                    ↗
+                  </span>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] text-white/50 pt-1 border-t border-white/10">
+                <span>Phone: (+91) 92306 53970</span>
+                <span className="text-[#C9F36D]">✓ Instant calendar sync</span>
+              </div>
             </div>
-          </aside>
+          </div>
         </div>
       </div>
+
+      {/* Schedule Call Modal Popup */}
+      <ScheduleCallModal
+        isOpen={isScheduleModalOpen}
+        onClose={() => setIsScheduleModalOpen(false)}
+      />
     </main>
   );
 }
