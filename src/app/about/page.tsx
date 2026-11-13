@@ -1,12 +1,57 @@
 import WaterButton from "@/components/WaterButton";
 export const metadata = { title: "About | Xink Digitals", description: "Meet the approach behind Xink Digitals: focused strategy, thoughtful creative and clear digital marketing reporting." };
 const values = [
- ["Start with the business", "Your audience, offer and goals guide the work. We choose channels because they serve a purpose, not because they are fashionable.", "circle"],
- ["Make the message clear", "Useful content and thoughtful design help people understand what you offer and take the next step.", "square"],
- ["Explain the numbers", "We focus reporting on agreed measures, discuss what the data can tell us and stay clear about its limits.", "triangle"],
- ["Build together", "A clear scope, shared priorities and direct feedback keep your team and ours moving in the same direction.", "diamond"],
+  [
+    "Start with the business",
+    "Your audience, offer and goals guide the work. We choose channels because they serve a purpose, not because they are fashionable.",
+    "circle",
+  ],
+  [
+    "Discover niche",
+    "We uncover high-intent audience pockets and underserved market segments where your business can build genuine authority rather than competing on price.",
+    "hexagon",
+  ],
+  [
+    "Competitor analysis",
+    "We deconstruct competitor playbooks, traffic channels, keyword gaps and ad creative to spot market vulnerabilities and craft an unfair advantage.",
+    "cross",
+  ],
+  [
+    "Brand building",
+    "From distinctive visual identity to crisp positioning, we build brand equity that makes your business instantly recognizable, valued and trusted.",
+    "star",
+  ],
+  [
+    "Make the message clear",
+    "Useful content and thoughtful design help people understand what you offer, build genuine conviction and take the next step.",
+    "square",
+  ],
+  [
+    "Outreach",
+    "Multi-channel engagement engineered to initiate high-value conversations, connect with key decision-makers and drive consistent pipeline growth.",
+    "pill",
+  ],
+  [
+    "Explain the numbers",
+    "We focus reporting on agreed measures, discuss what the data can tell us and stay transparent about performance and strategic next steps.",
+    "triangle",
+  ],
+  [
+    "Build together",
+    "A clear scope, shared priorities and direct feedback keep your team and ours moving in the same direction toward long-term scale.",
+    "diamond",
+  ],
 ];
-const disciplines = ["Strategy", "Content", "Paid media", "Web design", "Reporting"];
+const disciplines = [
+  "Strategy",
+  "Niche Discovery",
+  "Brand Building",
+  "Outreach",
+  "Competitor Intel",
+  "Content",
+  "Paid media",
+  "Reporting",
+];
 const glyphs = ["ab-g-circle", "ab-g-square", "ab-g-triangle", "ab-g-diamond"];
 
 function Marquee() {
@@ -44,7 +89,7 @@ export default function AboutPage() {
  <div className="grid sm:grid-cols-2 gap-6">{values.map(([title, text, shape], i) => <article data-reveal key={title} className="ab-card rounded-[2rem] bg-white border border-[#EDEDF5] p-8 sm:p-10">
   <span className="ab-card-line" aria-hidden="true" />
   <span className={`ab-card-shape ab-shape-${shape}`} aria-hidden="true" />
-  <span className="ab-card-num" aria-hidden="true">0{i + 1}</span>
+  <span className="ab-card-num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
   <h3 className="relative font-display text-xl sm:text-2xl font-bold mb-4">{title}</h3><p className="relative text-sm text-[#5B5573] leading-relaxed">{text}</p>
  </article>)}</div>
 

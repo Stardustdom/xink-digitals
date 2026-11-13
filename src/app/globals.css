@@ -1026,8 +1026,13 @@
 .ab-card-shape { position: absolute; top: 28px; right: 28px; width: 46px; height: 46px; background: #6A38EB; transition: transform 900ms cubic-bezier(.34,1.56,.64,1), border-radius 600ms ease, background 500ms ease; }
 .ab-shape-circle { border-radius: 50%; } .ab-shape-square { border-radius: 10px; background: #FF6575; }
 .ab-shape-triangle { background: #B9E85E; clip-path: polygon(50% 0, 100% 100%, 0 100%); } .ab-shape-diamond { background: #A98BFF; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+.ab-shape-hexagon { background: #00C48C; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
+.ab-shape-star { background: #FFA03A; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+.ab-shape-pill { background: #2D7FF9; border-radius: 23px; }
+.ab-shape-cross { background: #9333EA; clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%); }
 .ab-card:hover .ab-card-shape { transform: rotate(180deg) scale(1.25); }
 .ab-card:hover .ab-shape-circle { border-radius: 30%; } .ab-card:hover .ab-shape-square { border-radius: 50%; }
+.ab-card:hover .ab-shape-pill { border-radius: 12px; }
 
 .ab-cta { position: relative; overflow: hidden; isolation: isolate; transition: transform 400ms cubic-bezier(.22,1,.36,1), box-shadow 400ms ease; box-shadow: 0 14px 30px -14px #6A38EB99; }
 .ab-cta::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, #6A38EB, #FF6575); transform: translateX(-101%); transition: transform 600ms cubic-bezier(.22,1,.36,1); }
