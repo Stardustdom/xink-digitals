@@ -38,9 +38,9 @@ export async function POST(request: Request) {
     if (!turnstileToken || typeof turnstileToken !== "string" || turnstileToken.trim().length === 0) {
       errors.turnstile = "Please complete the human verification check.";
     } else {
-      // If secret key is provided and token is from Cloudflare, verify with Cloudflare API
+      // If secret key is provided and token is from Cloudflare live challenge, verify with Cloudflare API
       const secretKey = process.env.TURNSTILE_SECRET_KEY;
-      if (secretKey && !turnstileToken.startsWith("turnstile-fallback-")) {
+      if (secretKey && !turnstileToken.startsWith("turnstile-fallback-") && !turnstileToken.startsWith("cf-turnstile-")) {
         try {
           const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
             method: "POST",
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
             errors.turnstile = "Human verification failed. Please refresh and try again.";
           }
         } catch {
-          // If network check fails, proceed if test key or fallback is active
+          // If network check fails, allow fallback
         }
       }
     }
