@@ -160,42 +160,51 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <span className="text-xs text-white/50">Response time: &lt; 24 hrs</span>
+                <a
+                  href="tel:+919230653970"
+                  className="hover:text-white flex items-center gap-1.5 transition-colors"
+                >
+                  <span className="text-[#62D9F5]">📞</span>
+                  (+91) 92306 53970
+                </a>
+              </li>
+              <li className="text-xs text-white/60 leading-relaxed pt-1">
+                <a
+                  href="https://xinkdigitals.com/#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-white flex items-start gap-1.5"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-[#C9F36D] shrink-0 mt-0.5" />
+                  <span>11 Hospital Link Rd, Eastern Park, Santoshpur, Kolkata, India 700075</span>
+                </a>
               </li>
             </ul>
 
             <div className="flex flex-wrap gap-2 text-xs font-semibold">
               <a
-                href="https://twitter.com"
+                href="https://www.linkedin.com/company/xinkdigitals"
                 target="_blank"
                 rel="noreferrer"
-                className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#754BFF] hover:text-white transition-colors"
-              >
-                X / Twitter
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noreferrer"
-                className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#FF6575] hover:text-white transition-colors"
-              >
-                Instagram
-              </a>
-              <a
-                href="https://dribbble.com"
-                target="_blank"
-                rel="noreferrer"
-                className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#FF8CD5] hover:text-white transition-colors"
-              >
-                Dribbble
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noreferrer"
-                className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#62D9F5] hover:text-[#181329] transition-colors"
+                className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#0A66C2] hover:text-white transition-colors"
               >
                 LinkedIn
+              </a>
+              <a
+                href="https://www.youtube.com/@xinkdigitals"
+                target="_blank"
+                rel="noreferrer"
+                className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#FF0000] hover:text-white transition-colors"
+              >
+                YouTube
+              </a>
+              <a
+                href="https://www.facebook.com/61577021811720/"
+                target="_blank"
+                rel="noreferrer"
+                className="px-2.5 py-1 rounded-md bg-white/5 hover:bg-[#1877F2] hover:text-white transition-colors"
+              >
+                Facebook
               </a>
             </div>
           </div>
