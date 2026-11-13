@@ -3,9 +3,59 @@ import "./globals.css";
 import InteriorNavigation from "@/components/InteriorNavigation";
 import PageMotion from "@/components/PageMotion";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://xinkdigitals.com";
+
 export const metadata: Metadata = {
-  title: "Xink Digitals — Digital Marketing Agency",
-  description: "SEO, paid advertising, social media, brand strategy and web design. Xink Digitals helps businesses turn attention into qualified enquiries with clear plans and reporting.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Xink Digitals — Full-Stack Digital Marketing & Growth Agency",
+    template: "%s | Xink Digitals",
+  },
+  description:
+    "Performance marketing, SEO, paid advertising, brand strategy, and high-converting web design. Xink Digitals helps ambitious brands scale with transparent ROI and agile execution.",
+  keywords: [
+    "Digital Marketing Agency",
+    "Performance Marketing",
+    "SEO Strategy",
+    "Paid Advertising",
+    "Meta Ads",
+    "Google Ads",
+    "Conversion Rate Optimization",
+    "Web Design & Development",
+    "Xink Digitals",
+  ],
+  authors: [{ name: "Xink Digitals", url: siteUrl }],
+  creator: "Xink Digitals",
+  publisher: "Xink Digitals",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: "Xink Digitals",
+    title: "Xink Digitals — Full-Stack Digital Marketing & Growth Agency",
+    description:
+      "Performance marketing, SEO, paid advertising, brand strategy, and high-converting web design with transparent ROI reporting.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Xink Digitals — Digital Marketing Agency",
+    description:
+      "Performance marketing, SEO, paid advertising, and conversion-focused web design for modern brands.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
