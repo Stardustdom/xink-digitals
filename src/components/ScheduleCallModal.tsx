@@ -135,7 +135,7 @@ export default function ScheduleCallModal({
           const gmailUrl = getGmailComposeUrl();
           window.open(gmailUrl, "_blank");
         } catch {
-          // If popup blocked, user has the button on screen
+          // If popup blocked, button is on screen
         }
       } else {
         setErrors(data.errors || { general: "Something went wrong. Please try again." });
@@ -206,7 +206,7 @@ export default function ScheduleCallModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#0F0A1C]/70 backdrop-blur-md transition-all animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 overflow-y-auto bg-[#0F0A1C]/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 transition-all animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -214,93 +214,88 @@ export default function ScheduleCallModal({
       aria-modal="true"
       aria-labelledby="schedule-modal-title"
     >
-      <div className="relative w-full max-w-lg rounded-3xl bg-white text-[#1B143F] shadow-[0_25px_60px_-15px_rgba(27,20,63,0.3)] border border-[#EDEDF5] overflow-hidden max-h-[92vh] flex flex-col">
-        {/* Modal Header */}
-        <div className="relative px-6 pt-6 pb-4 sm:px-8 sm:pt-8 bg-gradient-to-b from-[#F7F5FE] to-white border-b border-[#EDEDF5]/80 flex items-start justify-between">
+      <div className="relative w-full max-w-lg my-auto rounded-3xl bg-white text-[#1B143F] shadow-[0_25px_60px_-15px_rgba(27,20,63,0.35)] border border-[#EDEDF5] overflow-hidden flex flex-col max-h-[calc(100vh-2rem)]">
+        {/* Compact Modal Header - Stays visible at all times */}
+        <div className="relative px-5 py-3.5 sm:px-6 sm:py-4 bg-gradient-to-b from-[#F7F5FE] to-white border-b border-[#EDEDF5] flex items-center justify-between shrink-0">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6A38EB]/10 border border-[#6A38EB]/20 text-[#6A38EB] text-xs font-bold uppercase tracking-wider mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#6A38EB]/10 border border-[#6A38EB]/20 text-[#6A38EB] text-[10px] font-bold uppercase tracking-wider mb-1">
+              <Sparkles className="w-3 h-3" />
               <span>Direct Consultation</span>
             </div>
             <h3
               id="schedule-modal-title"
-              className="font-display text-2xl sm:text-3xl font-extrabold text-[#1B143F] tracking-tight"
+              className="font-display text-xl sm:text-2xl font-extrabold text-[#1B143F] tracking-tight leading-tight"
             >
               {isSuccess ? "Call Scheduled!" : "Schedule a Call"}
             </h3>
-            <p className="text-xs sm:text-sm text-[#5B5573] mt-1">
-              {isSuccess
-                ? "Your booking has been registered for contact@xinkdigitals.com."
-                : "Lock in a 1-on-1 strategy sync with our growth specialists."}
-            </p>
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-white border border-[#EDEDF5] text-[#5B5573] hover:text-[#1B143F] hover:bg-[#F4F4FA] flex items-center justify-center transition-colors shrink-0 shadow-xs"
+            className="w-8 h-8 rounded-full bg-white border border-[#EDEDF5] text-[#5B5573] hover:text-[#1B143F] hover:bg-[#F4F4FA] flex items-center justify-center transition-colors shrink-0 shadow-2xs cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Modal Content */}
-        <div className="p-6 sm:p-8 overflow-y-auto">
+        {/* Modal Scrollable Body */}
+        <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 overscroll-contain">
           {isSuccess ? (
             /* Success Confirmation State */
-            <div className="text-center py-4 space-y-6">
-              <div className="w-16 h-16 rounded-full bg-[#EBFBF5] border-2 border-[#00C48C] text-[#00C48C] flex items-center justify-center mx-auto shadow-sm animate-in zoom-in-50 duration-300">
-                <CheckCircle2 className="w-8 h-8" />
+            <div className="text-center py-2 space-y-4">
+              <div className="w-14 h-14 rounded-full bg-[#EBFBF5] border-2 border-[#00C48C] text-[#00C48C] flex items-center justify-center mx-auto shadow-sm animate-in zoom-in-50 duration-300">
+                <CheckCircle2 className="w-7 h-7" />
               </div>
 
               <div>
-                <h4 className="font-display text-xl font-bold text-[#1B143F]">
+                <h4 className="font-display text-lg font-bold text-[#1B143F]">
                   You&apos;re on the schedule!
                 </h4>
-                <p className="text-sm text-[#5B5573] mt-1.5 max-w-sm mx-auto leading-relaxed">
+                <p className="text-xs text-[#5B5573] mt-1 max-w-sm mx-auto leading-relaxed">
                   Your booking has been registered for{" "}
                   <strong className="text-[#6A38EB] font-bold">contact@xinkdigitals.com</strong>.
                 </p>
               </div>
 
               {/* Summary Card */}
-              <div className="p-4 rounded-2xl bg-[#F8F7FD] border border-[#EBE8F7] text-left text-xs space-y-2 text-[#5B5573]">
-                <div className="flex justify-between border-b border-[#E5E0F5] pb-2">
+              <div className="p-3.5 rounded-2xl bg-[#F8F7FD] border border-[#EBE8F7] text-left text-xs space-y-2 text-[#5B5573]">
+                <div className="flex justify-between border-b border-[#E5E0F5] pb-1.5">
                   <span className="font-semibold text-[#1B143F]">Name:</span>
                   <span>{formData.name || "Client"}</span>
                 </div>
-                <div className="flex justify-between border-b border-[#E5E0F5] pb-2">
+                <div className="flex justify-between border-b border-[#E5E0F5] pb-1.5">
                   <span className="font-semibold text-[#1B143F]">Contact Phone:</span>
                   <span className="font-mono text-[#6A38EB] font-bold">
                     {formData.phone || "Not specified"}
                   </span>
                 </div>
-                <div className="flex justify-between border-b border-[#E5E0F5] pb-2">
+                <div className="flex justify-between border-b border-[#E5E0F5] pb-1.5">
                   <span className="font-semibold text-[#1B143F]">Email:</span>
                   <span>{formData.email || "Not specified"}</span>
                 </div>
-                <div className="flex justify-between border-b border-[#E5E0F5] pb-2">
+                <div className="flex justify-between border-b border-[#E5E0F5] pb-1.5">
                   <span className="font-semibold text-[#1B143F]">Date &amp; Time:</span>
                   <span>
                     {formData.date} · {formData.time}
                   </span>
                 </div>
-                <div className="flex justify-between pt-1">
+                <div className="flex justify-between pt-0.5">
                   <span className="font-semibold text-[#1B143F]">Calendar Status:</span>
                   <span className="text-[#00A877] font-bold">✓ Ready to Add</span>
                 </div>
               </div>
 
               {/* Action Buttons: Gmail Send + Calendar Sync */}
-              <div className="space-y-3 pt-2">
+              <div className="space-y-2.5 pt-1">
                 {/* 1. Direct Gmail Send */}
                 <a
                   href={getGmailComposeUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 px-4 rounded-2xl bg-[#EA4335] hover:bg-[#D93025] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-[#EA4335]/25 hover:shadow-lg"
+                  className="w-full py-3 px-4 rounded-xl bg-[#EA4335] hover:bg-[#D93025] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-[#EA4335]/25 hover:shadow-lg"
                 >
-                  <Send className="w-4 h-4" />
-                  <span>Send via Gmail to contact@xinkdigitals.com</span>
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Send via Gmail (contact@xinkdigitals.com)</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
 
@@ -309,9 +304,9 @@ export default function ScheduleCallModal({
                   href={getGoogleCalendarUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3.5 px-4 rounded-2xl bg-[#6A38EB] hover:bg-[#5829D6] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-[#6A38EB]/25"
+                  className="w-full py-3 px-4 rounded-xl bg-[#6A38EB] hover:bg-[#5829D6] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-[#6A38EB]/25"
                 >
-                  <Calendar className="w-4 h-4" />
+                  <Calendar className="w-3.5 h-3.5" />
                   <span>Add to Google Calendar</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
@@ -320,14 +315,14 @@ export default function ScheduleCallModal({
                 <button
                   type="button"
                   onClick={handleDownloadIcs}
-                  className="w-full py-3 px-4 rounded-2xl bg-white hover:bg-[#F8F7FD] border border-[#EDEDF5] text-[#1B143F] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-xs"
+                  className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-[#F8F7FD] border border-[#EDEDF5] text-[#1B143F] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-2xs"
                 >
-                  <Download className="w-4 h-4 text-[#6A38EB]" />
+                  <Download className="w-3.5 h-3.5 text-[#6A38EB]" />
                   <span>Download .ics (Apple / Outlook / Phone)</span>
                 </button>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-1">
                 <button
                   type="button"
                   onClick={onClose}
@@ -339,85 +334,85 @@ export default function ScheduleCallModal({
             </div>
           ) : (
             /* Active Schedule Call Form */
-            <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-3">
               {/* Full Name */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#1B143F] mb-1">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
                   Your Full Name
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-[#8C87A5] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <User className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="e.g. Elena Rostova"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#DCDAE8] text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
                   />
                 </div>
               </div>
 
               {/* Email - No validation */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#1B143F] mb-1">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
                   Business / Personal Email
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-[#8C87A5] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="name@company.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#DCDAE8] text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
                   />
                 </div>
               </div>
 
               {/* Phone - No validation */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#1B143F] mb-1">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
                   Contact Phone Number
                 </label>
                 <div className="relative">
-                  <Phone className="w-4 h-4 text-[#8C87A5] absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Phone className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="(+91) 92306 53970"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#DCDAE8] text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
                   />
                 </div>
               </div>
 
               {/* Date & Time Slot Row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-0.5">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1B143F] mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
                     Preferred Date
                   </label>
                   <div className="relative">
-                    <Calendar className="w-4 h-4 text-[#8C87A5] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Calendar className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="date"
                       value={formData.date}
                       onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                      className="w-full pl-10 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                      className="w-full pl-9 pr-2.5 py-2 rounded-xl border border-[#DCDAE8] text-xs text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#1B143F] mb-1">
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
                     Preferred Time Slot
                   </label>
                   <div className="relative">
-                    <Clock className="w-4 h-4 text-[#8C87A5] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Clock className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <select
                       value={formData.time}
                       onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                      className="w-full pl-10 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all bg-white"
+                      className="w-full pl-9 pr-2 py-2 rounded-xl border border-[#DCDAE8] text-[11px] sm:text-xs text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all bg-white"
                     >
                       {TIME_SLOTS.map((t) => (
                         <option key={t} value={t}>
@@ -431,7 +426,7 @@ export default function ScheduleCallModal({
 
               {/* Notes / Optional */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#1B143F] mb-1">
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
                   Discussion Topic / Goals <span className="text-[#8C87A5] font-normal lowercase">(optional)</span>
                 </label>
                 <textarea
@@ -439,22 +434,22 @@ export default function ScheduleCallModal({
                   placeholder="e.g. Scaling Meta Ads, full SEO roadmap, or rebranding..."
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl border border-[#DCDAE8] text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                  className="w-full px-3 py-1.5 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
                 />
               </div>
 
               {errors.general && (
                 <p className="text-xs text-red-500 flex items-center gap-1 font-medium">
-                  <AlertCircle className="w-4 h-4" /> {errors.general}
+                  <AlertCircle className="w-3.5 h-3.5" /> {errors.general}
                 </p>
               )}
 
               {/* Submit CTA */}
-              <div className="pt-2">
+              <div className="pt-1">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3.5 px-6 rounded-2xl bg-[#6A38EB] hover:bg-[#5829D6] disabled:opacity-70 text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#6A38EB]/30 hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
+                  className="w-full py-3 px-5 rounded-2xl bg-[#6A38EB] hover:bg-[#5829D6] disabled:opacity-70 text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#6A38EB]/30 hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
                 >
                   {isSubmitting ? (
                     <span>Registering Call...</span>
@@ -465,8 +460,8 @@ export default function ScheduleCallModal({
                     </>
                   )}
                 </button>
-                <p className="text-[11px] text-[#8C87A5] text-center mt-2.5">
-                  Routes booking to <span className="text-[#6A38EB] font-medium">contact@xinkdigitals.com</span> &amp; opens your calendar invite.
+                <p className="text-[10px] text-[#8C87A5] text-center mt-1.5">
+                  Routes booking to <span className="text-[#6A38EB] font-medium">contact@xinkdigitals.com</span> &amp; opens calendar invite.
                 </p>
               </div>
             </form>
