@@ -115,6 +115,9 @@ export async function POST(request: Request) {
           tls: {
             rejectUnauthorized: false,
           },
+          connectionTimeout: 8000,
+          greetingTimeout: 8000,
+          socketTimeout: 8000,
         });
 
         // 1. Email to agency
