@@ -110,7 +110,7 @@ export default function ScheduleCallModal({
         setIsSuccess(true);
         setEmailSent(Boolean(data.emailSent));
       } else {
-        setErrors(data.errors || { general: "Something went wrong. Please try again." });
+        setErrors(data.errors || { general: data.error || "Something went wrong. Please try again." });
       }
     } catch {
       setErrors({ general: "Network error occurred. Please check your connection and try again." });
