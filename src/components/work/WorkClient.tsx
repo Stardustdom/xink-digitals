@@ -66,6 +66,14 @@ function Watermark({ position = "bottom-right" }: { position?: "bottom-right" | 
   );
 }
 
+function Spinner() {
+  return (
+    <span role="status" aria-label="Loading" className="absolute inset-0 z-[5] flex items-center justify-center bg-white/70">
+      <span className="w-12 h-12 rounded-full border-4 border-[#754BFF]/25 border-t-[#754BFF] animate-spin" />
+    </span>
+  );
+}
+
 function Popup({ label, onClose, onPrev, onNext, counter, children }: { label: string; onClose: () => void; onPrev: () => void; onNext: () => void; counter: string; children: React.ReactNode }) {
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -90,7 +98,7 @@ function Popup({ label, onClose, onPrev, onNext, counter, children }: { label: s
         <button type="button" aria-label="Previous" onClick={onPrev} className={arrow}>
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <div className="relative max-w-[min(calc(100vw-8.5rem),960px)] max-h-[85vh] overflow-hidden rounded-2xl bg-white border border-white/20 shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
+        <div className="relative max-w-[calc(100vw-8.5rem)] max-h-[88vh] overflow-hidden rounded-2xl bg-white border border-white/20 shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
           <button
             type="button"
             aria-label="Close preview"
@@ -121,6 +129,7 @@ export default function WorkClient() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [sampleBox, setSampleBox] = useState<number | null>(null);
+  const [loadedKey, setLoadedKey] = useState<string | null>(null);
 
   useEffect(() => {
     if (lightbox === null) return;
@@ -521,22 +530,26 @@ export default function WorkClient() {
             {creativeSamples[sampleBox].type === "image" ? (
               <Image
                 key={`img-${sampleBox}`}
+                onLoad={() => setLoadedKey(`s${sampleBox}`)}
                 src={`/work-samples/sample-${String(creativeSamples[sampleBox].n).padStart(2, "0")}.jpg`}
                 alt={`${creativeSamples[sampleBox].title} by Xink Digitals`}
                 width={creativeSamples[sampleBox].w}
                 height={creativeSamples[sampleBox].h}
-                className="block w-auto h-auto max-h-[80vh] max-w-full"
+                style={{ width: `min(calc(100vw - 8.5rem), 1200px, ${((creativeSamples[sampleBox].w / creativeSamples[sampleBox].h) * 80).toFixed(2)}vh)` }}
+                className="block h-auto"
               />
             ) : (
               <video
                 key={`vid-${sampleBox}`}
+                onLoadedData={() => setLoadedKey(`s${sampleBox}`)}
                 src={`/work-samples/sample-video-${String(creativeSamples[sampleBox].n).padStart(2, "0")}.mp4`}
                 controls
                 autoPlay
                 playsInline
-                className="block w-auto h-auto max-h-[80vh] max-w-full bg-black"
+                className="block h-[80vh] w-auto min-w-[320px] max-w-[min(calc(100vw-8.5rem),1200px)] object-contain bg-black"
               />
             )}
+            {loadedKey !== `s${sampleBox}` && <Spinner />}
             <Watermark position={creativeSamples[sampleBox].type === "video" ? "top-right" : "bottom-right"} />
           </div>
         </Popup>
@@ -549,13 +562,18 @@ export default function WorkClient() {
           onNext={() => setLightbox((lightbox + 1) % evidence.length)}
           counter={`${lightbox + 1} / ${evidence.length}`}
         >
+          <div className="relative">
           <Image
+            key={`ev-${lightbox}`}
+            onLoad={() => setLoadedKey(`e${lightbox}`)}
             src={`/work-evidence/evidence-${String(evidence[lightbox].n).padStart(2, "0")}.jpg`}
             alt={`${evidence[lightbox].platform} analytics screenshot: ${evidence[lightbox].title}`}
             width={1400}
             height={700}
-            className="block w-auto h-auto max-h-[70vh] max-w-full"
+            className="block h-auto max-h-[72vh] w-[min(calc(100vw-8.5rem),1200px)] object-contain"
           />
+          {loadedKey !== `e${lightbox}` && <Spinner />}
+          </div>
           <p className="px-4 py-3 text-sm font-bold text-[#181329]">
             {evidence[lightbox].title} - <span className="font-normal text-[#5A4E6B]">{evidence[lightbox].note}</span>
           </p>
