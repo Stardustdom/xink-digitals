@@ -55,9 +55,9 @@ export default function ClientLogosSection() {
                 <Image
                   src={client.logo}
                   alt={duplicate ? "" : `${client.name} logo`}
-                  width={160}
-                  height={64}
-                  className="max-h-14 sm:max-h-16 w-auto max-w-[150px] object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105"
+                  width={220}
+                  height={88}
+                  className="h-16 sm:h-[72px] w-auto max-w-[185px] max-h-[76px] object-contain transition-transform duration-300 group-hover:scale-105"
                   unoptimized
                 />
               );

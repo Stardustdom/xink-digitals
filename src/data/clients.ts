@@ -7,27 +7,27 @@ export interface ClientLogo {
 export const clients: ClientLogo[] = [
   {
     name: "Tat Tvam Asi",
-    logo: "/clients/tat-tvam-asi.jpg",
+    logo: "/clients/tat-tvam-asi.png",
     website: "http://tat-tvam-asi.in/",
   },
   {
     name: "Poorba",
-    logo: "/clients/poorba.jpg",
+    logo: "/clients/poorba.png",
     website: "https://poorba.us/",
   },
   {
     name: "Doctor A2Z",
-    logo: "/clients/doctor-a2z.jpg",
+    logo: "/clients/doctor-a2z.png",
     website: "https://doctora2z.com/",
   },
   {
     name: "Delhi Rohini Puja Samiti",
-    logo: "/clients/drps.jpg",
+    logo: "/clients/drps.png",
     website: "https://drps.org.in/",
   },
   {
     name: "Scholavar",
-    logo: "/clients/scholavar.jpg",
+    logo: "/clients/scholavar.png",
     website: "https://www.scholavar.com/",
   },
 ];

@@ -427,7 +427,7 @@
 .client-marquee-window { overflow: hidden; mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); }
 .client-marquee-track { display: flex; width: max-content; animation: client-logo-scroll 32s linear infinite; }
 .client-marquee-group { display: flex; flex-shrink: 0; gap: 1rem; padding-right: 1rem; min-width: 100vw; justify-content: space-around; }
-.client-logo-card { display: flex; flex: 0 0 200px; align-items: center; justify-content: center; gap: .7rem; min-height: 112px; padding: 1.5rem; border-radius: 1.7rem; background: white; border: 1px solid #EDEDF5; box-shadow: 0 6px 28px rgba(27,20,63,.04); }
+.client-logo-card { display: flex; flex: 0 0 220px; align-items: center; justify-content: center; min-height: 92px; height: 96px; padding: 0.6rem 1.1rem; border-radius: 1.35rem; background: white; border: 1px solid #EDEDF5; box-shadow: 0 6px 28px rgba(27,20,63,.04); }
 .client-marquee-window:hover .client-marquee-track, .client-marquee-window:focus-within .client-marquee-track { animation-play-state: paused; }
 @keyframes client-logo-scroll { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {

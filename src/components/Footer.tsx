@@ -31,7 +31,8 @@ export default function Footer() {
               </span>
             </h2>
             <p className="text-base sm:text-lg text-white/70 max-w-xl mb-8 leading-relaxed">
-              We collaborate with ambitious founders and bold marketing leaders ready to build digital spectacles that people remember forever.
+              We collaborate with ambitious founders and bold marketing leaders
+              ready to build digital spectacles that people remember forever.
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -63,7 +64,9 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm text-white/60 max-w-sm mb-6 leading-relaxed">
-              A digital marketing & creative agency engineering high-voltage brand identities, viral social campaigns, and immersive web playgrounds.
+              A digital marketing & creative agency engineering high-voltage
+              brand identities, viral social campaigns, and immersive web
+              playgrounds.
             </p>
             <div className="flex items-center gap-3 text-xs text-[#C9BFFF]">
               <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10">
@@ -89,21 +92,33 @@ export default function Footer() {
                   href="/work"
                   className="hover:text-[#C9F36D] transition-colors flex items-center gap-1.5"
                 >
-                  Our Work <span className="text-[10px] text-[#C9F36D] font-mono">★</span>
+                  Our Work{" "}
+                  <span className="text-[10px] text-[#C9F36D] font-mono">
+                    ★
+                  </span>
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="hover:text-white transition-colors">
+                <Link
+                  href="/services"
+                  className="hover:text-white transition-colors"
+                >
                   Services
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-white transition-colors">
+                <Link
+                  href="/about"
+                  className="hover:text-white transition-colors"
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
+                <Link
+                  href="/contact"
+                  className="hover:text-white transition-colors"
+                >
                   Contact
                 </Link>
               </li>
@@ -117,27 +132,42 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2.5 text-sm text-white/70">
               <li>
-                <Link href="/services#branding" className="hover:text-[#754BFF] transition-colors">
+                <Link
+                  href="/services#branding"
+                  className="hover:text-[#754BFF] transition-colors"
+                >
                   Brand Identity
                 </Link>
               </li>
               <li>
-                <Link href="/services#web-design" className="hover:text-[#62D9F5] transition-colors">
+                <Link
+                  href="/services#web-design"
+                  className="hover:text-[#62D9F5] transition-colors"
+                >
                   Next-Gen Websites
                 </Link>
               </li>
               <li>
-                <Link href="/services#social-media" className="hover:text-[#FF6575] transition-colors">
+                <Link
+                  href="/services#social-media"
+                  className="hover:text-[#FF6575] transition-colors"
+                >
                   Viral Social Drops
                 </Link>
               </li>
               <li>
-                <Link href="/services#performance" className="hover:text-[#FFC247] transition-colors">
+                <Link
+                  href="/services#performance"
+                  className="hover:text-[#FFC247] transition-colors"
+                >
                   Performance Ads
                 </Link>
               </li>
               <li>
-                <Link href="/services#motion-3d" className="hover:text-[#FF8CD5] transition-colors">
+                <Link
+                  href="/services#motion-3d"
+                  className="hover:text-[#FF8CD5] transition-colors"
+                >
                   3D & Motion Design
                 </Link>
               </li>
@@ -159,6 +189,7 @@ export default function Footer() {
                   contact@xinkdigitals.com
                 </a>
               </li>
+
               <li>
                 <a
                   href="tel:+919230653970"
@@ -176,7 +207,10 @@ export default function Footer() {
                   className="hover:text-white flex items-start gap-1.5"
                 >
                   <MapPin className="w-3.5 h-3.5 text-[#C9F36D] shrink-0 mt-0.5" />
-                  <span>11 Hospital Link Rd, Eastern Park, Santoshpur, Kolkata, India 700075</span>
+                  <span>
+                    11 Hospital Link Rd, Eastern Park, Santoshpur, Kolkata,
+                    India 700075
+                  </span>
                 </a>
               </li>
             </ul>
@@ -218,9 +252,22 @@ export default function Footer() {
             <Heart className="w-3.5 h-3.5 text-[#FF6575] fill-[#FF6575] ml-0.5" />
           </p>
           <div className="flex items-center gap-4">
-            <LegalLink kind="privacy" className="hover:text-white transition-colors">Privacy</LegalLink>
-            <LegalLink kind="terms" className="hover:text-white transition-colors">Terms</LegalLink>
-            <Link href="/sitemap.xml" className="hover:text-white transition-colors">
+            <LegalLink
+              kind="privacy"
+              className="hover:text-white transition-colors"
+            >
+              Privacy
+            </LegalLink>
+            <LegalLink
+              kind="terms"
+              className="hover:text-white transition-colors"
+            >
+              Terms
+            </LegalLink>
+            <Link
+              href="/sitemap.xml"
+              className="hover:text-white transition-colors"
+            >
               Sitemap
             </Link>
           </div>
