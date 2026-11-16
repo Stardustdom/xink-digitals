@@ -27,6 +27,11 @@ function getSmtpCredentials() {
     // fallback to process.env.SMTP_PASS
   }
 
+  // Fallback to configured webmail credentials if not provided in environment or if stripped by dotenv expansion:
+  if (!pass || pass === "Xink@Xink") {
+    pass = "Xink$2027@Xink$2027";
+  }
+
   // mail.xinkdigitals.com is proxied by Cloudflare which drops port 465 SMTP.
   if (host === "mail.xinkdigitals.com") {
     host = "119.18.54.191";

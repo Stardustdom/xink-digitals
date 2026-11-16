@@ -27,6 +27,11 @@ function getSmtpCredentials() {
     // fallback
   }
 
+  // Fallback to configured webmail credentials if not provided in environment or if stripped by dotenv expansion:
+  if (!pass || pass === "Xink@Xink") {
+    pass = "Xink$2027@Xink$2027";
+  }
+
   if (host === "mail.xinkdigitals.com") {
     host = "119.18.54.191";
   }
