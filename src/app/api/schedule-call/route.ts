@@ -62,25 +62,23 @@ export async function POST(request: Request) {
     let emailSent = false;
     let emailStatus = "logged";
 
-    // Check credentials (GMAIL_USER & GMAIL_APP_PASSWORD, or standard SMTP)
-    const user = process.env.GMAIL_USER || process.env.SMTP_USER;
-    const pass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
-    const host = process.env.SMTP_HOST;
-    const port = Number(process.env.SMTP_PORT) || 465;
+    // Webmail / SMTP credentials from environment
+    const user = process.env.SMTP_USER || process.env.EMAIL_USER || process.env.GMAIL_USER || "contact@xinkdigitals.com";
+    const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.GMAIL_APP_PASSWORD;
+    const host = process.env.SMTP_HOST || process.env.EMAIL_HOST || "mail.xinkdigitals.com";
+    const port = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 465;
 
-    if (user && pass) {
+    if (pass) {
       try {
-        const transporter = host
-          ? nodemailer.createTransport({
-              host,
-              port,
-              secure: port === 465,
-              auth: { user, pass },
-            })
-          : nodemailer.createTransport({
-              service: "gmail",
-              auth: { user, pass },
-            });
+        const transporter = nodemailer.createTransport({
+          host,
+          port,
+          secure: port === 465,
+          auth: { user, pass },
+          tls: {
+            rejectUnauthorized: false, // Prevents certificate errors on shared hosting / cPanel
+          },
+        });
 
         const icsContent = buildIcsCalendar({
           name: bookingName,
@@ -169,7 +167,7 @@ export async function POST(request: Request) {
       }
     } else {
       console.warn(
-        "Automated email delivery requires GMAIL_USER and GMAIL_APP_PASSWORD in .env.local"
+        "Automated email delivery requires SMTP_PASS (your webmail account password) in .env.local"
       );
       emailStatus = "credentials_not_configured";
     }
