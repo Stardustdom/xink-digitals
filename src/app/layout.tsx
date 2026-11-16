@@ -4,7 +4,10 @@ import InteriorNavigation from "@/components/InteriorNavigation";
 import PageMotion from "@/components/PageMotion";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://xinkdigitals.com";
+const siteUrl =
+  process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.NEXT_PUBLIC_SITE_URL || "https://xinkdigitals.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

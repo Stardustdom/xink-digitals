@@ -1,7 +1,12 @@
 import Script from "next/script";
 
 export default function GoogleAnalytics() {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-XINKDIGITALS";
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
+  // Only render tracking tag if a valid Google Analytics measurement ID is configured
+  if (!gaId || !/^G-[A-Z0-9]{7,12}$/i.test(gaId)) {
+    return null;
+  }
 
   return (
     <>
