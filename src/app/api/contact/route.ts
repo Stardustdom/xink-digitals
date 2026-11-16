@@ -72,7 +72,11 @@ export async function POST(request: Request) {
     // Webmail / SMTP credentials from environment
     const user = process.env.SMTP_USER || process.env.EMAIL_USER || process.env.GMAIL_USER || "contact@xinkdigitals.com";
     const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.GMAIL_APP_PASSWORD;
-    const host = process.env.SMTP_HOST || process.env.EMAIL_HOST || "mail.xinkdigitals.com";
+    let host = process.env.SMTP_HOST || process.env.EMAIL_HOST || "119.18.54.191";
+    // Cloudflare proxies mail.xinkdigitals.com, which blocks SMTP. Route directly to server IP if set:
+    if (host === "mail.xinkdigitals.com") {
+      host = "119.18.54.191";
+    }
     const port = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 465;
 
     if (pass) {
