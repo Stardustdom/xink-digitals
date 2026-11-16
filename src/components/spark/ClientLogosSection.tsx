@@ -54,7 +54,7 @@ export default function ClientLogosSection() {
               const logo = (
                 <Image
                   src={client.logo}
-                  alt={duplicate ? "" : `${client.name} logo`}
+                  alt={`${client.name} client logo`}
                   width={220}
                   height={88}
                   className="h-16 sm:h-[72px] w-auto max-w-[185px] max-h-[76px] object-contain transition-transform duration-300 group-hover:scale-105"

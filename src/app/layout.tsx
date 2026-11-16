@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import InteriorNavigation from "@/components/InteriorNavigation";
 import PageMotion from "@/components/PageMotion";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://xinkdigitals.com";
 
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
     template: "%s | Xink Digitals",
   },
   description:
-    "Performance marketing, SEO, paid advertising, brand strategy, and high-converting web design. Xink Digitals helps ambitious brands scale with transparent ROI and agile execution.",
+    "Scale your brand with Xink Digitals: performance marketing, SEO, high-converting web design, and paid ads with transparent ROI.",
   keywords: [
     "Digital Marketing Agency",
     "Performance Marketing",
@@ -29,6 +30,11 @@ export const metadata: Metadata = {
   publisher: "Xink Digitals",
   alternates: {
     canonical: "/",
+    languages: {
+      "en-US": "/",
+      "en-IN": "/",
+      "x-default": "/",
+    },
   },
   openGraph: {
     type: "website",
@@ -37,13 +43,22 @@ export const metadata: Metadata = {
     siteName: "Xink Digitals",
     title: "Xink Digitals — Full-Stack Digital Marketing & Growth Agency",
     description:
-      "Performance marketing, SEO, paid advertising, brand strategy, and high-converting web design with transparent ROI reporting.",
+      "Scale your brand with Xink Digitals: performance marketing, SEO, high-converting web design, and paid ads with transparent ROI.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Xink Digitals — Full-Stack Digital Marketing & Growth Agency",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Xink Digitals — Digital Marketing Agency",
+    title: "Xink Digitals — Full-Stack Digital Marketing & Growth Agency",
     description:
-      "Performance marketing, SEO, paid advertising, and conversion-focused web design for modern brands.",
+      "Scale your brand with Xink Digitals: performance marketing, SEO, high-converting web design, and paid ads with transparent ROI.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -75,6 +90,47 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["Organization", "ProfessionalService"],
+        "@id": `${siteUrl}/#organization`,
+        name: "Xink Digitals",
+        url: siteUrl,
+        logo: `${siteUrl}/logo.png`,
+        image: `${siteUrl}/og-image.png`,
+        description:
+          "Full-stack digital marketing agency specializing in SEO, performance marketing, paid advertising, and high-converting web design.",
+        telephone: "+919230653970",
+        email: "info@xinkdigitals.com",
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Kolkata",
+          addressRegion: "West Bengal",
+          postalCode: "700136",
+          addressCountry: "IN",
+        },
+        sameAs: ["https://wa.me/919230653970"],
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        url: siteUrl,
+        name: "Xink Digitals",
+        publisher: {
+          "@id": `${siteUrl}/#organization`,
+        },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${siteUrl}/faq?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
+  };
+
   return (
     <html lang="en" className="scroll-smooth">
       <head>
@@ -87,8 +143,13 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+        />
       </head>
       <body className="bg-white text-[#1B143F] antialiased selection:bg-[#6A38EB] selection:text-white">
+        <GoogleAnalytics />
         <InteriorNavigation />
         <PageMotion>{children}</PageMotion>
       </body>
