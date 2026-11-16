@@ -18,6 +18,8 @@ import {
   Phone,
   Search,
   Globe,
+  Clock,
+  Rocket,
 } from "lucide-react";
 import WaterButton from "@/components/WaterButton";
 import TurnstileWidget from "@/components/TurnstileWidget";
@@ -639,7 +641,7 @@ export default function ContactPage() {
                       <span>
                         {isSubmitting
                           ? "Submitting Enquiry..."
-                          : "Send Project Enquiry ↗"}
+                          : "Send Project Enquiry"}
                       </span>
                     </WaterButton>
 
@@ -648,7 +650,7 @@ export default function ContactPage() {
                       onClick={handleMailtoFallback}
                       className="text-xs font-semibold text-[#5B5573] hover:text-[#6A38EB] transition-colors py-2 text-center"
                     >
-                      Or open as email draft directly ↗
+                      Or open as email draft directly
                     </button>
                   </div>
                 </form>
@@ -724,21 +726,53 @@ export default function ContactPage() {
                       </div>
                     </div>
                     <span className="text-xs font-bold text-[#6A38EB] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-                      Connect ↗
+                      Connect
                     </span>
                   </a>
                 </div>
 
-                {/* What happens next box */}
-                <div className="p-4 rounded-2xl bg-white/80 border border-[#E5E0F5] text-xs text-[#5B5573] space-y-2">
-                  <span className="font-bold text-[#15103A] block">
-                    What happens next?
-                  </span>
-                  <ol className="list-decimal list-inside space-y-1.5 text-[11px] leading-relaxed">
-                    <li>Initial website &amp; competitor review</li>
-                    <li>Strategy sync to discuss target metrics</li>
-                    <li>Clear scope &amp; transparent roadmap proposal</li>
-                  </ol>
+                {/* Engagement Standard: Consultation, Response Time, Project Initiation */}
+                <div className="p-4 rounded-2xl bg-white/90 border border-[#E5E0F5] text-xs text-[#5B5573] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#15103A] block text-xs uppercase tracking-wider">
+                      Engagement Process
+                    </span>
+                    <span className="text-[10px] text-[#6A38EB] font-bold bg-[#6A38EB]/10 px-2 py-0.5 rounded-full">
+                      3 Steps
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-[11px] leading-relaxed">
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-[#6A38EB]/15 text-[#6A38EB] font-bold flex items-center justify-center shrink-0 text-[10px]">
+                        1
+                      </span>
+                      <div>
+                        <strong className="text-[#15103A] block">Consultation</strong>
+                        <span>Discovery call or free site audit to understand your bottleneck.</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-[#6A38EB]/15 text-[#6A38EB] font-bold flex items-center justify-center shrink-0 text-[10px]">
+                        2
+                      </span>
+                      <div>
+                        <strong className="text-[#15103A] block">Response Time</strong>
+                        <span>Detailed proposal &amp; strategic reply within 2–4 business hours.</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-[#6A38EB]/15 text-[#6A38EB] font-bold flex items-center justify-center shrink-0 text-[10px]">
+                        3
+                      </span>
+                      <div>
+                        <strong className="text-[#15103A] block">Project Initiation</strong>
+                        <span>Scope sign-off, workspace setup, and kick-off within 24–48 hours.</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="pt-2">
@@ -794,6 +828,115 @@ export default function ContactPage() {
                   <span>Phone: (+91) 92306 53970</span>
                   <span className="text-[#C9F36D]">✓ Instant calendar sync</span>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3 Core Engagement Pillars: Consultation, Response Time, Project Initiation */}
+          <div className="mt-16 sm:mt-20 pt-12 sm:pt-16 border-t border-[#EDEDF5]">
+            <div className="text-center max-w-xl mx-auto mb-10 sm:mb-12">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6A38EB]/10 text-[#6A38EB] text-[11px] font-bold uppercase tracking-wider mb-3">
+                <Sparkles className="w-3.5 h-3.5 text-[#6A38EB]" />
+                <span>Our Engagement Standard</span>
+              </div>
+              <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#15103A] tracking-tight">
+                Consultation. Response Time. <br className="hidden sm:inline" />
+                Project Initiation.
+              </h2>
+              <p className="text-sm text-[#5B5573] mt-2.5 leading-relaxed">
+                Clear expectations, guaranteed turnaround, and disciplined onboarding from your first click to launch.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Pillar 1: Consultation */}
+              <div className="rounded-3xl bg-white border border-[#EDEDF5] p-6 sm:p-7 shadow-xs hover:border-[#6A38EB]/30 hover:shadow-md transition-all group">
+                <div className="w-12 h-12 rounded-2xl bg-[#6A38EB]/10 text-[#6A38EB] flex items-center justify-center mb-5 group-hover:bg-[#6A38EB] group-hover:text-white transition-colors">
+                  <Calendar className="w-6 h-6" />
+                </div>
+                <div className="text-[11px] font-bold uppercase tracking-wider text-[#6A38EB] mb-1 font-mono">
+                  Pillar 01
+                </div>
+                <h3 className="font-display font-bold text-xl text-[#15103A] mb-2.5">
+                  Consultation
+                </h3>
+                <p className="text-xs sm:text-sm text-[#5B5573] leading-relaxed mb-4">
+                  We evaluate your current online presence, search competition, and business bottlenecks before recommending any scope or retainer.
+                </p>
+                <ul className="text-xs text-[#5B5573] space-y-2 border-t border-[#EDEDF5] pt-4">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00C48C] shrink-0" />
+                    <span>Free 30-min strategy discovery call</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00C48C] shrink-0" />
+                    <span>Complimentary 18-point website audit</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00C48C] shrink-0" />
+                    <span>Zero hard-sell or unnecessary packages</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Pillar 2: Response Time */}
+              <div className="rounded-3xl bg-white border border-[#EDEDF5] p-6 sm:p-7 shadow-xs hover:border-[#6A38EB]/30 hover:shadow-md transition-all group">
+                <div className="w-12 h-12 rounded-2xl bg-[#00C48C]/15 text-[#00A877] flex items-center justify-center mb-5 group-hover:bg-[#00C48C] group-hover:text-white transition-colors">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div className="text-[11px] font-bold uppercase tracking-wider text-[#00A877] mb-1 font-mono">
+                  Pillar 02
+                </div>
+                <h3 className="font-display font-bold text-xl text-[#15103A] mb-2.5">
+                  Response Time
+                </h3>
+                <p className="text-xs sm:text-sm text-[#5B5573] leading-relaxed mb-4">
+                  We prioritize speed and momentum. Every project brief, enquiry, or audit request is reviewed directly by our core strategists.
+                </p>
+                <ul className="text-xs text-[#5B5573] space-y-2 border-t border-[#EDEDF5] pt-4">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00C48C] shrink-0" />
+                    <span>Replies within 2–4 business hours</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00C48C] shrink-0" />
+                    <span>Same-day proposal &amp; timeline delivery</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00C48C] shrink-0" />
+                    <span>Direct chat on WhatsApp: (+91) 92306 53970</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Pillar 3: Project Initiation */}
+              <div className="rounded-3xl bg-white border border-[#EDEDF5] p-6 sm:p-7 shadow-xs hover:border-[#6A38EB]/30 hover:shadow-md transition-all group">
+                <div className="w-12 h-12 rounded-2xl bg-[#FF6575]/10 text-[#FF6575] flex items-center justify-center mb-5 group-hover:bg-[#FF6575] group-hover:text-white transition-colors">
+                  <Rocket className="w-6 h-6" />
+                </div>
+                <div className="text-[11px] font-bold uppercase tracking-wider text-[#FF6575] mb-1 font-mono">
+                  Pillar 03
+                </div>
+                <h3 className="font-display font-bold text-xl text-[#15103A] mb-2.5">
+                  Project Initiation
+                </h3>
+                <p className="text-xs sm:text-sm text-[#5B5573] leading-relaxed mb-4">
+                  Once your proposal is approved, onboarding kicks off immediately. No lag or red tape — execution begins within 24–48 hours.
+                </p>
+                <ul className="text-xs text-[#5B5573] space-y-2 border-t border-[#EDEDF5] pt-4">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00C48C] shrink-0" />
+                    <span>Kickoff within 24–48 hours of sign-off</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00C48C] shrink-0" />
+                    <span>Agreed milestone KPIs &amp; deliverables</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00C48C] shrink-0" />
+                    <span>Full client access &amp; asset ownership</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
