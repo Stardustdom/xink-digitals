@@ -101,9 +101,9 @@ export default function FooterSection() {
                 <Image
                   src="/logo.png"
                   alt="Xink Digitals"
-                  width={150}
-                  height={72}
-                  className="h-9 w-auto object-contain"
+                  width={220}
+                  height={105}
+                  className="h-12 w-auto object-contain"
                 />
               </Link>
               <p className="text-sm text-[#5B5573] leading-relaxed">

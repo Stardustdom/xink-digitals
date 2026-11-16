@@ -47,9 +47,9 @@ export default function HeroSection() {
           <Image
             src="/logo.png"
             alt="Xink Digitals"
-            width={200}
-            height={96}
-            className="h-[2.4em] w-auto object-contain"
+            width={320}
+            height={153}
+            className="h-[5.2em] w-auto object-contain transition-transform hover:scale-105"
             priority
           />
         </Link>
