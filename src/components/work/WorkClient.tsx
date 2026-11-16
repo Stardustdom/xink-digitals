@@ -19,6 +19,8 @@ import {
   X,
   BarChart3,
   Play,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useSound } from "@/components/SoundManager";
 
@@ -64,7 +66,7 @@ function Watermark({ position = "bottom-right" }: { position?: "bottom-right" | 
   );
 }
 
-function Popup({ label, onClose, children }: { label: string; onClose: () => void; children: React.ReactNode }) {
+function Popup({ label, onClose, onPrev, onNext, counter, children }: { label: string; onClose: () => void; onPrev: () => void; onNext: () => void; counter: string; children: React.ReactNode }) {
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -78,7 +80,7 @@ function Popup({ label, onClose, children }: { label: string; onClose: () => voi
       role="dialog"
       aria-modal="true"
       aria-label={label}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-hidden overscroll-contain"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-hidden overscroll-contain bg-white/20 backdrop-blur-md"
       onClick={onClose}
     >
       <div
@@ -95,6 +97,25 @@ function Popup({ label, onClose, children }: { label: string; onClose: () => voi
         </button>
         {children}
       </div>
+      <button
+        type="button"
+        aria-label="Previous"
+        onClick={(e) => { e.stopPropagation(); onPrev(); }}
+        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white text-[#181329] shadow-lg flex items-center justify-center hover:bg-[#754BFF] hover:text-white transition-colors"
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+      <button
+        type="button"
+        aria-label="Next"
+        onClick={(e) => { e.stopPropagation(); onNext(); }}
+        className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white text-[#181329] shadow-lg flex items-center justify-center hover:bg-[#754BFF] hover:text-white transition-colors"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
+      <span className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-white text-[#181329] text-xs font-bold shadow-md">
+        {counter}
+      </span>
     </div>,
     document.body
   );
@@ -124,6 +145,8 @@ export default function WorkClient() {
     if (sampleBox === null) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSampleBox(null);
+      if (e.key === "ArrowRight") setSampleBox((i) => (i === null ? i : (i + 1) % creativeSamples.length));
+      if (e.key === "ArrowLeft") setSampleBox((i) => (i === null ? i : (i - 1 + creativeSamples.length) % creativeSamples.length));
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -285,16 +308,16 @@ export default function WorkClient() {
                     aria-label={`Play ${c.title}`}
                   >
                     <video
-                      src={`/work-samples/sample-video-${String(c.n).padStart(2, "0")}.mp4#t=0.5`}
+                      src={`/work-samples/sample-video-${String(c.n).padStart(2, "0")}.mp4`}
+                      autoPlay
                       muted
+                      loop
                       playsInline
-                      preload="metadata"
+                      preload="auto"
                       className="w-full h-auto max-h-[560px] pointer-events-none"
                     />
-                    <span className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-                      <span className="w-14 h-14 rounded-full bg-white/90 text-[#754BFF] flex items-center justify-center shadow-lg">
-                        <Play className="w-6 h-6 ml-0.5" fill="currentColor" />
-                      </span>
+                    <span className="absolute bottom-3 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 text-[#181329] text-[11px] font-bold shadow-md group-hover:bg-[#754BFF] group-hover:text-white transition-colors">
+                      <Play className="w-3 h-3" fill="currentColor" /> Click to watch with sound
                     </span>
                     <Watermark position="top-right" />
                   </button>
@@ -495,10 +518,17 @@ export default function WorkClient() {
         </section>
       </div>
       {sampleBox !== null && (
-        <Popup label="Sample work preview" onClose={() => setSampleBox(null)}>
+        <Popup
+          label="Sample work preview"
+          onClose={() => setSampleBox(null)}
+          onPrev={() => setSampleBox((sampleBox - 1 + creativeSamples.length) % creativeSamples.length)}
+          onNext={() => setSampleBox((sampleBox + 1) % creativeSamples.length)}
+          counter={`${sampleBox + 1} / ${creativeSamples.length}`}
+        >
           <div className="relative">
             {creativeSamples[sampleBox].type === "image" ? (
               <Image
+                key={`img-${sampleBox}`}
                 src={`/work-samples/sample-${String(creativeSamples[sampleBox].n).padStart(2, "0")}.jpg`}
                 alt={`${creativeSamples[sampleBox].title} by Xink Digitals`}
                 width={creativeSamples[sampleBox].w}
@@ -507,6 +537,7 @@ export default function WorkClient() {
               />
             ) : (
               <video
+                key={`vid-${sampleBox}`}
                 src={`/work-samples/sample-video-${String(creativeSamples[sampleBox].n).padStart(2, "0")}.mp4`}
                 controls
                 autoPlay
@@ -519,7 +550,13 @@ export default function WorkClient() {
         </Popup>
       )}
       {lightbox !== null && (
-        <Popup label="Work evidence preview" onClose={() => setLightbox(null)}>
+        <Popup
+          label="Work evidence preview"
+          onClose={() => setLightbox(null)}
+          onPrev={() => setLightbox((lightbox - 1 + evidence.length) % evidence.length)}
+          onNext={() => setLightbox((lightbox + 1) % evidence.length)}
+          counter={`${lightbox + 1} / ${evidence.length}`}
+        >
           <Image
             src={`/work-evidence/evidence-${String(evidence[lightbox].n).padStart(2, "0")}.jpg`}
             alt={`${evidence[lightbox].platform} analytics screenshot: ${evidence[lightbox].title}`}
