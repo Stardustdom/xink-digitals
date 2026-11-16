@@ -221,11 +221,6 @@ export default function WorkClient() {
               <a href="#work-evidence" className="px-4 py-2 rounded-full bg-[#754BFF] text-white text-xs font-bold">Work Evidence</a>
               <a href="#sample-work" className="px-4 py-2 rounded-full bg-white border border-[#181329]/15 text-[#181329] text-xs font-bold">Sample Work</a>
             </div>
-            <div className="flex flex-wrap gap-3 mt-4">
-              {[[String(projects.length).padStart(2, "0"), "Case studies"], [String(categories.length - 1).padStart(2, "0"), "Disciplines"], ["100%", "Bespoke"]].map(([n, l]) => (
-                <div key={l} className="work-stat"><strong>{n}</strong><span>{l}</span></div>
-              ))}
-            </div>
           </div>
         </div>
 
