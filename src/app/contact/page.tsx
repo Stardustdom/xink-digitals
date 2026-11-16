@@ -16,10 +16,13 @@ import {
   HelpCircle,
   Calendar,
   Phone,
+  Search,
+  Globe,
 } from "lucide-react";
 import WaterButton from "@/components/WaterButton";
 import TurnstileWidget from "@/components/TurnstileWidget";
 import ScheduleCallModal from "@/components/ScheduleCallModal";
+import SiteAuditModal from "@/components/SiteAuditModal";
 
 function WhatsAppIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -62,6 +65,7 @@ export default function ContactPage() {
     null,
   );
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isSiteAuditModalOpen, setIsSiteAuditModalOpen] = useState(false);
 
   // Validation Logic
   const validateField = (field: string, value: string): string => {
@@ -706,6 +710,42 @@ export default function ContactPage() {
                   </span>
                 </div>
               </div>
+
+              {/* Free Website Audit Card */}
+              <div className="rounded-[2.2rem] bg-white border border-[#EDEDF5] p-7 shadow-sm space-y-4 relative overflow-hidden">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6A38EB]/10 border border-[#6A38EB]/20 text-[#6A38EB] text-[11px] font-bold uppercase tracking-wider">
+                  <Search className="w-3.5 h-3.5" />
+                  <span>Complimentary Diagnostic</span>
+                </div>
+
+                <div>
+                  <h3 className="font-display text-xl font-bold text-[#1B143F] mb-1.5">
+                    Free Website Audit
+                  </h3>
+                  <p className="text-xs text-[#5B5573] leading-relaxed">
+                    Want to know where your site is losing conversions? Get an in-depth SEO, speed, and conversion breakdown delivered in 24 hours.
+                  </p>
+                </div>
+
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsSiteAuditModalOpen(true)}
+                    className="w-full py-3.5 px-5 rounded-2xl bg-[#1B143F] hover:bg-[#6A38EB] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#1B143F]/20 hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
+                  >
+                    <Search className="w-4 h-4 text-[#C9F36D]" />
+                    <span>Request Free Site Audit</span>
+                    <span className="transition-transform group-hover:translate-x-1">
+                      ↗
+                    </span>
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between text-[11px] text-[#7E7896] pt-1 border-t border-[#EDEDF5]">
+                  <span>Turnaround: 24 Hours</span>
+                  <span className="text-[#00A877] font-semibold">✓ 100% Free · No Obligation</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -715,6 +755,12 @@ export default function ContactPage() {
       <ScheduleCallModal
         isOpen={isScheduleModalOpen}
         onClose={() => setIsScheduleModalOpen(false)}
+      />
+
+      {/* Free Site Audit Modal Popup with blurred background */}
+      <SiteAuditModal
+        isOpen={isSiteAuditModalOpen}
+        onClose={() => setIsSiteAuditModalOpen(false)}
       />
     </>
   );

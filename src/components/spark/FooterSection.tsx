@@ -6,12 +6,14 @@ import Link from "next/link";
 import WaterButton from "@/components/WaterButton";
 import LegalLink from "@/components/LegalLink";
 import ScheduleCallModal from "@/components/ScheduleCallModal";
+import SiteAuditModal from "@/components/SiteAuditModal";
 import {
   MapPin,
   Phone,
   Mail,
   Calendar,
   FileCode,
+  Search,
 } from "lucide-react";
 
 function LinkedinIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -48,6 +50,7 @@ function WhatsAppIcon({ className = "w-4 h-4" }: { className?: string }) {
 
 export default function FooterSection() {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isSiteAuditModalOpen, setIsSiteAuditModalOpen] = useState(false);
 
   return (
     <>
@@ -70,7 +73,7 @@ export default function FooterSection() {
               </p>
             </div>
 
-            {/* CTA Buttons: Schedule Call & Start Conversation */}
+            {/* CTA Buttons: Schedule Call, Free Site Audit & Start Conversation */}
             <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
@@ -79,6 +82,17 @@ export default function FooterSection() {
               >
                 <Calendar className="w-4 h-4 text-[#C9F36D] group-hover:text-white transition-colors" />
                 <span>Schedule a call</span>
+                <span className="transition-transform group-hover:translate-x-0.5">
+                  ↗
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsSiteAuditModalOpen(true)}
+                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-[#1B143F]/20 bg-white hover:border-[#6A38EB] hover:text-[#6A38EB] text-[#1B143F] text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+              >
+                <Search className="w-4 h-4 text-[#6A38EB]" />
+                <span>Free Site Audit</span>
                 <span className="transition-transform group-hover:translate-x-0.5">
                   ↗
                 </span>
@@ -232,7 +246,15 @@ export default function FooterSection() {
                 </a>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 space-y-2">
+                <button
+                  type="button"
+                  onClick={() => setIsSiteAuditModalOpen(true)}
+                  className="w-full py-2.5 px-4 rounded-xl bg-[#1B143F] hover:bg-[#6A38EB] text-white text-xs font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-xs hover:shadow-md"
+                >
+                  <Search className="w-3.5 h-3.5 text-[#C9F36D]" />
+                  <span>Free Site Audit</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => setIsScheduleModalOpen(true)}
@@ -268,6 +290,12 @@ export default function FooterSection() {
       <ScheduleCallModal
         isOpen={isScheduleModalOpen}
         onClose={() => setIsScheduleModalOpen(false)}
+      />
+
+      {/* Free Site Audit Modal Popup with blurred background */}
+      <SiteAuditModal
+        isOpen={isSiteAuditModalOpen}
+        onClose={() => setIsSiteAuditModalOpen(false)}
       />
     </>
   );
