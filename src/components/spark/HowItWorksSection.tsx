@@ -45,9 +45,9 @@ export default function HowItWorksSection() {
     <section
       ref={ref}
       data-play={play ? "true" : "false"}
-      className="relative min-h-svh bg-white text-[#1B143F] overflow-hidden flex items-center justify-center p-8 sm:p-16 hiw"
+      className="relative min-h-svh bg-white text-[#1B143F] overflow-hidden flex items-center justify-center p-4 sm:p-16 hiw"
     >
-      <div ref={rowRef} className="relative z-10 flex items-center justify-center pl-[4.5rem] sm:pl-28">
+      <div ref={rowRef} className="relative z-10 flex flex-nowrap items-center justify-center whitespace-nowrap pl-[4.5rem] sm:pl-28">
         {/* Tilted white squircle with orange lightning hexagon, tucked at the lower-left of "How" */}
         <div className="absolute z-0 left-[1.1rem] sm:left-[2.9rem] top-1/2 translate-y-[0.4rem]">
           {/* Shadow on the "floor": flat, below the box, shrinks/fades as the box rises */}
@@ -77,7 +77,7 @@ export default function HowItWorksSection() {
         </div>
 
         {/* "How it": letters fade in one by one as the violet arrow sweeps across */}
-        <span ref={textRef} className="relative z-10 inline-block font-display font-normal text-[clamp(3rem,8vw,6.5rem)] text-[#1B143F] tracking-tight leading-none">
+        <span ref={textRef} className="relative z-10 inline-block whitespace-nowrap font-display font-normal text-[clamp(2.25rem,8vw,6.5rem)] text-[#1B143F] tracking-tight leading-none">
           {LETTERS.map((ch, i) => (
             <span
               key={i}
@@ -93,7 +93,7 @@ export default function HowItWorksSection() {
         <span className="hiw-arrow" aria-hidden="true" />
 
         {/* Big tilted violet pill with soft glowing rings */}
-        <span ref={pillRef} className="relative ml-[0.35em] inline-flex items-center justify-center select-none text-[clamp(3rem,8vw,6.5rem)]">
+        <span ref={pillRef} className="relative ml-[0.35em] inline-flex shrink-0 items-center justify-center select-none text-[clamp(2.25rem,8vw,6.5rem)]">
           <span className="-rotate-[11deg] inline-flex items-center justify-center relative">
           {/* Tight ripple hugging the pill only */}
           <span className="absolute inset-0 pointer-events-none" aria-hidden="true">

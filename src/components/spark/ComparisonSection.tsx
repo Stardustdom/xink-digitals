@@ -258,7 +258,7 @@ export default function ComparisonSection() {
 
         {/* ── Detailed Technical Spec Matrix (Collapsible) ── */}
         {showDetailedSpecs && (
-          <div className="rounded-[2.2rem] bg-[#FBFBFE] border border-[#EDEDF5] shadow-sm p-6 sm:p-8 lg:p-10 animate-fade-in">
+          <div className="rounded-[2.2rem] bg-[#FBFBFE] border border-[#EDEDF5] shadow-sm p-4 sm:p-8 lg:p-10 animate-fade-in">
             <div className="mb-6">
               <h3 className="font-display font-bold text-xl sm:text-2xl text-[#15103A]">
                 Head-to-Head Capability Matrix
@@ -268,8 +268,32 @@ export default function ComparisonSection() {
               </p>
             </div>
 
-            {/* Desktop Table View */}
-            <div className="overflow-x-auto">
+            {/* Mobile: compact stacked cards, fits the screen width with no sideways scrolling */}
+            <div className="sm:hidden space-y-3">
+              {FEATURE_SPECS.map((spec, i) => (
+                <div key={i} className="rounded-2xl bg-white border border-[#EDEDF5] overflow-hidden">
+                  <div className="px-3.5 pt-3 pb-2">
+                    <span className="text-[9px] font-mono uppercase tracking-wider text-[#6A38EB] font-bold block">{spec.category}</span>
+                    <span className="text-[13px] font-bold text-[#15103A] leading-tight">{spec.name}</span>
+                  </div>
+                  <div className="px-3.5 py-2 bg-[#6A38EB]/6 flex items-start gap-2 text-[12px] font-bold text-[#15103A]">
+                    <Check className="w-3.5 h-3.5 text-[#00C48C] stroke-[3] shrink-0 mt-0.5" />
+                    <span><span className="text-[#6A38EB] font-mono text-[9px] uppercase tracking-wider mr-1.5">Xink</span>{spec.xink}</span>
+                  </div>
+                  <div className="px-3.5 py-1.5 flex items-start gap-2 text-[11px] text-[#5B5573]">
+                    <X className="w-3 h-3 text-[#8C87A5] stroke-[2.5] shrink-0 mt-0.5" />
+                    <span><span className="text-[#8C87A5] font-mono text-[9px] uppercase tracking-wider mr-1.5">Agency</span>{spec.traditional}</span>
+                  </div>
+                  <div className="px-3.5 pt-1.5 pb-3 flex items-start gap-2 text-[11px] text-[#5B5573]">
+                    <Minus className="w-3 h-3 text-[#8C87A5] stroke-[2.5] shrink-0 mt-0.5" />
+                    <span><span className="text-[#8C87A5] font-mono text-[9px] uppercase tracking-wider mr-1.5">In-house</span>{spec.freelance}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop / tablet table view */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-[#EDEDF5] text-[11px] font-mono font-bold uppercase tracking-wider text-[#8C87A5]">

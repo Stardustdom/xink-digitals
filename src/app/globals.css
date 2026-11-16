@@ -428,6 +428,7 @@
 .client-marquee-track { display: flex; width: max-content; animation: client-logo-scroll 32s linear infinite; }
 .client-marquee-group { display: flex; flex-shrink: 0; gap: 1rem; padding-right: 1rem; min-width: 100vw; justify-content: space-around; }
 .client-logo-card { display: flex; flex: 0 0 220px; align-items: center; justify-content: center; min-height: 92px; height: 96px; padding: 0.6rem 1.1rem; border-radius: 1.35rem; background: white; border: 1px solid #EDEDF5; box-shadow: 0 6px 28px rgba(27,20,63,.04); }
+@media (max-width: 639px) { .client-logo-card { flex-basis: 140px; min-height: 60px; height: 64px; padding: 0.35rem 0.8rem; border-radius: 1rem; } .client-marquee-group { gap: 0.6rem; padding-right: 0.6rem; } }
 .client-marquee-window:hover .client-marquee-track, .client-marquee-window:focus-within .client-marquee-track { animation-play-state: paused; }
 @keyframes client-logo-scroll { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) {
@@ -554,6 +555,7 @@
 
 /* One continuous S-road, with a glowing journey that pauses at each checkpoint. */
 .process-scroll { overflow-x: auto; padding: 12px 0 24px; scrollbar-width: thin; scrollbar-color: #CBBDF3 #F8F8FC; border-radius: 2rem; }
+@media (max-width: 639px) { .process-scroll { overflow-y: hidden; padding: 12px 0 24px; } .process-roadmap { zoom: .35; } }
 .process-scroll:focus-visible { outline: 2px solid #6A38EB; outline-offset: 5px; }
 .process-roadmap { position: relative; min-width: 1020px; height: 640px; border: 1px solid #EDEDF5; border-radius: 2rem; background: radial-gradient(ellipse at 50% 50%, #F0EBFC 0, #F8F8FC 48%, #FBFBFE 100%); }
 .process-road { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }

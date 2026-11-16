@@ -57,7 +57,7 @@ export default function ClientLogosSection() {
                   alt={`${client.name} client logo`}
                   width={220}
                   height={88}
-                  className="h-16 sm:h-[72px] w-auto max-w-[185px] max-h-[76px] object-contain transition-transform duration-300 group-hover:scale-105"
+                  className="h-10 sm:h-[72px] w-auto max-w-[110px] sm:max-w-[185px] max-h-[76px] object-contain transition-transform duration-300 group-hover:scale-105"
                   unoptimized
                 />
               );
@@ -90,19 +90,19 @@ export default function ClientLogosSection() {
     <section
       ref={sectionRef}
       aria-labelledby="clients-heading"
-      className="bg-[#FBFBFE] py-16 sm:py-24 text-[#1B143F] overflow-hidden"
+      className="bg-[#FBFBFE] py-8 sm:py-24 text-[#1B143F] overflow-hidden"
     >
       <div className="max-w-6xl mx-auto text-center px-6">
-        <p className="collaboration-reveal collaboration-eyebrow text-xs font-bold uppercase tracking-[0.2em] text-[#6A38EB] mb-4">
+        <p className="collaboration-reveal collaboration-eyebrow text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#6A38EB] mb-1.5 sm:mb-4">
           Our clients
         </p>
         <h2
           id="clients-heading"
-          className="collaboration-reveal collaboration-title font-display font-extrabold text-3xl sm:text-5xl tracking-tight"
+          className="collaboration-reveal collaboration-title font-display font-extrabold text-xl sm:text-5xl tracking-tight"
         >
           Brands we are supporting.
         </h2>
-        <p className="collaboration-reveal collaboration-description text-sm text-[#5B5573] mt-4 mb-10">
+        <p className="collaboration-reveal collaboration-description text-xs sm:text-sm text-[#5B5573] mt-1.5 mb-4 sm:mt-4 sm:mb-10">
           Good work starts with a shared ambition.
         </p>
       </div>

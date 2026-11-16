@@ -21,6 +21,31 @@ export default function ProcessSection() {
     if (!section || !canvas || !path || !head || !window.IntersectionObserver) return;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (motion.matches) return;
+    const scroller = section.querySelector<HTMLElement>(".process-scroll");
+    const roadmap = canvas as HTMLElement;
+    const phone = window.matchMedia("(max-width: 639px)");
+    // Phones: zoom in so the road is readable, follow the road head across, then zoom out to fit one screen.
+    const CANVAS_W = 1020, CANVAS_H = 640, CHROME = 36, FOLLOW_ZOOM = 0.8;
+    let zoomFrame = 0;
+    const fitZoom = () => Math.min(1, (scroller?.clientWidth ?? CANVAS_W) / CANVAS_W);
+    const applyZoom = (z: number) => {
+      if (!scroller) return;
+      (roadmap.style as CSSStyleDeclaration & { zoom: string }).zoom = String(z);
+      scroller.style.height = `${CANVAS_H * z + CHROME}px`;
+    };
+    const animateZoom = (from: number, to: number, ms: number, scrollFrom: number, scrollTo: number, done: () => void) => {
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const t = Math.min(1, (now - t0) / ms);
+        const e = t * t * (3 - 2 * t);
+        applyZoom(from + (to - from) * e);
+        if (scroller) scroller.scrollLeft = scrollFrom + (scrollTo - scrollFrom) * e;
+        if (t < 1) zoomFrame = requestAnimationFrame(step);
+        else done();
+      };
+      zoomFrame = requestAnimationFrame(step);
+    };
+    if (phone.matches) applyZoom(fitZoom());
     const stages = Array.from(section.querySelectorAll<HTMLElement>(".process-stage"));
     const strokes = section.querySelectorAll<SVGPathElement>("[data-road-draw]");
     const length = path.getTotalLength();
@@ -57,6 +82,11 @@ export default function ProcessSection() {
       section.dataset.roadmap = "complete";
       strokes.forEach(stroke => { stroke.style.strokeDashoffset = "0"; });
       stages.forEach(stage => { stage.dataset.reached = "true"; });
+      if (phone.matches && scroller) {
+        const z = Number((roadmap.style as CSSStyleDeclaration & { zoom: string }).zoom) || FOLLOW_ZOOM;
+        const target = fitZoom();
+        if (z !== target) animateZoom(z, target, 1100, scroller.scrollLeft, 0, () => { scroller.scrollLeft = 0; });
+      }
     };
     const tick = (now: number) => {
       if (disposed) return;
@@ -72,6 +102,13 @@ export default function ProcessSection() {
       strokes.forEach(stroke => { stroke.style.strokeDashoffset = String(1 - progress); });
       const point = path.getPointAtLength(progress * length);
       head.setAttribute("transform", `translate(${point.x} ${point.y})`);
+      if (phone.matches && scroller) {
+        // Keep the road head centred while it travels left to right
+        const hr = head.getBoundingClientRect();
+        const sr = scroller.getBoundingClientRect();
+        const wanted = scroller.scrollLeft + (hr.left - sr.left) - sr.width / 2;
+        scroller.scrollLeft += (wanted - scroller.scrollLeft) * 0.25;
+      }
       junctions.forEach((junction, i) => {
         if (progress >= junction - 0.00001 && stages[i].dataset.reached !== "true") {
           stages[i].dataset.reached = "true";
@@ -84,8 +121,12 @@ export default function ProcessSection() {
       if (!entry.isIntersecting || started) return;
       started = true;
       section.dataset.roadmap = "visible";
-      frame = requestAnimationFrame(tick);
       observer.disconnect();
+      if (phone.matches && scroller) {
+        animateZoom(fitZoom(), FOLLOW_ZOOM, 700, 0, 0, () => { if (!disposed) frame = requestAnimationFrame(tick); });
+      } else {
+        frame = requestAnimationFrame(tick);
+      }
     }, { threshold: 0.18 });
     observer.observe(canvas);
     const onMotionChange = () => { if (motion.matches) finish(); };
@@ -93,6 +134,7 @@ export default function ProcessSection() {
     return () => {
       disposed = true;
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(zoomFrame);
       observer.disconnect();
       motion.removeEventListener("change", onMotionChange);
     };
@@ -102,7 +144,7 @@ export default function ProcessSection() {
     <div className="max-w-[1200px] mx-auto">
       <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#6A38EB] mb-4">From brief to better decisions</p>
       <h2 id="process-heading" className="font-display font-extrabold text-3xl sm:text-5xl tracking-tight">A clear process. At every step.</h2>
-      <div className="flex flex-wrap items-center justify-between gap-3 mt-5 mb-8"><p className="text-base leading-relaxed text-[#5B5573]">A shared direction, from the first conversation to the next opportunity.</p><span className="xl:hidden inline-flex items-center gap-2 text-xs font-semibold text-[#6A38EB]">Swipe to explore <ArrowRight className="w-4 h-4" aria-hidden="true" /></span></div>
+      <div className="flex flex-wrap items-center justify-between gap-3 mt-5 mb-8"><p className="text-base leading-relaxed text-[#5B5573]">A shared direction, from the first conversation to the next opportunity.</p><span className="hidden sm:inline-flex xl:hidden items-center gap-2 text-xs font-semibold text-[#6A38EB]">Swipe to explore <ArrowRight className="w-4 h-4" aria-hidden="true" /></span></div>
       <div className="process-scroll" tabIndex={0} role="region" aria-label="Our three-step process. Scroll horizontally to explore.">
         <div className="process-roadmap">
           <svg className="process-road" viewBox="0 0 1160 640" preserveAspectRatio="none" aria-hidden="true">

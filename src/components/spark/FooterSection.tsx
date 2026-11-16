@@ -74,7 +74,7 @@ export default function FooterSection() {
             </div>
 
             {/* CTA Buttons: Schedule Call, Free Site Audit & Start Conversation (All on one single line) */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-nowrap overflow-x-auto no-scrollbar py-1 shrink-0">
+            <div className="hidden sm:flex items-center gap-3 flex-nowrap overflow-x-auto no-scrollbar py-1 shrink-0">
               <button
                 type="button"
                 onClick={() => setIsScheduleModalOpen(true)}

@@ -84,21 +84,22 @@ function Popup({ label, onClose, onPrev, onNext, counter, children }: { label: s
   }, []);
 
   const arrow =
-    "shrink-0 w-11 h-11 rounded-full bg-white text-[#181329] shadow-lg flex items-center justify-center hover:bg-[#754BFF] hover:text-white transition-colors";
+    "shrink-0 w-11 h-11 rounded-full bg-white text-[#181329] shadow-lg flex items-center justify-center hover:bg-[#754BFF] hover:text-white active:bg-[#754BFF] active:text-white transition-colors";
+  const badge = "px-3 py-1 rounded-full bg-white text-[#181329] text-xs font-bold shadow-md";
 
   return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       aria-label={label}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-3 p-4 overflow-hidden overscroll-contain bg-black/55 backdrop-blur-md"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-3 p-4 overflow-hidden overscroll-contain bg-black/55 backdrop-blur-md [container-type:inline-size] [--pw:100cqw] [--ph:66vh] sm:[--pw:calc(100cqw-7.5rem)] sm:[--ph:80vh]"
       onClick={onClose}
     >
-      <div className="flex items-center justify-center gap-3 sm:gap-4 max-w-full" onClick={(e) => e.stopPropagation()}>
-        <button type="button" aria-label="Previous" onClick={onPrev} className={arrow}>
+      <div className="flex items-center justify-center gap-4 max-w-full" onClick={(e) => e.stopPropagation()}>
+        <button type="button" aria-label="Previous" onClick={onPrev} className={`${arrow} hidden sm:flex`}>
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <div className="relative max-w-[calc(100vw-8.5rem)] max-h-[88vh] overflow-hidden rounded-2xl bg-white border border-white/20 shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
+        <div className="relative max-w-[var(--pw)] max-h-[88vh] overflow-hidden rounded-2xl bg-white border border-white/20 shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
           <button
             type="button"
             aria-label="Close preview"
@@ -109,13 +110,22 @@ function Popup({ label, onClose, onPrev, onNext, counter, children }: { label: s
           </button>
           {children}
         </div>
+        <button type="button" aria-label="Next" onClick={onNext} className={`${arrow} hidden sm:flex`}>
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+      <div className="hidden sm:block" onClick={(e) => e.stopPropagation()}>
+        <span className={badge}>{counter}</span>
+      </div>
+      <div className="sm:hidden flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
+        <button type="button" aria-label="Previous" onClick={onPrev} className={arrow}>
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <span className={badge}>{counter}</span>
         <button type="button" aria-label="Next" onClick={onNext} className={arrow}>
           <ChevronRight className="w-5 h-5" />
         </button>
       </div>
-      <span className="px-3 py-1 rounded-full bg-white text-[#181329] text-xs font-bold shadow-md" onClick={(e) => e.stopPropagation()}>
-        {counter}
-      </span>
     </div>,
     document.body
   );
@@ -530,7 +540,7 @@ export default function WorkClient() {
                 alt={`${creativeSamples[sampleBox].title} by Xink Digitals`}
                 width={creativeSamples[sampleBox].w}
                 height={creativeSamples[sampleBox].h}
-                style={{ width: `min(calc(100vw - 8.5rem), 1200px, ${((creativeSamples[sampleBox].w / creativeSamples[sampleBox].h) * 80).toFixed(2)}vh)` }}
+                style={{ width: `min(var(--pw), 1200px, calc(var(--ph) * ${(creativeSamples[sampleBox].w / creativeSamples[sampleBox].h).toFixed(3)}))` }}
                 className="block h-auto"
               />
             ) : (
@@ -541,7 +551,7 @@ export default function WorkClient() {
                 controls
                 autoPlay
                 playsInline
-                className="block h-[80vh] w-auto min-w-[320px] max-w-[min(calc(100vw-8.5rem),1200px)] object-contain bg-black"
+                className="block h-[var(--ph)] w-auto min-w-[min(320px,var(--pw))] max-w-[min(var(--pw),1200px)] object-contain bg-black"
               />
             )}
             {loadedKey !== `s${sampleBox}` && <Spinner />}
@@ -565,7 +575,7 @@ export default function WorkClient() {
             alt={`${evidence[lightbox].platform} analytics screenshot: ${evidence[lightbox].title}`}
             width={1400}
             height={700}
-            className="block h-auto max-h-[72vh] w-[min(calc(100vw-8.5rem),1200px)] object-contain"
+            className="block h-auto max-h-[calc(var(--ph)-6vh)] w-[min(var(--pw),1200px)] object-contain"
           />
           {loadedKey !== `e${lightbox}` && <Spinner />}
           </div>

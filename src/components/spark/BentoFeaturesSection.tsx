@@ -121,7 +121,7 @@ export default function BentoFeaturesSection() {
                 </div>
 
                 {/* Ad approved */}
-                <div className="absolute z-10 left-0 bottom-16 flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-[#1B143F] text-white shadow-[0_8px_24px_rgba(27,20,63,0.25)] bento-widget">
+                <div className="absolute z-10 left-0 bottom-[9.5rem] sm:bottom-16 flex items-center gap-2 px-3 py-2.5 rounded-2xl bg-[#1B143F] text-white shadow-[0_8px_24px_rgba(27,20,63,0.25)] bento-widget">
                   <span className="w-5 h-5 rounded-full bg-[#22C55E] flex items-center justify-center" aria-hidden="true">
                     <svg viewBox="0 0 12 12" className="w-3 h-3" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M2.5 6.2l2.2 2.2L9.5 3.6" />

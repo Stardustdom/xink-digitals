@@ -19,7 +19,7 @@ export default function InteriorNavigation() {
             priority
           />
         </Link>
-        <div className="flex flex-wrap gap-1 text-xs sm:text-sm">
+        <div className="flex flex-nowrap whitespace-nowrap w-full sm:w-auto justify-between sm:justify-start gap-0.5 sm:gap-1 text-[clamp(11px,3.4vw,13px)] sm:text-sm">
           {[
             ["Services", "/services"],
             ["Work", "/work"],
@@ -32,7 +32,7 @@ export default function InteriorNavigation() {
               href={href}
               prefetch={true}
               aria-current={path === href ? "page" : undefined}
-              className={`nav-hover-link rounded-full px-3 py-2 ${
+              className={`nav-hover-link rounded-full px-[clamp(6px,2vw,12px)] sm:px-3 py-2 ${
                 path === href ? "text-[#6A38EB] font-bold" : ""
               }`}
             >
