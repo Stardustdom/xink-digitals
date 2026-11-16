@@ -16,13 +16,12 @@ import {
   ShieldCheck,
   Search,
 } from "lucide-react";
+import { validateEmail, validatePhone } from "@/lib/validation";
 
 interface SiteAuditModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function SiteAuditModal({
   isOpen,
@@ -77,14 +76,14 @@ export default function SiteAuditModal({
       errs.name = "Please enter your full name.";
     }
     if (!formData.location.trim() || formData.location.trim().length < 2) {
-      errs.location = "Please enter your location.";
+      errs.location = "Please enter your location / city / country.";
     }
-    if (!formData.phone.trim() || formData.phone.trim().length < 6) {
-      errs.phone = "Please enter your contact phone number.";
-    }
-    if (!formData.email.trim() || !EMAIL_REGEX.test(formData.email.trim())) {
-      errs.email = "Please enter a valid email address.";
-    }
+    const phoneErr = validatePhone(formData.phone, true);
+    if (phoneErr) errs.phone = phoneErr;
+
+    const emailErr = validateEmail(formData.email);
+    if (emailErr) errs.email = emailErr;
+
     if (!formData.websiteUrl.trim() || formData.websiteUrl.trim().length < 3) {
       errs.websiteUrl = "Please enter the site URL to be audited.";
     }
@@ -342,7 +341,7 @@ export default function SiteAuditModal({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                      Contact No. <span className="text-red-500">*</span>
+                      Contact No. (10+ digits) <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8C87A5]">

@@ -15,6 +15,7 @@ import {
   Download,
   Sparkles,
 } from "lucide-react";
+import { validateEmail, validatePhone } from "@/lib/validation";
 
 interface ScheduleCallModalProps {
   isOpen: boolean;
@@ -93,8 +94,21 @@ export default function ScheduleCallModal({
   if (!isOpen || !mounted) return null;
 
   const validate = () => {
-    // No validation for email and phone number per requirement
-    return true;
+    const errs: Record<string, string> = {};
+    if (!formData.name.trim() || formData.name.trim().length < 2) {
+      errs.name = "Please enter your full name.";
+    }
+    const emailErr = validateEmail(formData.email);
+    if (emailErr) errs.email = emailErr;
+
+    const phoneErr = validatePhone(formData.phone, true);
+    if (phoneErr) errs.phone = phoneErr;
+
+    if (!formData.date) {
+      errs.date = "Please select a preferred date.";
+    }
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -309,7 +323,7 @@ export default function ScheduleCallModal({
               {/* Full Name */}
               <div>
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                  Your Full Name
+                  Your Full Name <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <User className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
@@ -318,43 +332,73 @@ export default function ScheduleCallModal({
                     placeholder="e.g. Elena Rostova"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                    className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs sm:text-sm text-[#1B143F] outline-none transition-all ${
+                      errors.name
+                        ? "border-red-400 bg-red-50/20 focus:border-red-500"
+                        : "border-[#DCDAE8] focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15"
+                    }`}
                   />
                 </div>
+                {errors.name && (
+                  <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3 shrink-0" />
+                    <span>{errors.name}</span>
+                  </p>
+                )}
               </div>
 
               {/* Email & Phone side-by-side on desktop */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                    Business / Personal Email
+                    Business / Personal Email <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <Mail className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
-                      type="text"
+                      type="email"
                       placeholder="name@company.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                      className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs sm:text-sm text-[#1B143F] outline-none transition-all ${
+                        errors.email
+                          ? "border-red-400 bg-red-50/20 focus:border-red-500"
+                          : "border-[#DCDAE8] focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15"
+                      }`}
                     />
                   </div>
+                  {errors.email && (
+                    <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{errors.email}</span>
+                    </p>
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                    Contact Phone Number
+                    Contact Phone (10+ digits) <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <Phone className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
-                      type="text"
+                      type="tel"
                       placeholder="(+91) 92306 53970"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                      className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs sm:text-sm text-[#1B143F] outline-none transition-all font-mono ${
+                        errors.phone
+                          ? "border-red-400 bg-red-50/20 focus:border-red-500"
+                          : "border-[#DCDAE8] focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15"
+                      }`}
                     />
                   </div>
+                  {errors.phone && (
+                    <p className="text-[11px] text-red-500 mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{errors.phone}</span>
+                    </p>
+                  )}
                 </div>
               </div>
 

@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { validateEmail, validatePhone } from "@/lib/validation";
 
 function getSmtpCredentials() {
   let user = process.env.SMTP_USER || process.env.EMAIL_USER || "contact@xinkdigitals.com";
@@ -62,12 +61,14 @@ export async function POST(request: Request) {
       errors.location = "Please enter your location / city / country.";
     }
 
-    if (!phone || typeof phone !== "string" || phone.trim().length < 6) {
-      errors.phone = "Please enter a valid contact phone number.";
+    const phoneErr = validatePhone(phone, true);
+    if (phoneErr) {
+      errors.phone = phoneErr;
     }
 
-    if (!email || typeof email !== "string" || !EMAIL_REGEX.test(email.trim())) {
-      errors.email = "Please enter a valid email address.";
+    const emailErr = validateEmail(email);
+    if (emailErr) {
+      errors.email = emailErr;
     }
 
     if (!websiteUrl || typeof websiteUrl !== "string" || websiteUrl.trim().length < 3) {

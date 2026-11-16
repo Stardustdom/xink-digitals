@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
+import { validateEmail, validatePhone } from "@/lib/validation";
 
 function getSmtpCredentials() {
   let user = process.env.SMTP_USER || process.env.EMAIL_USER || "contact@xinkdigitals.com";
@@ -91,10 +92,28 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { name, email, phone, date, time, notes } = body;
 
-    const bookingName = name?.trim() || "Client";
-    const bookingEmail = email?.trim() || "";
-    const bookingPhone = phone?.trim() || "Not provided";
-    const bookingDate = date?.trim() || "Upcoming";
+    const errors: Record<string, string> = {};
+    if (!name || typeof name !== "string" || name.trim().length < 2) {
+      errors.name = "Please enter your full name.";
+    }
+    const emailErr = validateEmail(email);
+    if (emailErr) errors.email = emailErr;
+
+    const phoneErr = validatePhone(phone, true);
+    if (phoneErr) errors.phone = phoneErr;
+
+    if (!date || typeof date !== "string" || !date.trim()) {
+      errors.date = "Please select a booking date.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return NextResponse.json({ success: false, errors }, { status: 400 });
+    }
+
+    const bookingName = name.trim();
+    const bookingEmail = email.trim();
+    const bookingPhone = phone.trim();
+    const bookingDate = date.trim();
     const bookingTime = time?.trim() || "Flexible";
     const bookingNotes = notes?.trim() || "None";
 

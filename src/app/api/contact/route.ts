@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { validateEmail, validatePhone } from "@/lib/validation";
 
 function getSmtpCredentials() {
   let user = process.env.SMTP_USER || process.env.EMAIL_USER || "contact@xinkdigitals.com";
@@ -42,7 +41,7 @@ function getSmtpCredentials() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, company, service, budget, message, turnstileToken } = body;
+    const { name, email, phone, company, service, budget, message, turnstileToken } = body;
 
     const errors: Record<string, string> = {};
 
@@ -52,8 +51,17 @@ export async function POST(request: Request) {
     }
 
     // 2. Validation: Email
-    if (!email || typeof email !== "string" || !EMAIL_REGEX.test(email.trim())) {
-      errors.email = "Please enter a valid email address.";
+    const emailErr = validateEmail(email);
+    if (emailErr) {
+      errors.email = emailErr;
+    }
+
+    // 3. Validation: Phone (Optional on contact form, but validated if provided)
+    if (phone && typeof phone === "string" && phone.trim()) {
+      const phoneErr = validatePhone(phone, false);
+      if (phoneErr) {
+        errors.phone = phoneErr;
+      }
     }
 
     // 3. Validation: Company / Website (Optional)
@@ -98,6 +106,7 @@ export async function POST(request: Request) {
 
     const clientName = name.trim();
     const clientEmail = email.trim();
+    const clientPhone = phone?.trim() || "Not specified";
     const clientCompany = company?.trim() || "Not specified";
     const clientService = service;
     const clientBudget = budget?.trim() || "Not specified";
@@ -135,6 +144,7 @@ export async function POST(request: Request) {
               <table style="width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px;">
                 <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; width: 140px; color: #1B143F;">Name:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; color: #1B143F;">${clientName}</td></tr>
                 <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Email:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5;"><a href="mailto:${clientEmail}" style="color: #6A38EB; font-weight: 500;">${clientEmail}</a></td></tr>
+                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Contact Phone:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; color: #1B143F;">${clientPhone}</td></tr>
                 <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Company / URL:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; color: #1B143F;">${clientCompany}</td></tr>
                 <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Current Challenge:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; color: #1B143F; font-weight: 600;">${clientService}</td></tr>
                 <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Estimated Budget:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; color: #1B143F;">${clientBudget}</td></tr>

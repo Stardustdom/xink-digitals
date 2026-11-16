@@ -23,6 +23,7 @@ import WaterButton from "@/components/WaterButton";
 import TurnstileWidget from "@/components/TurnstileWidget";
 import ScheduleCallModal from "@/components/ScheduleCallModal";
 import SiteAuditModal from "@/components/SiteAuditModal";
+import { validateEmail, validatePhone } from "@/lib/validation";
 
 function WhatsAppIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -50,6 +51,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     company: "",
     service: "",
     budget: "",
@@ -75,11 +77,15 @@ export default function ContactPage() {
         if (value.trim().length < 2)
           return "Name must be at least 2 characters.";
         return "";
-      case "email":
-        if (!value.trim()) return "Please enter your email address.";
-        if (!EMAIL_REGEX.test(value.trim()))
-          return "Please enter a valid email (e.g. name@company.com).";
-        return "";
+      case "email": {
+        const err = validateEmail(value);
+        return err || "";
+      }
+      case "phone": {
+        if (!value.trim()) return "";
+        const err = validatePhone(value, false);
+        return err || "";
+      }
       case "company":
         // Optional field
         return "";
@@ -243,6 +249,25 @@ export default function ContactPage() {
               growth targets. We will evaluate the right scope, channels, and
               milestones.
             </p>
+            {/* Quick Action Trigger Pills */}
+            <div className="flex flex-wrap items-center gap-2.5 mt-6">
+              <button
+                type="button"
+                onClick={() => setIsScheduleModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1B143F] hover:bg-[#6A38EB] text-white text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer"
+              >
+                <Calendar className="w-3.5 h-3.5 text-[#C9F36D]" />
+                <span>Schedule a Call ↗</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsSiteAuditModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#1B143F]/20 bg-white hover:border-[#6A38EB] hover:text-[#6A38EB] text-[#1B143F] text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer"
+              >
+                <Search className="w-3.5 h-3.5 text-[#6A38EB]" />
+                <span>Free Site Audit ↗</span>
+              </button>
+            </div>
           </div>
 
           {/* Content Grid */}
@@ -302,6 +327,7 @@ export default function ContactPage() {
                         setFormData({
                           name: "",
                           email: "",
+                          phone: "",
                           company: "",
                           service: "",
                           budget: "",
@@ -376,33 +402,57 @@ export default function ContactPage() {
                     </div>
                   </div>
 
-                  {/* Row 2: Company or Website */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="block text-xs font-bold uppercase tracking-wider text-[#15103A]">
-                        Company Name or Website URL
-                      </label>
-                      <span className="text-[10px] text-[#8C87A5] font-mono">
-                        Optional
-                      </span>
+                  {/* Row 2: Company and Phone */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#15103A]">
+                          Company Name or URL
+                        </label>
+                        <span className="text-[10px] text-[#8C87A5] font-mono">
+                          Optional
+                        </span>
+                      </div>
+                      <input
+                        name="company"
+                        type="text"
+                        autoComplete="organization"
+                        placeholder="e.g. Acme Brands or acme.com"
+                        maxLength={200}
+                        value={formData.company}
+                        onChange={(e) => handleChange("company", e.target.value)}
+                        onBlur={() => handleBlur("company")}
+                        className={inputClass("company")}
+                      />
                     </div>
-                    <input
-                      name="company"
-                      type="text"
-                      autoComplete="organization"
-                      placeholder="e.g. Acme Brands or https://acme.com"
-                      maxLength={200}
-                      value={formData.company}
-                      onChange={(e) => handleChange("company", e.target.value)}
-                      onBlur={() => handleBlur("company")}
-                      className={inputClass("company")}
-                    />
-                    {touched.company && errors.company && (
-                      <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1 font-medium">
-                        <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                        <span>{errors.company}</span>
-                      </p>
-                    )}
+
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-[#15103A]">
+                          Contact Phone
+                        </label>
+                        <span className="text-[10px] text-[#8C87A5] font-mono">
+                          Optional (10+ digits)
+                        </span>
+                      </div>
+                      <input
+                        name="phone"
+                        type="tel"
+                        autoComplete="tel"
+                        placeholder="e.g. (+91) 92306 53970"
+                        maxLength={25}
+                        value={formData.phone}
+                        onChange={(e) => handleChange("phone", e.target.value)}
+                        onBlur={() => handleBlur("phone")}
+                        className={inputClass("phone")}
+                      />
+                      {touched.phone && errors.phone && (
+                        <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1 font-medium">
+                          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                          <span>{errors.phone}</span>
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   {/* Row 3: Current Challenges */}
@@ -672,78 +722,47 @@ export default function ContactPage() {
                 </div>
               </aside>
 
-              {/* Schedule a Call Card: Below the right side box */}
-              <div className="rounded-[2.2rem] bg-gradient-to-br from-[#1B143F] to-[#2E1A47] text-white p-7 shadow-lg border border-white/10 space-y-4">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6A38EB]/40 border border-[#6A38EB]/50 text-[#C9F36D] text-[11px] font-bold uppercase tracking-wider">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>Prefer a Call?</span>
+              {/* Direct Booking & Free Audit Action Card (Combined & Compact) */}
+              <div className="rounded-[2.2rem] bg-gradient-to-br from-[#1B143F] to-[#2E1A47] text-white p-6 shadow-lg border border-white/10 space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6A38EB]/40 border border-[#6A38EB]/50 text-[#C9F36D] text-[11px] font-bold uppercase tracking-wider">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Instant Booking & Audit</span>
+                  </div>
+                  <span className="text-[11px] text-[#C9F36D] font-semibold">✓ 100% Free</span>
                 </div>
 
                 <div>
-                  <h3 className="font-display text-xl font-bold text-white mb-1.5">
-                    Schedule a 1-on-1 Call
+                  <h3 className="font-display text-lg sm:text-xl font-bold text-white mb-1">
+                    Prefer a Call or Free Audit?
                   </h3>
                   <p className="text-xs text-white/70 leading-relaxed">
-                    Pick a date and convenient time slot. We&apos;ll sync the
-                    invite directly to your calendar and route it to our team.
+                    Pick a direct strategy call slot or get a full 18-point website audit delivered in 24 hours.
                   </p>
                 </div>
 
-                <div className="pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                   <button
                     type="button"
                     onClick={() => setIsScheduleModalOpen(true)}
-                    className="w-full py-3.5 px-5 rounded-2xl bg-[#6A38EB] hover:bg-[#5829D6] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#6A38EB]/30 hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
+                    className="py-3 px-3.5 rounded-xl bg-[#6A38EB] hover:bg-[#5829D6] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#6A38EB]/30 flex items-center justify-center gap-1.5 group cursor-pointer"
                   >
-                    <Calendar className="w-4 h-4 text-[#C9F36D]" />
-                    <span>Schedule a Call</span>
-                    <span className="transition-transform group-hover:translate-x-1">
-                      ↗
-                    </span>
+                    <Calendar className="w-3.5 h-3.5 text-[#C9F36D]" />
+                    <span>Schedule Call ↗</span>
                   </button>
-                </div>
-
-                <div className="flex items-center justify-between text-[11px] text-white/50 pt-1 border-t border-white/10">
-                  <span>Phone: (+91) 92306 53970</span>
-                  <span className="text-[#C9F36D]">
-                    ✓ Instant calendar sync
-                  </span>
-                </div>
-              </div>
-
-              {/* Free Website Audit Card */}
-              <div className="rounded-[2.2rem] bg-white border border-[#EDEDF5] p-7 shadow-sm space-y-4 relative overflow-hidden">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#6A38EB]/10 border border-[#6A38EB]/20 text-[#6A38EB] text-[11px] font-bold uppercase tracking-wider">
-                  <Search className="w-3.5 h-3.5" />
-                  <span>Complimentary Diagnostic</span>
-                </div>
-
-                <div>
-                  <h3 className="font-display text-xl font-bold text-[#1B143F] mb-1.5">
-                    Free Website Audit
-                  </h3>
-                  <p className="text-xs text-[#5B5573] leading-relaxed">
-                    Want to know where your site is losing conversions? Get an in-depth SEO, speed, and conversion breakdown delivered in 24 hours.
-                  </p>
-                </div>
-
-                <div className="pt-1">
                   <button
                     type="button"
                     onClick={() => setIsSiteAuditModalOpen(true)}
-                    className="w-full py-3.5 px-5 rounded-2xl bg-[#1B143F] hover:bg-[#6A38EB] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#1B143F]/20 hover:shadow-lg flex items-center justify-center gap-2 group cursor-pointer"
+                    className="py-3 px-3.5 rounded-xl bg-white hover:bg-white/90 text-[#1B143F] font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-sm flex items-center justify-center gap-1.5 group cursor-pointer"
                   >
-                    <Search className="w-4 h-4 text-[#C9F36D]" />
-                    <span>Request Free Site Audit</span>
-                    <span className="transition-transform group-hover:translate-x-1">
-                      ↗
-                    </span>
+                    <Search className="w-3.5 h-3.5 text-[#6A38EB]" />
+                    <span>Site Audit ↗</span>
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] text-[#7E7896] pt-1 border-t border-[#EDEDF5]">
-                  <span>Turnaround: 24 Hours</span>
-                  <span className="text-[#00A877] font-semibold">✓ 100% Free · No Obligation</span>
+                <div className="flex items-center justify-between text-[11px] text-white/50 pt-2 border-t border-white/10">
+                  <span>Phone: (+91) 92306 53970</span>
+                  <span className="text-[#C9F36D]">✓ Instant calendar sync</span>
                 </div>
               </div>
             </div>

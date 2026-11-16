@@ -60,7 +60,7 @@ export default function FooterSection() {
       >
         <div className="max-w-6xl mx-auto">
           {/* Top Banner with CTAs */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-12 border-b border-[#EBEBF4]">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-12 border-b border-[#EBEBF4]">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-[#6A38EB] font-bold mb-3">
                 Your next chapter
@@ -68,19 +68,19 @@ export default function FooterSection() {
               <h2 className="font-display font-extrabold text-3xl sm:text-5xl tracking-tight text-[#1B143F]">
                 Let&apos;s grow your business.
               </h2>
-              <p className="text-sm text-[#5B5573] mt-3">
+              <p className="text-sm text-[#5B5573] mt-2">
                 Tell us where you are and where you want to go.
               </p>
             </div>
 
-            {/* CTA Buttons: Schedule Call, Free Site Audit & Start Conversation */}
-            <div className="flex flex-wrap items-center gap-3">
+            {/* CTA Buttons: Schedule Call, Free Site Audit & Start Conversation (All on one single line) */}
+            <div className="flex items-center gap-2 sm:gap-3 flex-nowrap overflow-x-auto no-scrollbar py-1 shrink-0">
               <button
                 type="button"
                 onClick={() => setIsScheduleModalOpen(true)}
-                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-[#1B143F] hover:bg-[#6A38EB] text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                className="group inline-flex items-center gap-1.5 px-4 sm:px-5 py-3 rounded-full bg-[#1B143F] hover:bg-[#6A38EB] text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer whitespace-nowrap shrink-0"
               >
-                <Calendar className="w-4 h-4 text-[#C9F36D] group-hover:text-white transition-colors" />
+                <Calendar className="w-3.5 h-3.5 text-[#C9F36D] group-hover:text-white transition-colors" />
                 <span>Schedule a call</span>
                 <span className="transition-transform group-hover:translate-x-0.5">
                   ↗
@@ -89,17 +89,23 @@ export default function FooterSection() {
               <button
                 type="button"
                 onClick={() => setIsSiteAuditModalOpen(true)}
-                className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-[#1B143F]/20 bg-white hover:border-[#6A38EB] hover:text-[#6A38EB] text-[#1B143F] text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                className="group inline-flex items-center gap-1.5 px-4 sm:px-5 py-3 rounded-full border border-[#1B143F]/20 bg-white hover:border-[#6A38EB] hover:text-[#6A38EB] text-[#1B143F] text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer whitespace-nowrap shrink-0"
               >
-                <Search className="w-4 h-4 text-[#6A38EB]" />
+                <Search className="w-3.5 h-3.5 text-[#6A38EB]" />
                 <span>Free Site Audit</span>
                 <span className="transition-transform group-hover:translate-x-0.5">
                   ↗
                 </span>
               </button>
-              <WaterButton href="/contact" className="self-start">
-                Start a conversation ↗
-              </WaterButton>
+              <Link
+                href="/contact"
+                className="group inline-flex items-center gap-1.5 px-4 sm:px-5 py-3 rounded-full bg-[#6A38EB] hover:bg-[#5829D6] text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer whitespace-nowrap shrink-0"
+              >
+                <span>Start a conversation</span>
+                <span className="transition-transform group-hover:translate-x-0.5">
+                  ↗
+                </span>
+              </Link>
             </div>
           </div>
 
