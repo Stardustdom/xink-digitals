@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "Xink Digitals questions",
   ],
   alternates: {
-    canonical: "https://xinkdigitals.com/faq",
+    canonical: "/faq",
   },
   openGraph: {
     title: "Frequently Asked Questions | Xink Digitals",
