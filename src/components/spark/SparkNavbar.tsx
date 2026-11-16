@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
@@ -16,11 +17,15 @@ export default function SparkNavbar() {
     <header className="fixed top-4 inset-x-0 z-50 px-4 sm:px-8">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <span className="font-extrabold text-lg text-[#1B143F] flex items-center gap-1.5 font-heading">
-            <span className="font-black text-xl text-[#1B143F] font-mono leading-none">✕</span>
-            <span className="text-xl tracking-tight">Xink Digitals</span>
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="Xink Digitals"
+            width={140}
+            height={67}
+            className="h-8 sm:h-9 w-auto object-contain"
+            priority
+          />
         </Link>
 
         {/* Center Pill Menu */}

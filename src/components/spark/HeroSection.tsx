@@ -43,9 +43,15 @@ export default function HeroSection() {
         style={{ fontSize: "1cqw" }}
         className="absolute z-30 inset-x-[3.2%] top-[5%] flex items-center justify-between"
       >
-        <Link href="/" className="flex items-center gap-[0.8em]">
-          <span className="font-black text-[1.75em] text-[#15103A] font-mono leading-none tracking-tighter">✕</span>
-          <span className="font-extrabold text-[1.75em] text-[#15103A] tracking-tight font-display">Xink Digitals</span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="Xink Digitals"
+            width={200}
+            height={96}
+            className="h-[2.4em] w-auto object-contain"
+            priority
+          />
         </Link>
 
         <nav className="flex items-center gap-[0.5em] px-[1.8em] py-[0.9em] rounded-full bg-white/95 backdrop-blur-md border border-[#EBEBF4] shadow-[0_2px_10px_rgba(27,20,63,0.04)]">
