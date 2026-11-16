@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import CaseStudyModal from "@/components/CaseStudyModal";
 import type { Project } from "@/data/projects";
 import { projects } from "@/data/projects";
@@ -14,10 +15,27 @@ import {
   LayoutGrid,
   List,
   Search,
+  X,
+  BarChart3,
 } from "lucide-react";
 import { useSound } from "@/components/SoundManager";
 
 const categories = ["All", "Branding", "Social Media", "Web Design", "Motion", "Advertising"] as const;
+
+const evidence = [
+  { n: 1, platform: "LinkedIn", title: "Single post, 3,669 impressions", note: "Organic reach on one thought-leadership post." },
+  { n: 2, platform: "LinkedIn", title: "94% out-of-network discovery", note: "729 impressions and 556 members reached." },
+  { n: 3, platform: "LinkedIn", title: "Impressions climbing week on week", note: "Cumulative impressions, 19-25 Aug." },
+  { n: 4, platform: "LinkedIn", title: "+404% impressions vs prior 7 days", note: "1,876 impressions, 6-12 Aug." },
+  { n: 5, platform: "LinkedIn", title: "93% of reach from new audiences", note: "1,189 impressions, 818 members reached." },
+  { n: 6, platform: "LinkedIn", title: "+253% impressions vs prior 7 days", note: "1,189 cumulative impressions, 5-11 Aug." },
+  { n: 7, platform: "LinkedIn", title: "92% out-of-network reach", note: "967 impressions, 670 members reached." },
+  { n: 8, platform: "LinkedIn", title: "+187% impressions vs prior 7 days", note: "967 cumulative impressions, 5-11 Aug." },
+  { n: 9, platform: "Facebook", title: "54,649 views, +454%", note: "28 Feb - 20 Mar, 70% from non-followers." },
+  { n: 10, platform: "Facebook", title: "95,116 views, +133%", note: "1 Sep - 2 Oct, 72% from non-followers." },
+  { n: 11, platform: "Facebook", title: "85,079 views, +397%", note: "20 Feb - 5 May, 3-second views up 1,590%." },
+  { n: 12, platform: "LinkedIn", title: "+2,624% impressions in 7 days", note: "1,117 impressions, 623 members reached." },
+];
 
 export default function WorkClient() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -25,6 +43,18 @@ export default function WorkClient() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { playPop } = useSound();
   const [activeProject, setActiveProject] = useState<Project | null>(null);
+  const [lightbox, setLightbox] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (lightbox === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "ArrowRight") setLightbox((i) => (i === null ? i : (i + 1) % evidence.length));
+      if (e.key === "ArrowLeft") setLightbox((i) => (i === null ? i : (i - 1 + evidence.length) % evidence.length));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
 
   const filteredProjects = projects.filter((p) => {
     const matchesCategory =
@@ -91,12 +121,67 @@ export default function WorkClient() {
               Every case study represents an ambitious challenge solved through bold visual design, cultural relevance, and high-performance technology.
             </p>
             <div className="flex flex-wrap gap-3 mt-7">
+              <a href="#work-evidence" className="px-4 py-2 rounded-full bg-[#754BFF] text-white text-xs font-bold">Work Evidence</a>
+              <a href="#sample-work" className="px-4 py-2 rounded-full bg-white border border-[#181329]/15 text-[#181329] text-xs font-bold">Sample Work</a>
+            </div>
+            <div className="flex flex-wrap gap-3 mt-4">
               {[[String(projects.length).padStart(2, "0"), "Case studies"], [String(categories.length - 1).padStart(2, "0"), "Disciplines"], ["100%", "Bespoke"]].map(([n, l]) => (
                 <div key={l} className="work-stat"><strong>{n}</strong><span>{l}</span></div>
               ))}
             </div>
           </div>
         </div>
+
+        {/* Section 1: Work Evidence */}
+        <section id="work-evidence" className="scroll-mt-28 mb-24" aria-labelledby="work-evidence-title">
+          <div className="max-w-3xl mb-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#754BFF]/10 border border-[#754BFF]/25 text-[#754BFF] text-xs font-bold uppercase tracking-wider mb-4">
+              <BarChart3 className="w-3.5 h-3.5" /> Section 01
+            </div>
+            <h2 id="work-evidence-title" className="text-3xl sm:text-5xl font-black tracking-tight font-heading">Work Evidence</h2>
+            <p className="text-sm sm:text-base text-[#5A4E6B] mt-3 leading-relaxed">
+              Real analytics from live accounts we have grown. Client names and company details are blurred to protect confidentiality.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {evidence.map((e, i) => (
+              <button
+                type="button"
+                key={e.n}
+                onClick={() => { playPop(); setLightbox(i); }}
+                className="group text-left rounded-2xl overflow-hidden bg-white border border-[#181329]/10 shadow-sm hover:shadow-lg hover:border-[#754BFF]/40 transition-all"
+                aria-label={`Open ${e.platform} analytics: ${e.title}`}
+              >
+                <div className="relative aspect-[16/10] bg-[#FAF5ED] overflow-hidden">
+                  <Image
+                    src={`/work-evidence/evidence-${String(e.n).padStart(2, "0")}.jpg`}
+                    alt={`${e.platform} analytics screenshot: ${e.title}`}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                </div>
+                <div className="p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#754BFF]">{e.platform}</span>
+                  <h3 className="text-sm font-black text-[#181329] mt-1">{e.title}</h3>
+                  <p className="text-xs text-[#5A4E6B] mt-1">{e.note}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Section 2: Sample Work */}
+        <section id="sample-work" className="scroll-mt-28" aria-labelledby="sample-work-title">
+          <div className="max-w-3xl mb-8">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#754BFF]/10 border border-[#754BFF]/25 text-[#754BFF] text-xs font-bold uppercase tracking-wider mb-4">
+              <Sparkles className="w-3.5 h-3.5" /> Section 02
+            </div>
+            <h2 id="sample-work-title" className="text-3xl sm:text-5xl font-black tracking-tight font-heading">Sample Work</h2>
+            <p className="text-sm sm:text-base text-[#5A4E6B] mt-3 leading-relaxed">
+              Concept and showcase projects across branding, social, web, motion and advertising.
+            </p>
+          </div>
 
         {/* Filter, Search & Layout Controls (Light Theme) */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-[#181329]/10 shadow-sm mb-12">
@@ -282,7 +367,36 @@ export default function WorkClient() {
             ))}
           </div>
         )}
+        </section>
       </div>
+      {lightbox !== null && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Work evidence preview"
+          className="fixed inset-0 z-[100] bg-[#181329]/90 flex items-center justify-center p-4"
+          onClick={() => setLightbox(null)}
+        >
+          <button
+            type="button"
+            aria-label="Close preview"
+            onClick={() => setLightbox(null)}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white text-[#181329] flex items-center justify-center"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <div className="max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+            <Image
+              src={`/work-evidence/evidence-${String(evidence[lightbox].n).padStart(2, "0")}.jpg`}
+              alt={`${evidence[lightbox].platform} analytics screenshot: ${evidence[lightbox].title}`}
+              width={1400}
+              height={700}
+              className="w-full h-auto max-h-[80vh] object-contain rounded-xl bg-white"
+            />
+            <p className="text-white text-sm font-bold mt-3 text-center">{evidence[lightbox].title} - <span className="font-normal opacity-80">{evidence[lightbox].note}</span></p>
+          </div>
+        </div>
+      )}
       {activeProject && <CaseStudyModal project={activeProject} onClose={() => setActiveProject(null)} onNext={setActiveProject} />}
     </div>
   );
