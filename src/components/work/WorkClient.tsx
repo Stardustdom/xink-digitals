@@ -75,45 +75,37 @@ function Popup({ label, onClose, onPrev, onNext, counter, children }: { label: s
     };
   }, []);
 
+  const arrow =
+    "shrink-0 w-11 h-11 rounded-full bg-white text-[#181329] shadow-lg flex items-center justify-center hover:bg-[#754BFF] hover:text-white transition-colors";
+
   return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       aria-label={label}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-hidden overscroll-contain bg-white/20 backdrop-blur-md"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-3 p-4 overflow-hidden overscroll-contain bg-black/55 backdrop-blur-md"
       onClick={onClose}
     >
-      <div
-        className="relative max-w-[min(92vw,960px)] max-h-[90vh] overflow-hidden rounded-2xl bg-white border border-[#181329]/15 shadow-[0_24px_80px_rgba(24,19,41,0.45)]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          type="button"
-          aria-label="Close preview"
-          onClick={onClose}
-          className="absolute top-2.5 left-2.5 z-10 w-9 h-9 rounded-full bg-white text-[#181329] shadow-md flex items-center justify-center"
-        >
-          <X className="w-4 h-4" />
+      <div className="flex items-center justify-center gap-3 sm:gap-4 max-w-full" onClick={(e) => e.stopPropagation()}>
+        <button type="button" aria-label="Previous" onClick={onPrev} className={arrow}>
+          <ChevronLeft className="w-5 h-5" />
         </button>
-        {children}
+        <div className="relative max-w-[min(calc(100vw-8.5rem),960px)] max-h-[85vh] overflow-hidden rounded-2xl bg-white border border-white/20 shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
+          <button
+            type="button"
+            aria-label="Close preview"
+            onClick={onClose}
+            className="absolute top-2.5 left-2.5 z-10 w-9 h-9 rounded-full bg-white text-[#181329] shadow-md flex items-center justify-center"
+          >
+            <X className="w-4 h-4" />
+          </button>
+          {children}
+        </div>
+        <button type="button" aria-label="Next" onClick={onNext} className={arrow}>
+          <ChevronRight className="w-5 h-5" />
+        </button>
       </div>
-      <button
-        type="button"
-        aria-label="Previous"
-        onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white text-[#181329] shadow-lg flex items-center justify-center hover:bg-[#754BFF] hover:text-white transition-colors"
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
-      <button
-        type="button"
-        aria-label="Next"
-        onClick={(e) => { e.stopPropagation(); onNext(); }}
-        className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white text-[#181329] shadow-lg flex items-center justify-center hover:bg-[#754BFF] hover:text-white transition-colors"
-      >
-        <ChevronRight className="w-5 h-5" />
-      </button>
-      <span className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-white text-[#181329] text-xs font-bold shadow-md">
+      <span className="px-3 py-1 rounded-full bg-white text-[#181329] text-xs font-bold shadow-md" onClick={(e) => e.stopPropagation()}>
         {counter}
       </span>
     </div>,
