@@ -213,7 +213,8 @@ export default function ContactPage() {
   `;
 
   return (
-    <main className="page-glow bg-[#FFF9F1] text-[#1B143F] min-h-screen px-6 pt-36 pb-20 sm:px-16">
+    <>
+      <main className="page-glow bg-[#FFF9F1] text-[#1B143F] min-h-screen px-6 pt-36 pb-20 sm:px-16">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="page-intro max-w-2xl mb-12">
@@ -657,12 +658,13 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-
-      {/* Schedule Call Modal Popup */}
-      <ScheduleCallModal
-        isOpen={isScheduleModalOpen}
-        onClose={() => setIsScheduleModalOpen(false)}
-      />
     </main>
+
+    {/* Schedule Call Modal Popup */}
+    <ScheduleCallModal
+      isOpen={isScheduleModalOpen}
+      onClose={() => setIsScheduleModalOpen(false)}
+    />
+  </>
   );
 }

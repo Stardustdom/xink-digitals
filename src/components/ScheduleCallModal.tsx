@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   Calendar,
   Clock,
@@ -47,6 +48,11 @@ export default function ScheduleCallModal({
   const [isSuccess, setIsSuccess] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Set default date to tomorrow
   useEffect(() => {
@@ -84,7 +90,7 @@ export default function ScheduleCallModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const validate = () => {
     // No validation for email and phone number per requirement
@@ -170,9 +176,9 @@ export default function ScheduleCallModal({
     document.body.removeChild(link);
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-[#0F0A1C]/80 backdrop-blur-md transition-all animate-in fade-in duration-200"
+      className="fixed inset-0 z-[9999] overflow-y-auto bg-[#0F0A1C]/80 backdrop-blur-md transition-all animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -435,6 +441,7 @@ export default function ScheduleCallModal({
         </div>
       </div>
     </div>
-  </div>
+  </div>,
+  document.body
   );
 }
