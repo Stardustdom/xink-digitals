@@ -37,6 +37,31 @@ const evidence = [
   { n: 12, platform: "LinkedIn", title: "+2,624% impressions in 7 days", note: "1,117 impressions, 623 members reached." },
 ];
 
+const creativeSamples = [
+  { type: "image", n: 1, w: 1028, h: 1028, title: "Hiring poster - Social Media Operations Executive", tag: "Recruitment creative" },
+  { type: "image", n: 2, w: 1028, h: 1028, title: "Hiring poster - Executive Assistant", tag: "Recruitment creative" },
+  { type: "image", n: 3, w: 1026, h: 576, title: "Digital marketing agency banner", tag: "Agency promotion" },
+  { type: "image", n: 4, w: 1068, h: 716, title: "Free website audit ad - variant A", tag: "Lead generation" },
+  { type: "image", n: 5, w: 1200, h: 834, title: "Free website audit ad - variant B", tag: "Lead generation" },
+  { type: "image", n: 6, w: 1068, h: 716, title: "Free website audit ad - variant C", tag: "Lead generation" },
+  { type: "image", n: 7, w: 1080, h: 1350, title: "Hospitality brand social post", tag: "Social media" },
+  { type: "image", n: 8, w: 1026, h: 576, title: "Digital marketing agency in Kolkata banner", tag: "Agency promotion" },
+  { type: "video", n: 1, title: "Video sample 01", tag: "Video" },
+  { type: "video", n: 2, title: "Video sample 02", tag: "Video" },
+] as const;
+
+function Watermark({ position = "bottom-right" }: { position?: "bottom-right" | "top-right" }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`pointer-events-none select-none absolute ${position === "top-right" ? "top-3" : "bottom-3"} right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/35 backdrop-blur-[2px] text-white/90 text-[10px] font-black uppercase tracking-[0.18em]`}
+    >
+      <Image src="/logo-icon.png" alt="" width={14} height={14} className="w-3.5 h-3.5" />
+      Xink Digitals
+    </span>
+  );
+}
+
 export default function WorkClient() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,6 +69,7 @@ export default function WorkClient() {
   const { playPop } = useSound();
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [sampleBox, setSampleBox] = useState<number | null>(null);
 
   useEffect(() => {
     if (lightbox === null) return;
@@ -55,6 +81,15 @@ export default function WorkClient() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [lightbox]);
+
+  useEffect(() => {
+    if (sampleBox === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSampleBox(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [sampleBox]);
 
   const filteredProjects = projects.filter((p) => {
     const matchesCategory =
@@ -183,6 +218,49 @@ export default function WorkClient() {
             </p>
           </div>
 
+          <h3 className="text-xl font-black font-heading mb-5">Creative Samples</h3>
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 [column-fill:_balance] mb-16">
+            {creativeSamples.map((c, i) => (
+              <figure key={`${c.type}-${c.n}`} className="mb-6 break-inside-avoid rounded-2xl overflow-hidden bg-white border border-[#181329]/10 shadow-sm">
+                {c.type === "image" ? (
+                  <button
+                    type="button"
+                    onClick={() => { playPop(); setSampleBox(i); }}
+                    className="relative block w-full group"
+                    aria-label={`Open ${c.title}`}
+                  >
+                    <Image
+                      src={`/work-samples/sample-${String(c.n).padStart(2, "0")}.jpg`}
+                      alt={`${c.title} by Xink Digitals`}
+                      width={c.w}
+                      height={c.h}
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="w-full h-auto transition-transform duration-500 group-hover:scale-[1.02]"
+                    />
+                    <Watermark />
+                  </button>
+                ) : (
+                  <div className="relative bg-black">
+                    <video
+                      src={`/work-samples/sample-video-${String(c.n).padStart(2, "0")}.mp4`}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      className="w-full h-auto max-h-[560px]"
+                      aria-label={`${c.title} by Xink Digitals`}
+                    />
+                    <Watermark position="top-right" />
+                  </div>
+                )}
+                <figcaption className="p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#754BFF]">{c.tag}</span>
+                  <p className="text-sm font-black text-[#181329] mt-1">{c.title}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+
+          <h3 className="text-xl font-black font-heading mb-5">Case Studies</h3>
         {/* Filter, Search & Layout Controls (Light Theme) */}
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-[#181329]/10 shadow-sm mb-12">
           {/* Category Tabs */}
@@ -369,6 +447,34 @@ export default function WorkClient() {
         )}
         </section>
       </div>
+      {sampleBox !== null && creativeSamples[sampleBox].type === "image" && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Sample work preview"
+          className="fixed inset-0 z-[100] bg-[#181329]/90 flex items-center justify-center p-4"
+          onClick={() => setSampleBox(null)}
+        >
+          <button
+            type="button"
+            aria-label="Close preview"
+            onClick={() => setSampleBox(null)}
+            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white text-[#181329] flex items-center justify-center"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <div className="relative max-h-[88vh] max-w-5xl" onClick={(e) => e.stopPropagation()}>
+            <Image
+              src={`/work-samples/sample-${String(creativeSamples[sampleBox].n).padStart(2, "0")}.jpg`}
+              alt={`${creativeSamples[sampleBox].title} by Xink Digitals`}
+              width={creativeSamples[sampleBox].type === "image" ? creativeSamples[sampleBox].w : 1200}
+              height={creativeSamples[sampleBox].type === "image" ? creativeSamples[sampleBox].h : 800}
+              className="w-auto h-auto max-h-[88vh] max-w-full rounded-xl"
+            />
+            <Watermark />
+          </div>
+        </div>
+      )}
       {lightbox !== null && (
         <div
           role="dialog"
