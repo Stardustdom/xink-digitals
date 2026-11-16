@@ -70,6 +70,41 @@ export default function SiteAuditModal({
 
   if (!isOpen || !mounted) return null;
 
+  const handlePhoneChange = (val: string) => {
+    setFormData((prev) => ({ ...prev, phone: val }));
+    const err = validatePhone(val, false);
+    const cleanDigits = val.replace(/\D/g, "");
+    const isIndian =
+      val.trim().startsWith("+91") ||
+      (cleanDigits.startsWith("91") && cleanDigits.length >= 11);
+    const maxAllowed = isIndian ? 12 : val.trim().startsWith("+") ? 13 : 10;
+    const hasInvalidChar = /[^\d\s+\-().]/.test(val);
+
+    if (errors.phone || cleanDigits.length > maxAllowed || hasInvalidChar) {
+      setErrors((prev) => ({ ...prev, phone: err || "" }));
+    } else if (cleanDigits.length === (isIndian ? 12 : 10)) {
+      setErrors((prev) => ({ ...prev, phone: "" }));
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    const err = validatePhone(formData.phone, true);
+    setErrors((prev) => ({ ...prev, phone: err || "" }));
+  };
+
+  const handleEmailChange = (val: string) => {
+    setFormData((prev) => ({ ...prev, email: val }));
+    if (errors.email) {
+      const err = validateEmail(val);
+      setErrors((prev) => ({ ...prev, email: err || "" }));
+    }
+  };
+
+  const handleEmailBlur = () => {
+    const err = validateEmail(formData.email);
+    setErrors((prev) => ({ ...prev, email: err || "" }));
+  };
+
   const validate = () => {
     const errs: Record<string, string> = {};
     if (!formData.name.trim() || formData.name.trim().length < 2) {
@@ -341,7 +376,7 @@ export default function SiteAuditModal({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                      Contact No. (10+ digits) <span className="text-red-500">*</span>
+                      Contact No. (10 digits) <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8C87A5]">
@@ -351,10 +386,10 @@ export default function SiteAuditModal({
                         type="tel"
                         required
                         placeholder="e.g. +91 92306 53970"
+                        maxLength={25}
                         value={formData.phone}
-                        onChange={(e) =>
-                          setFormData({ ...formData, phone: e.target.value })
-                        }
+                        onChange={(e) => handlePhoneChange(e.target.value)}
+                        onBlur={handlePhoneBlur}
                         className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border bg-white text-xs text-[#1B143F] placeholder-[#9E9AA7] focus:outline-none focus:ring-2 focus:ring-[#6A38EB]/20 transition-all font-mono ${
                           errors.phone
                             ? "border-red-400 bg-red-50/20"
@@ -380,9 +415,8 @@ export default function SiteAuditModal({
                         required
                         placeholder="e.g. name@brand.com"
                         value={formData.email}
-                        onChange={(e) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
+                        onChange={(e) => handleEmailChange(e.target.value)}
+                        onBlur={handleEmailBlur}
                         className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border bg-white text-xs text-[#1B143F] placeholder-[#9E9AA7] focus:outline-none focus:ring-2 focus:ring-[#6A38EB]/20 transition-all ${
                           errors.email
                             ? "border-red-400 bg-red-50/20"

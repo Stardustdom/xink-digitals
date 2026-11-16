@@ -116,15 +116,44 @@ export default function ContactPage() {
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+
+    const error = validateField(field, value);
+
+    // If field was already touched, keep error updated live
     if (touched[field]) {
-      const error = validateField(field, value);
       setErrors((prev) => ({ ...prev, [field]: error }));
+      return;
+    }
+
+    // Real-time validation for phone:
+    // If phone has invalid characters or exceeds maximum allowed digits, show error immediately
+    if (field === "phone" && value.trim()) {
+      const cleanDigits = value.replace(/\D/g, "");
+      const isIndian =
+        value.trim().startsWith("+91") ||
+        (cleanDigits.startsWith("91") && cleanDigits.length >= 11);
+      const maxAllowed = isIndian ? 12 : value.trim().startsWith("+") ? 13 : 10;
+      const hasInvalidChar = /[^\d\s+\-().]/.test(value);
+
+      if (cleanDigits.length > maxAllowed || hasInvalidChar) {
+        setTouched((prev) => ({ ...prev, phone: true }));
+        setErrors((prev) => ({ ...prev, phone: error }));
+      } else if (!error) {
+        setErrors((prev) => ({ ...prev, phone: "" }));
+      }
+    } else if (field === "email" && value.includes("@") && value.includes(".")) {
+      if (error) {
+        setTouched((prev) => ({ ...prev, email: true }));
+        setErrors((prev) => ({ ...prev, email: error }));
+      } else {
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
     }
   };
 
   const validateAll = (): boolean => {
     const newErrors: Record<string, string> = {};
-    const fields = ["name", "email", "service"];
+    const fields = ["name", "email", "phone", "service"];
 
     fields.forEach((field) => {
       const error = validateField(
@@ -143,6 +172,7 @@ export default function ContactPage() {
     setTouched({
       name: true,
       email: true,
+      phone: true,
       service: true,
     });
 
@@ -220,7 +250,7 @@ export default function ContactPage() {
   const inputClass = (field: string) => `
     transition-[border-color,box-shadow,background-color] duration-200 w-full mt-2 rounded-2xl border px-4 py-3.5 text-sm outline-none
     ${
-      touched[field] && errors[field]
+      errors[field]
         ? "border-red-400 bg-red-50/20 focus:border-red-500 focus:ring-2 focus:ring-red-400/20 text-[#15103A]"
         : touched[field] &&
             !errors[field] &&
@@ -369,7 +399,7 @@ export default function ContactPage() {
                         onBlur={() => handleBlur("name")}
                         className={inputClass("name")}
                       />
-                      {touched.name && errors.name && (
+                      {errors.name && (
                         <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1 font-medium">
                           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                           <span>{errors.name}</span>
@@ -393,7 +423,7 @@ export default function ContactPage() {
                         onBlur={() => handleBlur("email")}
                         className={inputClass("email")}
                       />
-                      {touched.email && errors.email && (
+                      {errors.email && (
                         <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1 font-medium">
                           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                           <span>{errors.email}</span>
@@ -432,7 +462,7 @@ export default function ContactPage() {
                           Contact Phone
                         </label>
                         <span className="text-[10px] text-[#8C87A5] font-mono">
-                          Optional (10+ digits)
+                          Optional (10 digits)
                         </span>
                       </div>
                       <input
@@ -446,7 +476,7 @@ export default function ContactPage() {
                         onBlur={() => handleBlur("phone")}
                         className={inputClass("phone")}
                       />
-                      {touched.phone && errors.phone && (
+                      {errors.phone && (
                         <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1 font-medium">
                           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                           <span>{errors.phone}</span>
@@ -477,7 +507,7 @@ export default function ContactPage() {
                         </option>
                       ))}
                     </select>
-                    {touched.service && errors.service && (
+                    {errors.service && (
                       <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1 font-medium">
                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                         <span>{errors.service}</span>

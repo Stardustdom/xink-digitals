@@ -93,6 +93,41 @@ export default function ScheduleCallModal({
 
   if (!isOpen || !mounted) return null;
 
+  const handlePhoneChange = (val: string) => {
+    setFormData((prev) => ({ ...prev, phone: val }));
+    const err = validatePhone(val, false);
+    const cleanDigits = val.replace(/\D/g, "");
+    const isIndian =
+      val.trim().startsWith("+91") ||
+      (cleanDigits.startsWith("91") && cleanDigits.length >= 11);
+    const maxAllowed = isIndian ? 12 : val.trim().startsWith("+") ? 13 : 10;
+    const hasInvalidChar = /[^\d\s+\-().]/.test(val);
+
+    if (errors.phone || cleanDigits.length > maxAllowed || hasInvalidChar) {
+      setErrors((prev) => ({ ...prev, phone: err || "" }));
+    } else if (cleanDigits.length === (isIndian ? 12 : 10)) {
+      setErrors((prev) => ({ ...prev, phone: "" }));
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    const err = validatePhone(formData.phone, true);
+    setErrors((prev) => ({ ...prev, phone: err || "" }));
+  };
+
+  const handleEmailChange = (val: string) => {
+    setFormData((prev) => ({ ...prev, email: val }));
+    if (errors.email) {
+      const err = validateEmail(val);
+      setErrors((prev) => ({ ...prev, email: err || "" }));
+    }
+  };
+
+  const handleEmailBlur = () => {
+    const err = validateEmail(formData.email);
+    setErrors((prev) => ({ ...prev, email: err || "" }));
+  };
+
   const validate = () => {
     const errs: Record<string, string> = {};
     if (!formData.name.trim() || formData.name.trim().length < 2) {
@@ -359,7 +394,8 @@ export default function ScheduleCallModal({
                       type="email"
                       placeholder="name@company.com"
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      onChange={(e) => handleEmailChange(e.target.value)}
+                      onBlur={handleEmailBlur}
                       className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs sm:text-sm text-[#1B143F] outline-none transition-all ${
                         errors.email
                           ? "border-red-400 bg-red-50/20 focus:border-red-500"
@@ -377,15 +413,17 @@ export default function ScheduleCallModal({
 
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                    Contact Phone (10+ digits) <span className="text-red-500">*</span>
+                    Contact Phone (10 digits) <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <Phone className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="tel"
                       placeholder="(+91) 92306 53970"
+                      maxLength={25}
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => handlePhoneChange(e.target.value)}
+                      onBlur={handlePhoneBlur}
                       className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs sm:text-sm text-[#1B143F] outline-none transition-all font-mono ${
                         errors.phone
                           ? "border-red-400 bg-red-50/20 focus:border-red-500"

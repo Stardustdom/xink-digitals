@@ -1,9 +1,54 @@
-import Link from "next/link";
+import type { Metadata } from "next";
+import FAQClient from "@/components/faq/FAQClient";
 import { faqs } from "@/data/faqs";
-export const metadata = { title: "FAQs | Xink Digitals", description: "Answers about Xink Digitals services, proposals, budgets, campaign timelines and reporting." };
+
+export const metadata: Metadata = {
+  title: "Frequently Asked Questions | Xink Digitals",
+  description:
+    "Comprehensive answers about digital marketing costs, lead generation, SEO, web development, real estate property marketing, and healthcare marketing in Kolkata.",
+  keywords: [
+    "digital marketing FAQ Kolkata",
+    "digital marketing cost Kolkata",
+    "real estate digital marketing FAQ",
+    "healthcare marketing FAQ",
+    "doctor SEO Kolkata",
+    "Xink Digitals questions",
+  ],
+  alternates: {
+    canonical: "https://xinkdigitals.com/faq",
+  },
+  openGraph: {
+    title: "Frequently Asked Questions | Xink Digitals",
+    description:
+      "Explore answers on digital marketing strategy, real estate lead generation, and healthcare patient acquisition.",
+    url: "https://xinkdigitals.com/faq",
+    siteName: "Xink Digitals",
+    type: "website",
+  },
+};
+
 export default function FAQPage() {
- return <main className="page-glow bg-[#FFF9F1] text-[#1B143F] px-6 pt-36 pb-20 sm:px-16"><div className="max-w-3xl mx-auto">
- <p className="text-xs uppercase tracking-[0.2em] text-[#6A38EB] font-bold mb-4">Before we begin</p><h1 className="page-intro font-display text-4xl sm:text-6xl font-extrabold tracking-tight">Good questions.<br />Clear answers.</h1><p className="text-[#5B5573] mt-6 mb-10 leading-relaxed">What to expect when you work with Xink Digitals.</p>
- <div className="space-y-4">{faqs.map(faq => <details data-reveal key={faq.q} className="group bg-white border border-[#EDEDF5] rounded-3xl p-6"><summary className="font-bold cursor-pointer leading-relaxed focus-visible:outline-2 focus-visible:outline-[#6A38EB]">{faq.q}</summary><p className="text-sm text-[#5B5573] leading-relaxed mt-4">{faq.a}</p></details>)}</div><Link href="/contact" className="inline-flex rounded-full bg-[#6A38EB] text-white px-7 py-4 mt-10 text-sm font-bold">Tell us about your business ↗</Link>
- </div></main>;
+  // Generate Google Schema JSON-LD for FAQPage
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <FAQClient />
+    </>
+  );
 }
