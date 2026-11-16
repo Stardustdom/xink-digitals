@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { createPortal } from "react-dom";
 import CaseStudyModal from "@/components/CaseStudyModal";
 import type { Project } from "@/data/projects";
 import { projects } from "@/data/projects";
@@ -60,6 +61,42 @@ function Watermark({ position = "bottom-right" }: { position?: "bottom-right" | 
       <Image src="/logo-icon.png" alt="" width={14} height={14} className="w-3.5 h-3.5" />
       Xink Digitals
     </span>
+  );
+}
+
+function Popup({ label, onClose, children }: { label: string; onClose: () => void; children: React.ReactNode }) {
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={label}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-hidden overscroll-contain"
+      onClick={onClose}
+    >
+      <div
+        className="relative max-w-[min(92vw,960px)] max-h-[90vh] overflow-hidden rounded-2xl bg-white border border-[#181329]/15 shadow-[0_24px_80px_rgba(24,19,41,0.45)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          aria-label="Close preview"
+          onClick={onClose}
+          className="absolute top-2.5 left-2.5 z-10 w-9 h-9 rounded-full bg-white text-[#181329] shadow-md flex items-center justify-center"
+        >
+          <X className="w-4 h-4" />
+        </button>
+        {children}
+      </div>
+    </div>,
+    document.body
   );
 }
 
@@ -458,29 +495,15 @@ export default function WorkClient() {
         </section>
       </div>
       {sampleBox !== null && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Sample work preview"
-          className="fixed inset-0 z-[100] bg-[#181329]/90 flex items-center justify-center p-4"
-          onClick={() => setSampleBox(null)}
-        >
-          <button
-            type="button"
-            aria-label="Close preview"
-            onClick={() => setSampleBox(null)}
-            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white text-[#181329] flex items-center justify-center"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <div className="relative max-h-[88vh] max-w-5xl" onClick={(e) => e.stopPropagation()}>
+        <Popup label="Sample work preview" onClose={() => setSampleBox(null)}>
+          <div className="relative">
             {creativeSamples[sampleBox].type === "image" ? (
               <Image
                 src={`/work-samples/sample-${String(creativeSamples[sampleBox].n).padStart(2, "0")}.jpg`}
                 alt={`${creativeSamples[sampleBox].title} by Xink Digitals`}
                 width={creativeSamples[sampleBox].w}
                 height={creativeSamples[sampleBox].h}
-                className="w-auto h-auto max-h-[88vh] max-w-full rounded-xl"
+                className="block w-auto h-auto max-h-[80vh] max-w-full"
               />
             ) : (
               <video
@@ -488,40 +511,26 @@ export default function WorkClient() {
                 controls
                 autoPlay
                 playsInline
-                className="w-auto h-auto max-h-[88vh] max-w-full rounded-xl bg-black"
+                className="block w-auto h-auto max-h-[80vh] max-w-full bg-black"
               />
             )}
             <Watermark position={creativeSamples[sampleBox].type === "video" ? "top-right" : "bottom-right"} />
           </div>
-        </div>
+        </Popup>
       )}
       {lightbox !== null && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Work evidence preview"
-          className="fixed inset-0 z-[100] bg-[#181329]/90 flex items-center justify-center p-4"
-          onClick={() => setLightbox(null)}
-        >
-          <button
-            type="button"
-            aria-label="Close preview"
-            onClick={() => setLightbox(null)}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white text-[#181329] flex items-center justify-center"
-          >
-            <X className="w-5 h-5" />
-          </button>
-          <div className="max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={`/work-evidence/evidence-${String(evidence[lightbox].n).padStart(2, "0")}.jpg`}
-              alt={`${evidence[lightbox].platform} analytics screenshot: ${evidence[lightbox].title}`}
-              width={1400}
-              height={700}
-              className="w-full h-auto max-h-[80vh] object-contain rounded-xl bg-white"
-            />
-            <p className="text-white text-sm font-bold mt-3 text-center">{evidence[lightbox].title} - <span className="font-normal opacity-80">{evidence[lightbox].note}</span></p>
-          </div>
-        </div>
+        <Popup label="Work evidence preview" onClose={() => setLightbox(null)}>
+          <Image
+            src={`/work-evidence/evidence-${String(evidence[lightbox].n).padStart(2, "0")}.jpg`}
+            alt={`${evidence[lightbox].platform} analytics screenshot: ${evidence[lightbox].title}`}
+            width={1400}
+            height={700}
+            className="block w-auto h-auto max-h-[70vh] max-w-full"
+          />
+          <p className="px-4 py-3 text-sm font-bold text-[#181329]">
+            {evidence[lightbox].title} - <span className="font-normal text-[#5A4E6B]">{evidence[lightbox].note}</span>
+          </p>
+        </Popup>
       )}
       {activeProject && <CaseStudyModal project={activeProject} onClose={() => setActiveProject(null)} onNext={setActiveProject} />}
     </div>
