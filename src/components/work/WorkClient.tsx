@@ -17,6 +17,7 @@ import {
   Search,
   X,
   BarChart3,
+  Play,
 } from "lucide-react";
 import { useSound } from "@/components/SoundManager";
 
@@ -240,17 +241,26 @@ export default function WorkClient() {
                     <Watermark />
                   </button>
                 ) : (
-                  <div className="relative bg-black">
+                  <button
+                    type="button"
+                    onClick={() => { playPop(); setSampleBox(i); }}
+                    className="relative block w-full bg-black group"
+                    aria-label={`Play ${c.title}`}
+                  >
                     <video
-                      src={`/work-samples/sample-video-${String(c.n).padStart(2, "0")}.mp4`}
-                      controls
+                      src={`/work-samples/sample-video-${String(c.n).padStart(2, "0")}.mp4#t=0.5`}
+                      muted
                       playsInline
                       preload="metadata"
-                      className="w-full h-auto max-h-[560px]"
-                      aria-label={`${c.title} by Xink Digitals`}
+                      className="w-full h-auto max-h-[560px] pointer-events-none"
                     />
+                    <span className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                      <span className="w-14 h-14 rounded-full bg-white/90 text-[#754BFF] flex items-center justify-center shadow-lg">
+                        <Play className="w-6 h-6 ml-0.5" fill="currentColor" />
+                      </span>
+                    </span>
                     <Watermark position="top-right" />
-                  </div>
+                  </button>
                 )}
                 <figcaption className="p-4">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#754BFF]">{c.tag}</span>
@@ -447,7 +457,7 @@ export default function WorkClient() {
         )}
         </section>
       </div>
-      {sampleBox !== null && creativeSamples[sampleBox].type === "image" && (
+      {sampleBox !== null && (
         <div
           role="dialog"
           aria-modal="true"
@@ -464,14 +474,24 @@ export default function WorkClient() {
             <X className="w-5 h-5" />
           </button>
           <div className="relative max-h-[88vh] max-w-5xl" onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={`/work-samples/sample-${String(creativeSamples[sampleBox].n).padStart(2, "0")}.jpg`}
-              alt={`${creativeSamples[sampleBox].title} by Xink Digitals`}
-              width={creativeSamples[sampleBox].type === "image" ? creativeSamples[sampleBox].w : 1200}
-              height={creativeSamples[sampleBox].type === "image" ? creativeSamples[sampleBox].h : 800}
-              className="w-auto h-auto max-h-[88vh] max-w-full rounded-xl"
-            />
-            <Watermark />
+            {creativeSamples[sampleBox].type === "image" ? (
+              <Image
+                src={`/work-samples/sample-${String(creativeSamples[sampleBox].n).padStart(2, "0")}.jpg`}
+                alt={`${creativeSamples[sampleBox].title} by Xink Digitals`}
+                width={creativeSamples[sampleBox].w}
+                height={creativeSamples[sampleBox].h}
+                className="w-auto h-auto max-h-[88vh] max-w-full rounded-xl"
+              />
+            ) : (
+              <video
+                src={`/work-samples/sample-video-${String(creativeSamples[sampleBox].n).padStart(2, "0")}.mp4`}
+                controls
+                autoPlay
+                playsInline
+                className="w-auto h-auto max-h-[88vh] max-w-full rounded-xl bg-black"
+              />
+            )}
+            <Watermark position={creativeSamples[sampleBox].type === "video" ? "top-right" : "bottom-right"} />
           </div>
         </div>
       )}
