@@ -254,18 +254,18 @@ export default function ContactPage() {
               <button
                 type="button"
                 onClick={() => setIsScheduleModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1B143F] hover:bg-[#6A38EB] text-white text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#1B143F] hover:bg-[#6A38EB] text-white text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer whitespace-nowrap"
               >
                 <Calendar className="w-3.5 h-3.5 text-[#C9F36D]" />
-                <span>Schedule a Call ↗</span>
+                <span>Schedule a Call</span>
               </button>
               <button
                 type="button"
                 onClick={() => setIsSiteAuditModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#1B143F]/20 bg-white hover:border-[#6A38EB] hover:text-[#6A38EB] text-[#1B143F] text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#1B143F]/20 bg-white hover:border-[#6A38EB] hover:text-[#6A38EB] text-[#1B143F] text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer whitespace-nowrap"
               >
                 <Search className="w-3.5 h-3.5 text-[#6A38EB]" />
-                <span>Free Site Audit ↗</span>
+                <span>Free Site Audit</span>
               </button>
             </div>
           </div>
@@ -745,18 +745,18 @@ export default function ContactPage() {
                   <button
                     type="button"
                     onClick={() => setIsScheduleModalOpen(true)}
-                    className="py-3 px-3.5 rounded-xl bg-[#6A38EB] hover:bg-[#5829D6] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#6A38EB]/30 flex items-center justify-center gap-1.5 group cursor-pointer"
+                    className="py-3 px-3 rounded-xl bg-[#6A38EB] hover:bg-[#5829D6] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#6A38EB]/30 flex items-center justify-center gap-2 group cursor-pointer whitespace-nowrap"
                   >
                     <Calendar className="w-3.5 h-3.5 text-[#C9F36D]" />
-                    <span>Schedule Call ↗</span>
+                    <span>Schedule Call</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsSiteAuditModalOpen(true)}
-                    className="py-3 px-3.5 rounded-xl bg-white hover:bg-white/90 text-[#1B143F] font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-sm flex items-center justify-center gap-1.5 group cursor-pointer"
+                    className="py-3 px-3 rounded-xl bg-white hover:bg-white/90 text-[#1B143F] font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-sm flex items-center justify-center gap-2 group cursor-pointer whitespace-nowrap"
                   >
                     <Search className="w-3.5 h-3.5 text-[#6A38EB]" />
-                    <span>Site Audit ↗</span>
+                    <span>Site Audit</span>
                   </button>
                 </div>
 
