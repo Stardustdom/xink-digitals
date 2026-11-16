@@ -13,7 +13,6 @@ import {
   ExternalLink,
   Download,
   Sparkles,
-  Send,
 } from "lucide-react";
 
 interface ScheduleCallModalProps {
@@ -87,25 +86,6 @@ export default function ScheduleCallModal({
 
   if (!isOpen) return null;
 
-  // Gmail Web Compose Link generator
-  const getGmailComposeUrl = () => {
-    const subject = encodeURIComponent(
-      `New Strategy Call Booking: ${formData.name || "Client"} (${formData.date || "Upcoming"})`
-    );
-    const body = encodeURIComponent(
-      `Hello Xink Digitals Team,\n\nI have scheduled a strategy consultation call:\n\n` +
-        `• Client Name: ${formData.name || "Client"}\n` +
-        `• Client Email: ${formData.email || "Not provided"}\n` +
-        `• Contact Phone: ${formData.phone || "Not provided"}\n` +
-        `• Preferred Date: ${formData.date || "Earliest available"}\n` +
-        `• Preferred Time: ${formData.time || "Anytime"}\n` +
-        `• Discussion Topic: ${formData.notes || "None"}\n\n` +
-        `Please confirm our calendar invitation.\n\n` +
-        `Best regards,\n${formData.name || "Client"}`
-    );
-    return `https://mail.google.com/mail/?view=cm&fs=1&to=contact@xinkdigitals.com&su=${subject}&body=${body}`;
-  };
-
   const validate = () => {
     // No validation for email and phone number per requirement
     return true;
@@ -129,25 +109,11 @@ export default function ScheduleCallModal({
       if (data.success) {
         setIsSuccess(true);
         setEmailSent(Boolean(data.emailSent));
-
-        // Open Gmail compose directly to send to contact@xinkdigitals.com
-        try {
-          const gmailUrl = getGmailComposeUrl();
-          window.open(gmailUrl, "_blank");
-        } catch {
-          // If popup blocked, button is on screen
-        }
       } else {
         setErrors(data.errors || { general: "Something went wrong. Please try again." });
       }
     } catch {
-      // Fallback: send via mailto directly to contact@xinkdigitals.com
-      const subject = encodeURIComponent(`Scheduled Call Request from ${formData.name || "Client"}`);
-      const body = encodeURIComponent(
-        `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nDate: ${formData.date}\nTime: ${formData.time}\nNotes: ${formData.notes || "None"}`
-      );
-      window.location.href = `mailto:contact@xinkdigitals.com?subject=${subject}&body=${body}`;
-      setIsSuccess(true);
+      setErrors({ general: "Network error occurred. Please check your connection and try again." });
     } finally {
       setIsSubmitting(false);
     }
@@ -206,7 +172,7 @@ export default function ScheduleCallModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-[#0F0A1C]/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 transition-all animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 overflow-y-auto bg-[#0F0A1C]/80 backdrop-blur-md transition-all animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -214,32 +180,41 @@ export default function ScheduleCallModal({
       aria-modal="true"
       aria-labelledby="schedule-modal-title"
     >
-      <div className="relative w-full max-w-lg my-auto rounded-3xl bg-white text-[#1B143F] shadow-[0_25px_60px_-15px_rgba(27,20,63,0.35)] border border-[#EDEDF5] overflow-hidden flex flex-col max-h-[calc(100vh-2rem)]">
-        {/* Compact Modal Header - Stays visible at all times */}
-        <div className="relative px-5 py-3.5 sm:px-6 sm:py-4 bg-gradient-to-b from-[#F7F5FE] to-white border-b border-[#EDEDF5] flex items-center justify-between shrink-0">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#6A38EB]/10 border border-[#6A38EB]/20 text-[#6A38EB] text-[10px] font-bold uppercase tracking-wider mb-1">
-              <Sparkles className="w-3 h-3" />
-              <span>Direct Consultation</span>
+      <div
+        className="min-h-full flex items-center justify-center p-3 sm:p-6 py-6 sm:py-10"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+        <div
+          className="relative w-full max-w-lg rounded-3xl bg-white text-[#1B143F] shadow-[0_25px_60px_-15px_rgba(27,20,63,0.35)] border border-[#EDEDF5] overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Modal Header */}
+          <div className="relative px-5 py-4 sm:px-6 sm:py-4 bg-gradient-to-b from-[#F7F5FE] to-white border-b border-[#EDEDF5] flex items-center justify-between shrink-0">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#6A38EB]/10 border border-[#6A38EB]/20 text-[#6A38EB] text-[10px] font-bold uppercase tracking-wider mb-1">
+                <Sparkles className="w-3 h-3" />
+                <span>Direct Consultation</span>
+              </div>
+              <h3
+                id="schedule-modal-title"
+                className="font-display text-xl sm:text-2xl font-extrabold text-[#1B143F] tracking-tight leading-tight"
+              >
+                {isSuccess ? "Call Scheduled!" : "Schedule a Call"}
+              </h3>
             </div>
-            <h3
-              id="schedule-modal-title"
-              className="font-display text-xl sm:text-2xl font-extrabold text-[#1B143F] tracking-tight leading-tight"
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-full bg-white border border-[#EDEDF5] text-[#5B5573] hover:text-[#1B143F] hover:bg-[#F4F4FA] flex items-center justify-center transition-colors shrink-0 shadow-2xs cursor-pointer"
+              aria-label="Close modal"
             >
-              {isSuccess ? "Call Scheduled!" : "Schedule a Call"}
-            </h3>
+              <X className="w-4 h-4" />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white border border-[#EDEDF5] text-[#5B5573] hover:text-[#1B143F] hover:bg-[#F4F4FA] flex items-center justify-center transition-colors shrink-0 shadow-2xs cursor-pointer"
-            aria-label="Close modal"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
 
-        {/* Modal Scrollable Body */}
-        <div className="p-5 sm:p-6 overflow-y-auto space-y-3.5 overscroll-contain">
+          {/* Modal Content */}
+          <div className="p-5 sm:p-6 space-y-3.5">
           {isSuccess ? (
             /* Success Confirmation State */
             <div className="text-center py-2 space-y-4">
@@ -252,7 +227,9 @@ export default function ScheduleCallModal({
                   You&apos;re on the schedule!
                 </h4>
                 <p className="text-xs text-[#5B5573] mt-1 max-w-sm mx-auto leading-relaxed">
-                  Your booking has been registered for{" "}
+                  A confirmation email has been sent to{" "}
+                  <strong className="text-[#6A38EB] font-bold">{formData.email || "your email"}</strong>{" "}
+                  and our team at{" "}
                   <strong className="text-[#6A38EB] font-bold">contact@xinkdigitals.com</strong>.
                 </p>
               </div>
@@ -285,37 +262,25 @@ export default function ScheduleCallModal({
                 </div>
               </div>
 
-              {/* Action Buttons: Gmail Send + Calendar Sync */}
+              {/* Action Buttons: Calendar Sync */}
               <div className="space-y-2.5 pt-1">
-                {/* 1. Direct Gmail Send */}
-                <a
-                  href={getGmailComposeUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 px-4 rounded-xl bg-[#EA4335] hover:bg-[#D93025] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-[#EA4335]/25 hover:shadow-lg"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>Send via Gmail (contact@xinkdigitals.com)</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-
-                {/* 2. Google Calendar */}
+                {/* 1. Google Calendar */}
                 <a
                   href={getGoogleCalendarUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3 px-4 rounded-xl bg-[#6A38EB] hover:bg-[#5829D6] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-[#6A38EB]/25"
+                  className="w-full py-3 px-4 rounded-xl bg-[#6A38EB] hover:bg-[#5829D6] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-[#6A38EB]/25 cursor-pointer"
                 >
                   <Calendar className="w-3.5 h-3.5" />
                   <span>Add to Google Calendar</span>
                   <ExternalLink className="w-3.5 h-3.5" />
                 </a>
 
-                {/* 3. Download .ics */}
+                {/* 2. Download .ics */}
                 <button
                   type="button"
                   onClick={handleDownloadIcs}
-                  className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-[#F8F7FD] border border-[#EDEDF5] text-[#1B143F] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-2xs"
+                  className="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-[#F8F7FD] border border-[#EDEDF5] text-[#1B143F] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors shadow-2xs cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5 text-[#6A38EB]" />
                   <span>Download .ics (Apple / Outlook / Phone)</span>
@@ -352,37 +317,38 @@ export default function ScheduleCallModal({
                 </div>
               </div>
 
-              {/* Email - No validation */}
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                  Business / Personal Email
-                </label>
-                <div className="relative">
-                  <Mail className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    placeholder="name@company.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
-                  />
+              {/* Email & Phone side-by-side on desktop */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
+                    Business / Personal Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="name@company.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Phone - No validation */}
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
-                  Contact Phone Number
-                </label>
-                <div className="relative">
-                  <Phone className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    placeholder="(+91) 92306 53970"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
-                  />
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-[#1B143F] mb-1">
+                    Contact Phone Number
+                  </label>
+                  <div className="relative">
+                    <Phone className="w-3.5 h-3.5 text-[#8C87A5] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="(+91) 92306 53970"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#DCDAE8] text-xs sm:text-sm text-[#1B143F] outline-none focus:border-[#6A38EB] focus:ring-2 focus:ring-[#6A38EB]/15 transition-all"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -469,5 +435,6 @@ export default function ScheduleCallModal({
         </div>
       </div>
     </div>
+  </div>
   );
 }

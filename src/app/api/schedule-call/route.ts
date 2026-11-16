@@ -1,77 +1,163 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+function buildIcsCalendar({
+  name,
+  email,
+  phone,
+  date,
+  time,
+  notes,
+}: {
+  name: string;
+  email: string;
+  phone: string;
+  date: string;
+  time: string;
+  notes: string;
+}) {
+  const cleanDate = date ? date.replace(/-/g, "") : "20261120";
+  const uid = `xink-call-${Date.now()}-${Math.random().toString(36).slice(2, 8)}@xinkdigitals.com`;
+  const now = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Xink Digitals//Strategy Consultation Booking//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:REQUEST",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${now}`,
+    `DTSTART:${cleanDate}T100000Z`,
+    `DTEND:${cleanDate}T103000Z`,
+    `SUMMARY:Discovery & Strategy Call — Xink Digitals & ${name}`,
+    `DESCRIPTION:Strategy Consultation with Xink Digitals\\nClient: ${name}\\nEmail: ${email}\\nPhone: ${phone}\\nTopic/Notes: ${notes}\\nAgency: contact@xinkdigitals.com`,
+    `LOCATION:Google Meet / Phone (${phone})`,
+    "STATUS:CONFIRMED",
+    "ORGANIZER;CN=Xink Digitals:mailto:contact@xinkdigitals.com",
+    `ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=${name}:mailto:${email || "contact@xinkdigitals.com"}`,
+    "BEGIN:VALARM",
+    "TRIGGER:-PT15M",
+    "ACTION:DISPLAY",
+    "DESCRIPTION:Reminder: Call with Xink Digitals in 15 minutes",
+    "END:VALARM",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { name, email, phone, date, time, notes } = body;
 
-    const bookingName = name?.trim() || "Guest Client";
+    const bookingName = name?.trim() || "Client";
     const bookingEmail = email?.trim() || "";
     const bookingPhone = phone?.trim() || "Not provided";
-    const bookingDate = date?.trim() || "Earliest available";
-    const bookingTime = time?.trim() || "Anytime";
+    const bookingDate = date?.trim() || "Upcoming";
+    const bookingTime = time?.trim() || "Flexible";
     const bookingNotes = notes?.trim() || "None";
 
     let emailSent = false;
     let emailStatus = "logged";
 
-    // Check if Gmail SMTP credentials are configured in environment
-    const gmailUser = process.env.GMAIL_USER || process.env.SMTP_USER;
-    const gmailPass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
+    // Check credentials (GMAIL_USER & GMAIL_APP_PASSWORD, or standard SMTP)
+    const user = process.env.GMAIL_USER || process.env.SMTP_USER;
+    const pass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
+    const host = process.env.SMTP_HOST;
+    const port = Number(process.env.SMTP_PORT) || 465;
 
-    if (gmailUser && gmailPass) {
+    if (user && pass) {
       try {
-        const transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: gmailUser,
-            pass: gmailPass,
-          },
+        const transporter = host
+          ? nodemailer.createTransport({
+              host,
+              port,
+              secure: port === 465,
+              auth: { user, pass },
+            })
+          : nodemailer.createTransport({
+              service: "gmail",
+              auth: { user, pass },
+            });
+
+        const icsContent = buildIcsCalendar({
+          name: bookingName,
+          email: bookingEmail,
+          phone: bookingPhone,
+          date: bookingDate,
+          time: bookingTime,
+          notes: bookingNotes,
         });
 
         // 1. Email to agency (contact@xinkdigitals.com)
         await transporter.sendMail({
-          from: `"Xink Digitals Bookings" <${gmailUser}>`,
+          from: `"Xink Digitals Bookings" <${user}>`,
           to: "contact@xinkdigitals.com",
           replyTo: bookingEmail || undefined,
-          subject: `📅 New Strategy Call Booking: ${bookingName}`,
+          subject: `📅 New Strategy Call: ${bookingName} (${bookingDate} · ${bookingTime})`,
           html: `
-            <div style="font-family: Arial, sans-serif; padding: 20px; color: #1B143F;">
-              <h2 style="color: #6A38EB; margin-top: 0;">New Call Scheduled via Website</h2>
-              <table style="width: 100%; max-width: 520px; border-collapse: collapse; margin-top: 15px; font-size: 14px;">
-                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; width: 140px;">Name:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5;">${bookingName}</td></tr>
-                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold;">Email:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5;"><a href="mailto:${bookingEmail}">${bookingEmail || "Not provided"}</a></td></tr>
-                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold;">Phone:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5;"><a href="tel:${bookingPhone}">${bookingPhone}</a></td></tr>
-                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold;">Date:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5;">${bookingDate}</td></tr>
-                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold;">Time:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5;">${bookingTime}</td></tr>
-                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold;">Notes:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5;">${bookingNotes}</td></tr>
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 24px; color: #1B143F; max-width: 600px; margin: 0 auto; background: #FFFFFF; border: 1px solid #EDEDF5; border-radius: 16px;">
+              <div style="border-bottom: 2px solid #6A38EB; padding-bottom: 16px; margin-bottom: 20px;">
+                <span style="background: #F4F1FD; color: #6A38EB; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">New Website Booking</span>
+                <h2 style="color: #1B143F; margin: 10px 0 0 0; font-size: 22px;">Strategy Call Scheduled</h2>
+              </div>
+              <p style="font-size: 14px; color: #5B5573; line-height: 1.5;">A new strategy consultation has been booked through the website. Booking details are below:</p>
+              <table style="width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px;">
+                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; width: 140px; color: #1B143F;">Client Name:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; color: #1B143F;">${bookingName}</td></tr>
+                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Email Address:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5;"><a href="mailto:${bookingEmail}" style="color: #6A38EB; font-weight: 500;">${bookingEmail || "Not provided"}</a></td></tr>
+                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Phone Number:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5;"><a href="tel:${bookingPhone}" style="color: #6A38EB; font-weight: 500;">${bookingPhone}</a></td></tr>
+                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Scheduled Date:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; color: #1B143F; font-weight: 600;">${bookingDate}</td></tr>
+                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Preferred Time:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; color: #1B143F; font-weight: 600;">${bookingTime}</td></tr>
+                <tr><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; font-weight: bold; color: #1B143F;">Discussion Goals:</td><td style="padding: 10px; border-bottom: 1px solid #EDEDF5; color: #5B5573;">${bookingNotes}</td></tr>
               </table>
-              <p style="margin-top: 20px; font-size: 12px; color: #8C87A5;">Timestamp: ${new Date().toISOString()}</p>
+              <div style="margin-top: 24px; padding: 12px 16px; background: #F8F7FD; border-radius: 12px; font-size: 12px; color: #5B5573;">
+                💡 <strong>Tip:</strong> The calendar invitation is attached to this email. You can click "Reply" to respond directly to <a href="mailto:${bookingEmail}">${bookingEmail}</a>.
+              </div>
+              <p style="margin-top: 20px; font-size: 11px; color: #8C87A5;">Received: ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })} IST</p>
             </div>
           `,
+          icalEvent: {
+            filename: "invitation.ics",
+            method: "REQUEST",
+            content: icsContent,
+          },
         });
 
-        // 2. Email confirmation to the client (if valid email provided)
+        // 2. Automated Confirmation Copy to the client
         if (bookingEmail && bookingEmail.includes("@")) {
           await transporter.sendMail({
-            from: `"Xink Digitals" <${gmailUser}>`,
+            from: `"Xink Digitals" <${user}>`,
             to: bookingEmail,
-            subject: `Confirmed: Strategy Call with Xink Digitals (${bookingDate})`,
+            subject: `Confirmed: Strategy Consultation with Xink Digitals (${bookingDate})`,
             html: `
-              <div style="font-family: Arial, sans-serif; padding: 20px; color: #1B143F;">
-                <h2 style="color: #6A38EB; margin-top: 0;">Your Strategy Call is Confirmed!</h2>
-                <p>Hello ${bookingName},</p>
-                <p>Thank you for scheduling a strategy consultation with Xink Digitals. We have reserved your slot:</p>
-                <div style="background: #F4F1FD; border: 1px solid #EDEDF5; padding: 15px; border-radius: 12px; margin: 15px 0;">
-                  <p style="margin: 4px 0;"><strong>Date:</strong> ${bookingDate}</p>
-                  <p style="margin: 4px 0;"><strong>Time:</strong> ${bookingTime}</p>
-                  <p style="margin: 4px 0;"><strong>Contact Phone:</strong> ${bookingPhone}</p>
+              <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 24px; color: #1B143F; max-width: 600px; margin: 0 auto; background: #FFFFFF; border: 1px solid #EDEDF5; border-radius: 16px;">
+                <div style="border-bottom: 2px solid #6A38EB; padding-bottom: 16px; margin-bottom: 20px;">
+                  <span style="background: #EBFBF5; color: #00A877; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">✓ Booking Confirmed</span>
+                  <h2 style="color: #1B143F; margin: 10px 0 0 0; font-size: 22px;">Your Strategy Call is Confirmed!</h2>
                 </div>
-                <p>Our team will reach out at the scheduled time. If you need to make changes, reply directly to this email or reach us at <a href="mailto:contact@xinkdigitals.com">contact@xinkdigitals.com</a>.</p>
-                <p style="margin-top: 25px; color: #8C87A5; font-size: 12px;">Xink Digitals · 11 Hospital Link Rd, Santoshpur, Kolkata, India 700075</p>
+                <p style="font-size: 14px; color: #1B143F; line-height: 1.6;">Hello <strong>${bookingName}</strong>,</p>
+                <p style="font-size: 14px; color: #5B5573; line-height: 1.6;">Thank you for scheduling a strategy consultation with Xink Digitals. We have reserved your dedicated slot:</p>
+                <div style="background: #F8F7FD; border: 1px solid #EBE8F7; padding: 16px; border-radius: 12px; margin: 18px 0;">
+                  <p style="margin: 4px 0; font-size: 14px; color: #1B143F;"><strong>📅 Date:</strong> ${bookingDate}</p>
+                  <p style="margin: 4px 0; font-size: 14px; color: #1B143F;"><strong>⏰ Time:</strong> ${bookingTime}</p>
+                  <p style="margin: 4px 0; font-size: 14px; color: #1B143F;"><strong>📞 Contact Phone:</strong> ${bookingPhone}</p>
+                  ${bookingNotes !== "None" ? `<p style="margin: 4px 0; font-size: 14px; color: #1B143F;"><strong>🎯 Focus:</strong> ${bookingNotes}</p>` : ""}
+                </div>
+                <p style="font-size: 14px; color: #5B5573; line-height: 1.6;">Our team will reach out at the scheduled time. The calendar invitation is attached so this sync appears in your calendar. If you need to make changes or have questions beforehand, reply directly to this email or reach us at <a href="mailto:contact@xinkdigitals.com" style="color: #6A38EB; font-weight: 500;">contact@xinkdigitals.com</a>.</p>
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #EDEDF5; font-size: 12px; color: #8C87A5;">
+                  <strong>Xink Digitals</strong><br />
+                  11 Hospital Link Rd, Eastern Park, Santoshpur, Kolkata, India 700075<br />
+                  Phone: (+91) 92306 53970 · Email: contact@xinkdigitals.com
+                </div>
               </div>
             `,
+            icalEvent: {
+              filename: "xink-consultation.ics",
+              method: "REQUEST",
+              content: icsContent,
+            },
           });
         }
 
@@ -81,6 +167,11 @@ export async function POST(request: Request) {
         console.error("Nodemailer SMTP Error:", mailErr);
         emailStatus = "smtp_error";
       }
+    } else {
+      console.warn(
+        "Automated email delivery requires GMAIL_USER and GMAIL_APP_PASSWORD in .env.local"
+      );
+      emailStatus = "credentials_not_configured";
     }
 
     console.log("Call booking registered:", {
@@ -98,8 +189,8 @@ export async function POST(request: Request) {
       emailSent,
       emailStatus,
       message: emailSent
-        ? "Your call has been scheduled and confirmation emails have been sent!"
-        : "Your booking has been registered. You can add it directly to your calendar or send via Gmail below.",
+        ? "Your strategy consultation has been booked! Confirmation emails have been sent to both you and contact@xinkdigitals.com."
+        : "Your booking has been registered for contact@xinkdigitals.com.",
       booking: {
         name: bookingName,
         email: bookingEmail,
