@@ -218,10 +218,10 @@ export default function FooterSection() {
                   href="https://wa.me/919230653970?text=Hi%20Xink%20Digitals,%20I'd%20like%20to%20enquire%20about%20your%20services."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 text-[#25D366] hover:text-[#20ba59] font-medium transition-colors group"
+                  className="flex items-center gap-2.5 hover:text-[#6A38EB] transition-colors group"
                 >
-                  <WhatsAppIcon className="w-4 h-4 shrink-0 fill-current group-hover:scale-110 transition-transform" />
-                  <span>WhatsApp: (+91) 92306 53970</span>
+                  <WhatsAppIcon className="w-4 h-4 text-[#6A38EB] shrink-0 fill-[#6A38EB] group-hover:scale-110 transition-transform" />
+                  <span className="font-medium">(+91) 92306 53970 · WhatsApp</span>
                 </a>
                 <a
                   href="mailto:contact@xinkdigitals.com"

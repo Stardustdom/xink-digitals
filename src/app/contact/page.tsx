@@ -618,19 +618,29 @@ export default function ContactPage() {
                     Response time: usually within 2–4 business hours.
                   </p>
 
-                  {/* WhatsApp Redirection Button */}
+                  {/* WhatsApp Redirection Card (Themed & Clean) */}
                   <a
                     href="https://wa.me/919230653970?text=Hi%20Xink%20Digitals,%20I'd%20like%20to%20enquire%20about%20your%20services."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-3 flex items-center justify-between px-4 py-3 rounded-2xl bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md shadow-[#25D366]/20 hover:shadow-lg hover:scale-[1.01] active:scale-[0.99] group cursor-pointer"
+                    className="mt-3 flex items-center justify-between p-3.5 rounded-2xl bg-white border border-[#E5E0F5] hover:border-[#6A38EB]/40 hover:bg-[#FAF8FE] shadow-sm transition-all duration-200 group cursor-pointer"
                   >
-                    <span className="flex items-center gap-2.5">
-                      <WhatsAppIcon className="w-4 h-4 fill-white" />
-                      <span>Chat on WhatsApp</span>
-                    </span>
-                    <span className="text-[11px] font-mono font-medium bg-black/10 px-2 py-0.5 rounded-lg">
-                      +91 92306 53970 ↗
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-[#25D366]/10 text-[#075E54] flex items-center justify-center shrink-0 border border-[#25D366]/20 group-hover:scale-105 transition-transform">
+                        <WhatsAppIcon className="w-4 h-4 fill-[#128C7E]" />
+                      </div>
+                      <div className="text-left">
+                        <div className="text-xs font-bold text-[#1B143F] group-hover:text-[#6A38EB] transition-colors flex items-center gap-1.5">
+                          <span>Chat on WhatsApp</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-pulse" />
+                        </div>
+                        <p className="text-[11px] font-mono text-[#7E7896]">
+                          (+91) 92306 53970
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold text-[#6A38EB] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                      Connect ↗
                     </span>
                   </a>
                 </div>
