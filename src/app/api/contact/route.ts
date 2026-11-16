@@ -1,7 +1,38 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import fs from "fs";
+import path from "path";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function getSmtpCredentials() {
+  let user = process.env.SMTP_USER || process.env.EMAIL_USER || "contact@xinkdigitals.com";
+  let pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
+  let host = process.env.SMTP_HOST || process.env.EMAIL_HOST || "119.18.54.191";
+  let port = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 465;
+
+  try {
+    const envPath = path.resolve(process.cwd(), ".env.local");
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, "utf-8");
+      for (const line of content.split("\n")) {
+        const match = line.match(/^\s*SMTP_PASS\s*=\s*(.*)?\s*$/);
+        if (match && match[1]) {
+          const raw = match[1].trim().replace(/^['"]|['"]$/g, "");
+          if (raw) pass = raw;
+        }
+      }
+    }
+  } catch {
+    // fallback
+  }
+
+  if (host === "mail.xinkdigitals.com") {
+    host = "119.18.54.191";
+  }
+
+  return { user, pass, host, port };
+}
 
 export async function POST(request: Request) {
   try {
@@ -21,7 +52,6 @@ export async function POST(request: Request) {
     }
 
     // 3. Validation: Company / Website (Optional)
-    // Optional field; trimmed if provided
 
     // 4. Validation: Current Challenges / Service
     if (
@@ -34,7 +64,6 @@ export async function POST(request: Request) {
     }
 
     // 5. Validation: Message / Additional Notes (Optional)
-    // Optional field; trimmed if provided
 
     // 6. Verification: Cloudflare Turnstile Human Verification
     if (!turnstileToken || typeof turnstileToken !== "string" || turnstileToken.trim().length === 0) {
@@ -69,15 +98,7 @@ export async function POST(request: Request) {
     const clientBudget = budget?.trim() || "Not specified";
     const clientMessage = message?.trim() || "None";
 
-    // Webmail / SMTP credentials from environment
-    const user = process.env.SMTP_USER || process.env.EMAIL_USER || process.env.GMAIL_USER || "contact@xinkdigitals.com";
-    const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.GMAIL_APP_PASSWORD;
-    let host = process.env.SMTP_HOST || process.env.EMAIL_HOST || "119.18.54.191";
-    // Cloudflare proxies mail.xinkdigitals.com, which blocks SMTP. Route directly to server IP if set:
-    if (host === "mail.xinkdigitals.com") {
-      host = "119.18.54.191";
-    }
-    const port = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 465;
+    const { user, pass, host, port } = getSmtpCredentials();
 
     if (pass) {
       try {

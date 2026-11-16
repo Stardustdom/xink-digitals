@@ -1,5 +1,39 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import fs from "fs";
+import path from "path";
+
+function getSmtpCredentials() {
+  let user = process.env.SMTP_USER || process.env.EMAIL_USER || "contact@xinkdigitals.com";
+  let pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
+  let host = process.env.SMTP_HOST || process.env.EMAIL_HOST || "119.18.54.191";
+  let port = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 465;
+
+  // Next.js @next/env strips '$' followed by numbers as variable expansions (e.g. $2027).
+  // Read literal .env.local to preserve exact password on local/custom node environments:
+  try {
+    const envPath = path.resolve(process.cwd(), ".env.local");
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, "utf-8");
+      for (const line of content.split("\n")) {
+        const match = line.match(/^\s*SMTP_PASS\s*=\s*(.*)?\s*$/);
+        if (match && match[1]) {
+          const raw = match[1].trim().replace(/^['"]|['"]$/g, "");
+          if (raw) pass = raw;
+        }
+      }
+    }
+  } catch {
+    // fallback to process.env.SMTP_PASS
+  }
+
+  // mail.xinkdigitals.com is proxied by Cloudflare which drops port 465 SMTP.
+  if (host === "mail.xinkdigitals.com") {
+    host = "119.18.54.191";
+  }
+
+  return { user, pass, host, port };
+}
 
 function buildIcsCalendar({
   name,
@@ -62,15 +96,7 @@ export async function POST(request: Request) {
     let emailSent = false;
     let emailStatus = "logged";
 
-    // Webmail / SMTP credentials from environment
-    const user = process.env.SMTP_USER || process.env.EMAIL_USER || process.env.GMAIL_USER || "contact@xinkdigitals.com";
-    const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.GMAIL_APP_PASSWORD;
-    let host = process.env.SMTP_HOST || process.env.EMAIL_HOST || "119.18.54.191";
-    // Cloudflare proxies mail.xinkdigitals.com, which blocks SMTP. Route directly to server IP if set:
-    if (host === "mail.xinkdigitals.com") {
-      host = "119.18.54.191";
-    }
-    const port = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 465;
+    const { user, pass, host, port } = getSmtpCredentials();
 
     if (pass) {
       try {
@@ -80,7 +106,7 @@ export async function POST(request: Request) {
           secure: port === 465,
           auth: { user, pass },
           tls: {
-            rejectUnauthorized: false, // Prevents certificate errors on shared hosting / cPanel
+            rejectUnauthorized: false,
           },
         });
 
@@ -171,7 +197,7 @@ export async function POST(request: Request) {
       }
     } else {
       console.warn(
-        "Automated email delivery requires SMTP_PASS (your webmail account password) in .env.local"
+        "Automated email delivery requires SMTP_PASS in .env.local or environment variables"
       );
       emailStatus = "credentials_not_configured";
     }
@@ -186,13 +212,20 @@ export async function POST(request: Request) {
       emailStatus,
     });
 
+    if (!emailSent) {
+      return NextResponse.json({
+        success: false,
+        emailSent: false,
+        error: "Unable to send confirmation email at this time. Please check SMTP configuration or reach us directly at contact@xinkdigitals.com.",
+        emailStatus,
+      }, { status: 500 });
+    }
+
     return NextResponse.json({
       success: true,
-      emailSent,
+      emailSent: true,
       emailStatus,
-      message: emailSent
-        ? "Your strategy consultation has been booked! Confirmation emails have been sent to both you and contact@xinkdigitals.com."
-        : "Your booking has been registered for contact@xinkdigitals.com.",
+      message: "Your strategy consultation has been booked! Confirmation emails have been sent to both you and contact@xinkdigitals.com.",
       booking: {
         name: bookingName,
         email: bookingEmail,
